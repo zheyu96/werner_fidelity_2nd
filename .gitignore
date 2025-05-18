@@ -1,0 +1,13 @@
+*.o
+*.gch
+*.out
+*.vscode
+*.txt
+*.log
+*.ans
+*.input
+*.eps
+*.jpg
+*.zip
+*runtime
+*cdf
