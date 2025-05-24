@@ -25,6 +25,7 @@ class Graph {
     vector<double> boundary, cnt;
     map<pair<int, int> , double> F_init, entangle_succ_prob;
 
+    string file_name;
     Path get_path(int from, int to);
 public:
     Graph(string filename, int _time_limit, double _swap_prob, int avg_memory, double min_fidelity, double max_fidelity, double _fidelity_threshold, double _A, double _B, double _n, double _T, double _tao);

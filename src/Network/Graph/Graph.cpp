@@ -13,7 +13,7 @@ Graph::Graph(string filename, int _time_limit, double _swap_prob, int avg_memory
     // geneator an adj list
 
     ifstream graph_file(filename);
-
+    file_name = filename;
     graph_file >> num_nodes;
     adj_set.clear();
     adj_set.resize(num_nodes);
