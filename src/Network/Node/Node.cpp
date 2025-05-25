@@ -18,7 +18,7 @@ void Node::add_neighbor(int neighbor_id) {
 }
 
 void Node::reserve_memory(int t, int amount) {
-    assert(memory_table[t] < amount);
+    assert(memory_table[t] >= amount);
     // if(memory_table[t] < amount) {
     //     cerr << "error: memory is not enough" << endl;
     //     exit(1);
@@ -29,7 +29,7 @@ void Node::reserve_memory(int t, int amount) {
 void Node::reserve_memory(int amount) {
     memory -= amount;
     for(int t = 0; t < time_limit; t++) {
-        assert(memory_table[t] < amount);
+        assert(memory_table[t] >= amount);
         // if(memory_table[t] < amount) {
         //     cerr << "error: memory is not enough" << endl;
         //     exit(1);
