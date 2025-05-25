@@ -285,7 +285,7 @@ void MyAlgo2::run() {
             double fidelity = shape.get_fidelity(A, B, n, T, tao, graph.get_F_init());
             fidelity = ((1.0 + fidelity * 9.0) / 10.0);
             if(fidelity + EPS > graph.get_fidelity_threshold()) {
-                res["fidelity_gain"] += P.second * ((1 + 3 * fidelity * graph.path_Pr(shape)) / 4);
+                res["fidelity_gain"] += P.second * (fidelity * graph.path_Pr(shape));
                 res["succ_request_cnt"] += P.second * (1 + 3 * graph.path_Pr(shape)) / 4;
             }
 

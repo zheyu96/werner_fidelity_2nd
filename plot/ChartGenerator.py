@@ -69,7 +69,8 @@ class ChartGenerator:
                 'min_fidelity': LEFT_TOP,
                 'fidelity_threshold': RIGHT_TOP,
                 'swap_prob': LEFT_TOP,
-                'entangle_time': RIGHT_TOP
+                'entangle_time': RIGHT_TOP,
+                'entangle_prob': LEFT_TOP
             },
             'succ_request_cnt':{
                 'request_cnt': LEFT_TOP,
@@ -79,7 +80,8 @@ class ChartGenerator:
                 'min_fidelity': LEFT_TOP,
                 'fidelity_threshold': RIGHT_TOP,
                 'swap_prob': LEFT_TOP,
-                'entangle_time': RIGHT_TOP
+                'entangle_time': RIGHT_TOP,
+                'entangle_prob': LEFT_TOP
             },
         }
 
@@ -92,7 +94,8 @@ class ChartGenerator:
                 'min_fidelity': (5, 25, 5),
                 'fidelity_threshold': (0, 25, 5),
                 'swap_prob': (0, 20, 5),
-                'entangle_time': (0, 25, 5)
+                'entangle_time': (0, 25, 5),
+                'entangle_prob': (0, 1e-5, 1e-6)
             },
             'succ_request_cnt':{
                 'request_cnt': (5, 40, 5),
@@ -102,7 +105,8 @@ class ChartGenerator:
                 'min_fidelity': (5, 30, 5),
                 'fidelity_threshold': (0, 30, 5),
                 'swap_prob': (0, 25, 5),
-                'entangle_time': (0, 25, 5)
+                'entangle_time': (0, 25, 5),
+                'entangle_prob': (0, 1e-5, 1e-6)
             }
         }
 
@@ -172,7 +176,7 @@ class ChartGenerator:
 
         for idx in range(num_of_algo):
             i = per[idx]
-            if _Ylabel == "succ_request_cnt":   # skip upper bound
+            if True or _Ylabel == "succ_request_cnt":   # skip upper bound
                 if per_algo_name[i][-2:] == "UB":
                     continue
             ax1.plot(
@@ -190,7 +194,7 @@ class ChartGenerator:
   
         for idx in range(num_of_algo):
             i = per[idx]
-            if _Ylabel == "succ_request_cnt":   # skip upper bound
+            if True or _Ylabel == "succ_request_cnt":   # skip upper bound
                 if per_algo_name[i][-2:] == "UB":
                     continue
             algo_name.append(per_algo_name[i])    # adjust the order
@@ -249,7 +253,7 @@ class ChartGenerator:
 if __name__ == "__main__":
     # data檔名 Y軸名稱 X軸名稱 Y軸要除多少(10的多少次方) Y軸起始座標 Y軸終止座標 Y軸座標間的間隔
     # ChartGenerator("numOfnodes_waitingTime.txt", "need #round", "#Request of a round", 0, 0, 25, 5)
-    Xlabels = ["request_cnt", "time_limit", "tao", "swap_prob", "fidelity_threshold", "avg_memory", "min_fidelity", "entangle_time"]
+    Xlabels = ["entangle_prob"]
     Ylabels = ["fidelity_gain", "succ_request_cnt"]
     PathNames = ["Greedy"]
 
@@ -265,6 +269,7 @@ if __name__ == "__main__":
     LabelsName["fidelity_threshold"] = "Fidelity Threshold"
     LabelsName["min_fidelity"] = "Minimum Initial Fidelity"
     LabelsName["entangle_time"] = "Entangling Time"
+    LabelsName["entangle_prob"] = "Entangling Probablity"
 
     for Path in PathNames:
         for Xlabel in Xlabels:
@@ -284,6 +289,8 @@ if __name__ == "__main__":
                     (Ystart, Yend, Yinternal) = (5, 30, 5)
                 if Xlabel == "swap_prob":
                     (Ystart, Yend, Yinternal) = (5, 30, 5)
+                if Xlabel == "entangle_prob":
+                    (Ystart, Yend, Yinternal) = (0, 1e-5, 1e-6)
 
                 ChartGenerator(dataFileName, Xlabel, Ylabel, LabelsName[Xlabel], LabelsName[Ylabel], 0, 0, Ystart, Yend, Yinternal)
 
