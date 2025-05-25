@@ -3,8 +3,8 @@ dependency = Network/Node/Node.o Network/Shape/Shape.o Network/Graph/Graph.o Alg
 algorithm = Algorithm/MyAlgo2/MyAlgo2.o Algorithm/MyAlgo1/MyAlgo1.o Algorithm/MyAlgo3/MyAlgo3.o Algorithm/MyAlgo4/MyAlgo4.o Algorithm/MyAlgo5/MyAlgo5.o Algorithm/MyAlgo6/MyAlgo6.o
 algorithm2 = Algorithm/MyAlgo3/MyAlgo3.o Algorithm/MyAlgo1_time/MyAlgo1_time.o
 routing = Network/PathMethod/PathMethodBase/PathMethod.o Network/PathMethod/Greedy/Greedy.o Network/PathMethod/QCAST/QCAST.o Network/PathMethod/REPS/REPS.o
-# gcc_flag = -g -Wall -Wextra -Os -Ofast --std=c++17
-gcc_flag = -g -Wall -Wextra -O0 --std=c++17
+gcc_flag = -g -Wall -Wextra -Os -Ofast --std=c++17
+# gcc_flag = -g -Wall -Wextra -O0 --std=c++17
 
 gurobi_path = /home/oba/danger/gurobi951/linux64
 gurobi_flag = -I/home/oba/danger/gurobi951/linux64/include/ -L/home/oba/danger/gurobi951/linux64/lib/ -lgurobi_c++ -lgurobi95
