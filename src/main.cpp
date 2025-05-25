@@ -175,7 +175,7 @@ int main(){
                 double max_fidelity = input_parameter["max_fidelity"];
                 // double entangle_lambda = input_parameter["entangle_lambda"];
                 // double entangle_time = input_parameter["entangle_time"];
-                double entangle_prob = input_parameter["entangle_time"];
+                double entangle_prob = input_parameter["entangle_prob"];
                 double swap_prob = input_parameter["swap_prob"];
                 double fidelity_threshold = input_parameter["fidelity_threshold"];
                 // int length_upper, length_lower;
