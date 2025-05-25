@@ -93,10 +93,10 @@ int main(){
     change_parameter["entangle_time"] = {0.0001, 0.00025, 0.0004, 0.00055, 0.0007};
     change_parameter["entangle_prob"] = {0.005, 0.0075, 0.01, 0.0125, 0.015};
 
-    int round = 1;
+    int round = 50;
     vector<vector<SDpair>> default_requests(round);
 
-    // #pragma omp parallel for
+    #pragma omp parallel for
     for(int r = 0; r < round; r++) {
         int num_nodes = default_setting["num_nodes"];
         int avg_memory = default_setting["avg_memory"];
@@ -188,7 +188,7 @@ int main(){
                 // }
 
                 int sum_has_path = 0;
-                // #pragma omp parallel for
+                #pragma omp parallel for
                 for(int r = 0; r < round; r++) {
                     string filename = file_path + "input/round_" + to_string(r) + "_" + to_string(entangle_prob) + ".input";
                     ofstream ofs;
