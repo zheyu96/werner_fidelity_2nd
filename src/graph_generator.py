@@ -104,7 +104,7 @@ with open(path, 'w') as f:
         (x, y) = positions[n]
         pos_x = str(x*RANGE)
         pos_y = str(y*RANGE)
-        num_of_memory = random.randint(6, 14)
+        num_of_memory = random.randint(-1, 1)
         print(num_of_memory, file = f)
     
     # write edge
