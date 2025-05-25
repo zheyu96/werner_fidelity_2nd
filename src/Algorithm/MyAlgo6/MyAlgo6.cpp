@@ -4,11 +4,11 @@ MyAlgo6::MyAlgo6(Graph _graph, vector<SDpair> _requests, map<SDpair, vector<Path
     AlgorithmBase(_graph, _requests, _paths) {
     algorithm_name = "ASAP";
     merge_shape.resize(graph.get_num_nodes() + 1);
-    // for(SDpair sdpair : requests) {
-    //     sort(paths[sdpair].begin(), paths[sdpair].end(), [&](Path &a, Path &b) {
-    //         return graph.path_Pr(a) < graph.path_Pr(b);
-    //     });
-    // }
+    for(SDpair sdpair : requests) {
+        sort(paths[sdpair].begin(), paths[sdpair].end(), [&](Path &a, Path &b) {
+            return graph.path_Pr(a) < graph.path_Pr(b);
+        });
+    }
     // sort(requests.begin(), requests.end(), [&](SDpair &a, SDpair &b) {
     //     double Pr_a = (paths[a].empty() ? 1 : graph.path_Pr(paths[a][0]));
     //     double Pr_b = (paths[b].empty() ? 1 : graph.path_Pr(paths[b][0]));
