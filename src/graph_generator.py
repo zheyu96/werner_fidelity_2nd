@@ -59,7 +59,7 @@ num_of_node = int(sys.argv[2])
 # entangle_lambda = float(sys.argv[3])
 # tao = float(sys.argv[4])
 # entangle_time = float(sys.argv[5])
-entangle_prob = float(sys.argv[3])
+# entangle_prob = float(sys.argv[3])
 
 print("======== generating graph ========", file=sys.stderr)
 print("filename =", filename, file=sys.stderr)
@@ -128,14 +128,12 @@ with open(path, 'w') as f:
             if ratio < 0:
                 ratio = 0
             F = ratio
-            prob_e = entangle_prob   # entangled probability
-            print(e0 + " " + e1 + " " + str(F) + " " + str(prob_e), file=f)
+            print(e0 + " " + e1 + " " + str(F), file=f)
             avg_l += dis
     avg_l /= num_of_edge
 
 print("num_of_edge =", num_of_edge, file=sys.stderr)
 print("avg_edge_len =", avg_l, file=sys.stderr)
-print("avg_ent_prob =", entangle_prob, file=sys.stderr)
 print("\n======== graph generate finished ! ========", file=sys.stderr)
 
 

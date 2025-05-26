@@ -117,17 +117,17 @@ int main(){
                 // double entangle_lambda = input_parameter["entangle_lambda"];
                 // double entangle_time = input_parameter["entangle_time"];
                 double entangle_prob = input_parameter["entangle_prob"];
-                string filename = file_path + "input/round_" + to_string(r) + "_" + to_string(entangle_prob) + ".input";
+                string filename = file_path + "input/round_" + to_string(r) + ".input";
                 string command = "python3 graph_generator.py ";
                 double A = 0.25, B = 0.75, tao = default_setting["tao"], T = 10, n = 2;
                 // derandom
-                string parameter = to_string(num_nodes) + " " + to_string(entangle_prob);
+                string parameter = to_string(num_nodes);
                 cerr << (command + filename + " " + parameter) << endl;
                 if(system((command + filename + " " + parameter).c_str()) != 0){
                     cerr<<"error:\tsystem proccess python error"<<endl;
                     exit(1);
                 }
-                Graph graph(filename, time_limit, swap_prob, avg_memory, min_fidelity, max_fidelity, fidelity_threshold, A, B, n, T, tao);
+                Graph graph(filename, time_limit, swap_prob, avg_memory, min_fidelity, max_fidelity, fidelity_threshold, A, B, n, T, tao, entangle_prob);
                 default_requests[r] = generate_requests(graph, 100, length_lower, length_upper);
             }
         }
@@ -190,7 +190,7 @@ int main(){
                 int sum_has_path = 0;
                 #pragma omp parallel for
                 for(int r = 0; r < round; r++) {
-                    string filename = file_path + "input/round_" + to_string(r) + "_" + to_string(entangle_prob) + ".input";
+                    string filename = file_path + "input/round_" + to_string(r) + ".input";
                     ofstream ofs;
                     ofs.open(file_path + "log/" + path_method->get_name() + "_" + X_name + "_in_" + to_string(change_value) + "_Round_" + to_string(r) + ".log");
 
@@ -204,7 +204,7 @@ int main(){
 
                     double A = 0.25, B = 0.75, tao = input_parameter["tao"], T = 0.04, n = 2;
 
-                    Graph graph(filename, time_limit, swap_prob, avg_memory, min_fidelity, max_fidelity, fidelity_threshold, A, B, n, T, tao);
+                    Graph graph(filename, time_limit, swap_prob, avg_memory, min_fidelity, max_fidelity, fidelity_threshold, A, B, n, T, tao, entangle_prob);
 
                     ofs << "--------------- in round " << r << " -------------" <<endl;
                     vector<pair<int, int>> requests;
