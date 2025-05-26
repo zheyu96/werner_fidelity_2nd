@@ -46,7 +46,7 @@ def link_prob(entangle_lambda, dis, times):
     one_prob = math.exp(-entangle_lambda * dis)
     return 1 - ((1 - one_prob) ** times)
 
-if len(sys.argv) <= 3:
+if len(sys.argv) <= 2:
     print("missing argv")
     sys.exit()
 
