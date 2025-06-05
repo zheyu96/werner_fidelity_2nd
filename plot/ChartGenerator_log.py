@@ -61,7 +61,7 @@ class ChartGenerator:
         RIGHT_TOP = (0.7, 0.87)
         LEFT_TOP = (0.3, 0.87)
         bbox_pos_settings = {
-            'fidelity_gain':{
+            'fidelity_gain_log':{
                 'request_cnt': LEFT_TOP,
                 'tao': RIGHT_TOP,
                 'time_limit': LEFT_TOP,
@@ -72,7 +72,7 @@ class ChartGenerator:
                 'entangle_time': RIGHT_TOP,
                 'entangle_prob': LEFT_TOP
             },
-            'succ_request_cnt':{
+            'succ_request_cnt_log':{
                 'request_cnt': LEFT_TOP,
                 'tao': RIGHT_TOP,
                 'time_limit': LEFT_TOP,
@@ -86,7 +86,7 @@ class ChartGenerator:
         }
 
         Y_interval_settings = {
-            'fidelity_gain':{
+            'fidelity_gain_log':{
                 'request_cnt': (5, 30, 5),
                 'tao': (5, 25, 5),
                 'time_limit': (5, 25, 5),
@@ -95,9 +95,9 @@ class ChartGenerator:
                 'fidelity_threshold': (0, 25, 5),
                 'swap_prob': (0, 20, 5),
                 'entangle_time': (0, 25, 5),
-                'entangle_prob': (0, 2e-4, 5e-5)
+                'entangle_prob': (-10, 2, 3)
             },
-            'succ_request_cnt':{
+            'succ_request_cnt_log':{
                 'request_cnt': (5, 40, 5),
                 'tao': (5, 30, 5),
                 'time_limit': (5, 30, 5),
@@ -106,12 +106,9 @@ class ChartGenerator:
                 'fidelity_threshold': (0, 30, 5),
                 'swap_prob': (0, 25, 5),
                 'entangle_time': (0, 25, 5),
-                'entangle_prob': (0, 2e-4, 5e-5)
+                'entangle_prob': (-10, 2, 3)
             }
         }
-
-        if _Xlabel == "tao" or _Xlabel == "entangle_time" or _Xlabel == "entangle_prob":
-            Xpow = -4
 
         """
         Read Data to y
@@ -143,7 +140,6 @@ class ChartGenerator:
 
         max_data = 0
         min_data = math.inf
-        Ypow = -5
         Ydiv = float(10 ** Ypow)
         Xdiv = float(10 ** Xpow)
         
@@ -155,6 +151,10 @@ class ChartGenerator:
         for i in range(num_of_algo):
             for j in range(num_of_data):
                 y[i][j] = float(y[i][j]) / Ydiv
+                if(y[i][j] <= 1e-10):
+                    y[i][j] = -10
+                else:
+                    y[i][j] = math.log10(y[i][j])
                 max_data = max(max_data, y[i][j])
                 min_data = min(min_data, y[i][j])
 
@@ -177,7 +177,7 @@ class ChartGenerator:
 
         for idx in range(num_of_algo):
             i = per[idx]
-            if _Ylabel == "succ_request_cnt":   # skip upper bound
+            if _Ylabel == "succ_request_cnt_log":   # skip upper bound
                 if per_algo_name[i][-2:] == "UB":
                     continue
             ax1.plot(
@@ -195,7 +195,7 @@ class ChartGenerator:
   
         for idx in range(num_of_algo):
             i = per[idx]
-            if _Ylabel == "succ_request_cnt":   # skip upper bound
+            if _Ylabel == "succ_request_cnt_log":   # skip upper bound
                 if per_algo_name[i][-2:] == "UB":
                     continue
             algo_name.append(per_algo_name[i])    # adjust the order
@@ -258,7 +258,7 @@ if __name__ == "__main__":
     # data檔名 Y軸名稱 X軸名稱 Y軸要除多少(10的多少次方) Y軸起始座標 Y軸終止座標 Y軸座標間的間隔
     # ChartGenerator("numOfnodes_waitingTime.txt", "need #round", "#Request of a round", 0, 0, 25, 5)
     Xlabels = ["entangle_prob"]
-    Ylabels = ["fidelity_gain", "succ_request_cnt"]
+    Ylabels = ["fidelity_gain_log", "succ_request_cnt_log"]
     PathNames = ["Greedy"]
 
     LabelsName = {}
@@ -268,12 +268,12 @@ if __name__ == "__main__":
     LabelsName["avg_memory"] = "Average Memory Limit"
     LabelsName["tao"] = "$\\it{\\tau}$"
     LabelsName["swap_prob"] = "Swapping Probability"
-    LabelsName["fidelity_gain"] = "Expected Fidelity Sum"
-    LabelsName["succ_request_cnt"] = "$\#$Accepted Requests"
+    LabelsName["fidelity_gain_log"] = "Expected Fidelity Sum ($\\log_{10}$)"
+    LabelsName["succ_request_cnt_log"] = "$\#$Accepted Requests ($\\log_{10}$)"
     LabelsName["fidelity_threshold"] = "Fidelity Threshold"
     LabelsName["min_fidelity"] = "Minimum Initial Fidelity"
     LabelsName["entangle_time"] = "Entangling Time"
-    LabelsName["entangle_prob"] = "Entangling Probablity"
+    LabelsName["entangle_prob"] = "Entangling Probablity ($10^{-x}$)"
 
     for Path in PathNames:
         for Xlabel in Xlabels:
