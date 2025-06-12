@@ -111,7 +111,7 @@ class ChartGenerator:
         }
 
         if _Xlabel == "tao" or _Xlabel == "entangle_time" or _Xlabel == "entangle_prob":
-            Xpow = -4
+            Xpow = -3
 
         """
         Read Data to y
@@ -150,7 +150,8 @@ class ChartGenerator:
         for i in range(num_of_data):
             if Xpow != 0:
                 x[i] = float(x[i]) / Xdiv
-                x[i] = int(round(x[i] * 10) / 10)
+                if math.fabs(x[i] - int(x[i])) <= 1e-6:
+                    x[i] = int(round(x[i] * 10) / 10)
 
         for i in range(num_of_algo):
             for j in range(num_of_data):

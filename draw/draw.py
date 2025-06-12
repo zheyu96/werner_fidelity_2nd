@@ -1,6 +1,4 @@
 import matplotlib.pyplot as plt
-import numpy as np
-
 
 # 讀檔
 with open("graph.txt", "r") as f:
@@ -12,10 +10,10 @@ m = int(lines[n + 1])
 edges = [tuple(map(int, lines[n + 2 + i].split())) for i in range(m)]
 
 # 顏色設定
-node_color = "#800080"  # 紫色
-edge_color = "#0000FF"  # 藍色
+node_color = "#800080"  # 節點主色（深紫色）
+edge_color = "#0000FF"  # 邊的顏色（藍色）
 
-# 畫圖
+# --- 畫圖 ---
 plt.figure(figsize=(10, 10))
 plt.axis('off')
 
@@ -23,29 +21,33 @@ plt.axis('off')
 for u, v in edges:
     x1, y1 = points[u]
     x2, y2 = points[v]
-    plt.plot([x1, x2], [y1, y2], color=edge_color, linewidth=1.2, alpha=0.7)
+    plt.plot([x1, x2], [y1, y2], color=edge_color, linewidth=1.2)
 
-# 畫點
-x_coords, y_coords = zip(*points)
-# 畫點的陰影（光暈感）
-plt.scatter(x_coords, y_coords, 
-            s=360,  # 陰影尺寸較大
-            color=node_color, 
-            alpha=0.1, 
-            linewidths=0)
+# 外層淡紫色模擬光暈（更粗！）
+# 把半徑層級增大 1.3 倍
+shadow_layers = [
+    (460, '#f2e6f2'),  # 淺粉紫色
+    (380, '#e0b0e0'),  # 淺紫色
+    (300, '#c080c0'),  # 中紫色
+]
 
-# 畫點本體（有邊框）
-plt.scatter(x_coords, y_coords, 
-            s=90,                  # 節點大小
-            color=node_color,      # 節點填色
-            edgecolors='white',    # 白色邊框
-            linewidths=0.8, 
+for size, color in shadow_layers:
+    plt.scatter(*zip(*points),
+                s=size,
+                color=color,
+                edgecolors='none',
+                zorder=1)
+
+# 節點本體（有白色邊框）
+plt.scatter(*zip(*points),
+            s=90,
+            color=node_color,
+            edgecolors='white',
+            linewidths=0.8,
             zorder=2)
 
-# 儲存圖片
 plt.tight_layout()
-plt.savefig("topo.png", dpi=300, bbox_inches='tight')
-plt.savefig("topo.eps", dpi=300, bbox_inches='tight')
+plt.savefig("topo.eps", dpi=1600, bbox_inches='tight')
+plt.savefig("topo.png", dpi=1600, bbox_inches='tight')
 
-# 顯示圖形
-# plt.show()
+# plt.show()  # 可選
