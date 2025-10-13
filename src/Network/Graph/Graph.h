@@ -28,7 +28,7 @@ class Graph {
     string file_name;
     Path get_path(int from, int to);
 public:
-    Graph(string filename, int _time_limit, double _swap_prob, int avg_memory, double min_fidelity, double max_fidelity, double _fidelity_threshold, double _A, double _B, double _n, double _T, double _tao, double entangle_prob);
+    Graph(string filename, int _time_limit, double _swap_prob, int avg_memory, double min_fidelity, double max_fidelity, double _fidelity_threshold, double _A, double _B, double _n, double _T, double _tao);
     Graph() {}
     ~Graph();
     int get_node_memory_at(int node_id, int t);
