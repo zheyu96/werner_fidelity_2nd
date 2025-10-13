@@ -44,6 +44,7 @@ def dist(p1, p2):
 
 def link_prob(entangle_lambda, dis, times):
     one_prob = math.exp(-entangle_lambda * dis)
+    print("one_prob =", 1 - ((1 - one_prob) ** times), file=sys.stderr)
     return 1 - ((1 - one_prob) ** times)
 
 if len(sys.argv) <= 2:
