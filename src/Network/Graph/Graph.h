@@ -52,6 +52,8 @@ public:
     double get_F_init(int u, int v);
     map<pair<int, int>, double> get_F_init();
 
+    double get_link_werner(int u,int v);
+    double get_edge_W(int u,int v);
     vector<double> get_boundary();
     vector<double> get_cnt();
     bool check_resource(Shape shape, bool threshold = true);

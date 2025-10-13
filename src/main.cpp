@@ -8,6 +8,7 @@
 #include "Algorithm/MyAlgo4/MyAlgo4.h"
 #include "Algorithm/MyAlgo5/MyAlgo5.h"
 #include "Algorithm/MyAlgo6/MyAlgo6.h"
+#include "Algorithm/WernerAlgo/WernerAlgo.h"
 #include "Network/PathMethod/PathMethodBase/PathMethod.h"
 #include "Network/PathMethod/Greedy/Greedy.h"
 #include "Network/PathMethod/QCAST/QCAST.h"
@@ -140,7 +141,7 @@ int main(){
     // vector<string> X_names = {"entangle_time", "request_cnt", "time_limit", "tao", "fidelity_threshold", "avg_memory", "min_fidelity", "entangle_lambda", "swap_prob"};
     vector<string> X_names = {"entangle_prob"};
     vector<string> Y_names = {"fidelity_gain", "succ_request_cnt"};
-    vector<string> algo_names = {"MyAlgo1", "MyAlgo2", "MyAlgo3", "Merge", "Linear", "ASAP"};
+    vector<string> algo_names = {"WernerAlgo","MyAlgo1", "MyAlgo2", "MyAlgo3", "Merge", "Linear", "ASAP"};
     // init result
 
 
@@ -266,6 +267,7 @@ int main(){
                     cerr << "Avg path length = " << path_len / (double)path_cnt << "\n";
                     cerr << "Max path length = " << mx_path_len << "\n";
                     vector<AlgorithmBase*> algorithms;
+                    algorithms.emplace_back(new WernerAlgo());
                     algorithms.emplace_back(new MyAlgo1(graph, requests, paths));
                     algorithms.emplace_back(new MyAlgo2(graph, requests, paths));
                     algorithms.emplace_back(new MyAlgo3(graph, requests, paths));

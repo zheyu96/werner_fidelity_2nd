@@ -1,4 +1,5 @@
 #include "Graph.h"
+#include <cmath>
 using namespace std;
 
 int rnd(int lower_bound, int upper_bound) {
@@ -93,6 +94,19 @@ double Graph::get_F_init(int u, int v) {
 
 map<pair<int, int>, double> Graph::get_F_init() { return F_init; }
 
+double Graph::get_link_werner(int u,int v){ //werner state
+    auto it=F_init.find({u,v});
+    assert(it!=F_init.end());
+    double F=it->second;
+    double W=(4.0*F-1.0)/3.0;
+    assert(W>=0.0&&W<=1.0);
+    return W;
+}
+double Graph::get_edge_W(int u,int v){ //werner log
+    double w=get_link_werner(u,v);
+    double eps=1e-12;
+    return -log(max(w,eps));
+}
 void DFS(int x, vector<bool> &vis, vector<int> &par, vector<vector<int>> &adj) {
     vis[x] = true;
     for(auto v : adj[x]) {
