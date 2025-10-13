@@ -267,7 +267,7 @@ int main(){
                     cerr << "Avg path length = " << path_len / (double)path_cnt << "\n";
                     cerr << "Max path length = " << mx_path_len << "\n";
                     vector<AlgorithmBase*> algorithms;
-                    algorithms.emplace_back(new WernerAlgo());
+                    algorithms.emplace_back(new WernerAlgo(graph,requests,paths));
                     algorithms.emplace_back(new MyAlgo1(graph, requests, paths));
                     algorithms.emplace_back(new MyAlgo2(graph, requests, paths));
                     algorithms.emplace_back(new MyAlgo3(graph, requests, paths));
