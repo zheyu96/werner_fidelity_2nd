@@ -71,7 +71,7 @@ int main(){
     default_setting["time_limit"] = 13;
     default_setting["avg_memory"] = 10; // 16
     default_setting["tao"] = 0.002;
-    default_setting["path_length"] = 7;
+    default_setting["path_length"] = 5;
     default_setting["min_fidelity"] = 0.7;
     default_setting["max_fidelity"] = 0.98;
     default_setting["swap_prob"] = 0.9;
@@ -128,7 +128,7 @@ int main(){
                     cerr<<"error:\tsystem proccess python error"<<endl;
                     exit(1);
                 }
-                Graph graph(filename, time_limit, swap_prob, avg_memory, min_fidelity, max_fidelity, fidelity_threshold, A, B, n, T, tao);
+                Graph graph(filename, time_limit, swap_prob, avg_memory, min_fidelity, max_fidelity, fidelity_threshold, A, B, n, T, tao, entangle_prob);
                 default_requests[r] = generate_requests(graph, 100, length_lower, length_upper);
             }
         }
@@ -205,7 +205,7 @@ int main(){
 
                     double A = 0.25, B = 0.75, tao = input_parameter["tao"], T = 0.04, n = 2;
 
-                    Graph graph(filename, time_limit, swap_prob, avg_memory, min_fidelity, max_fidelity, fidelity_threshold, A, B, n, T, tao);
+                    Graph graph(filename, time_limit, swap_prob, avg_memory, min_fidelity, max_fidelity, fidelity_threshold, A, B, n, T, tao, entangle_prob);
 
                     ofs << "--------------- in round " << r << " -------------" <<endl;
                     vector<pair<int, int>> requests;
