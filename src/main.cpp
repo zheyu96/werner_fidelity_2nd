@@ -93,7 +93,7 @@ int main(){
     change_parameter["entangle_lambda"] = {0.025, 0.035, 0.045, 0.055, 0.065};
     change_parameter["entangle_time"] = {0.0001, 0.00025, 0.0004, 0.00055, 0.0007};
     //change_parameter["entangle_prob"] = {0.0001, 0.001, 0.01, 0.1, 1};
-    chang_parameter["Zmin"]={0.038,0.158,0.278,0.398,0.518};
+    change_parameter["Zmin"]={0.038,0.158,0.278,0.398,0.518};
     int round = 50;
     vector<vector<SDpair>> default_requests(round);
     #pragma omp parallel for
