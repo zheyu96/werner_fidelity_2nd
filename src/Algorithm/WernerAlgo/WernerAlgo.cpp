@@ -258,16 +258,23 @@ Shape_vector WernerAlgo::backtrack_shape(ZLabel leaf,const vector<int>& path){
     // Handle unexpected Op value
     cerr << "[WernerAlgo::backtrack_shape] Warning: Unknown Op value encountered." << std::endl;
 }
-
+int split_dis(int s,int d,WernerAlgo::ZLabel& L){
+    if(L.op!=WernerAlgo::Op::MERGE||L.k<0) return INT_MAX/4;
+    int mid=(s+d)/2;
+    return abs(mid-L.k);
+}
 pair<double,WernerAlgo::ZLabel> WernerAlgo::eval_best_J(int s, int d, int t, double alp){
-    double bestJ=1e10;
+    double bestJ=1e18;
+    int bestdis=INT_MAX/4;
     int flag=0;
-    ZLabel tmp;
+    ZLabel tmp={};
     for(auto L:DP_table[t][s][d]){
         double J=(alp+L.B)*exp(L.Z)*exp(L.Z);
-        if(J<bestJ){
+        int dis=split_dis(s,d,L);
+        if(J+EPS<bestJ||(fabs(J-bestJ)<=EPS&&dis<bestdis)){
             bestJ=J;
             tmp=L;
+            bestDis=dis;
             flag=1;
         }
     }
