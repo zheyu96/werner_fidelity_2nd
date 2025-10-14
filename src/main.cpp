@@ -96,7 +96,7 @@ int main(){
 
     int round = 50;
     vector<vector<SDpair>> default_requests(round);
-
+    vector<string> X_names = {"entangle_time", "request_cnt", "time_limit", "tao", "fidelity_threshold", "avg_memory", "min_fidelity", "entangle_lambda", "swap_prob"};
     #pragma omp parallel for
     for(int r = 0; r < round; r++) {
         int num_nodes = default_setting["num_nodes"];
@@ -110,7 +110,7 @@ int main(){
         double fidelity_threshold = default_setting["fidelity_threshold"];
         int length_upper = default_setting["path_length"] + 1;
         int length_lower = default_setting["path_length"] - 1;
-        for(string X_name : {"entangle_prob"}) {
+        for(string X_name : X_names) {
             map<string, double> input_parameter = default_setting;
             for(double change_value : change_parameter[X_name]) {
                 vector<map<string, map<string, double>>> result(round);
@@ -138,7 +138,6 @@ int main(){
 
 
     // vector<string> X_names = {"time_limit", "request_cnt", "num_nodes", "avg_memory", "tao"};
-    vector<string> X_names = {"entangle_time", "request_cnt", "time_limit", "tao", "fidelity_threshold", "avg_memory", "min_fidelity", "entangle_lambda", "swap_prob"};
     //vector<string> X_names = {"entangle_prob","request_cnt"};
     vector<string> Y_names = {"fidelity_gain", "succ_request_cnt"};
     vector<string> algo_names = {"WernerAlgo","MyAlgo1", "MyAlgo2", "MyAlgo3", "Merge", "Linear", "ASAP"};
