@@ -121,7 +121,7 @@ with open(path, 'w') as f:
             e1 = str(e[1])
             dis = RANGE * dist(positions[e[0]], positions[e[1]])  # distance
             # F = random.random()*(max_fidelity-min_fidelity) + min_fidelity  # fidelity
-            ratio = numpy.random.normal(0.75, 0.15)
+            ratio = numpy.random.normal(1, 0.15)
             dif = abs(1 - ratio)
             ratio = 1 - dif
             if ratio > 1:
