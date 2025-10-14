@@ -110,6 +110,8 @@ int main(){
         double min_fidelity = default_setting["min_fidelity"];
         double max_fidelity = default_setting["max_fidelity"];
         double Zmin=default_setting["Zmin"];
+        double bucket_eps=default_setting["bucket_eps"];
+        double time_eta=default_setting["time_eta"];
         double swap_prob = default_setting["swap_prob"];
         double fidelity_threshold = default_setting["fidelity_threshold"];
         int length_upper = default_setting["path_length"] + 1;
@@ -129,7 +131,7 @@ int main(){
             cerr<<"error:\tsystem proccess python error"<<endl;
             exit(1);
         }
-        Graph graph(filename, time_limit, swap_prob, avg_memory, min_fidelity, max_fidelity, fidelity_threshold, A, B, n, T, tao,Zmin);
+        Graph graph(filename, time_limit, swap_prob, avg_memory, min_fidelity, max_fidelity, fidelity_threshold, A, B, n, T, tao,Zmin,bucket_eps,time_eta);
         default_requests[r] = generate_requests(graph, 100, length_lower, length_upper);
     }
 
@@ -206,7 +208,7 @@ int main(){
 
 
                     double A = 0.25, B = 0.75, tao = input_parameter["tao"], T = 0.04, n = 2;
-                    Graph graph(filename, time_limit, swap_prob, avg_memory, min_fidelity, max_fidelity, fidelity_threshold, A, B, n, T, tao,Zmin);
+                    Graph graph(filename, time_limit, swap_prob, avg_memory, min_fidelity, max_fidelity, fidelity_threshold, A, B, n, T, tao,Zmin,bucket_eps,time_eta);
 
                     ofs << "--------------- in round " << r << " -------------" <<endl;
                     vector<pair<int, int>> requests;
