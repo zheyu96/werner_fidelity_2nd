@@ -276,10 +276,10 @@ pair<double,WernerAlgo::ZLabel> WernerAlgo::eval_best_J(int s, int d, int t, dou
 }
 
 void WernerAlgo::run() {
-    cerr << "\033[1;31m"<< "[WernerAlgo Zmin] : "<< dpp.Zmin<< "\033[0m"<< endl;
     int round = 1;
     while (round-- && !requests.empty()) {
         variable_initialize();
+        cerr << "\033[1;31m"<< "[WernerAlgo Zmin] : "<< dpp.Zmin<< "\033[0m"<< endl;
         while (obj < 1.0) {
             Shape_vector shape=separation_oracle();
             if (shape.empty()) break;
