@@ -274,7 +274,7 @@ pair<double,WernerAlgo::ZLabel> WernerAlgo::eval_best_J(int s, int d, int t, dou
         if(J+EPS<bestJ||(fabs(J-bestJ)<=EPS&&dis<bestdis)){
             bestJ=J;
             tmp=L;
-            bestDis=dis;
+            bestdis=dis;
             flag=1;
         }
     }
