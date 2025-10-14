@@ -205,9 +205,7 @@ int main(){
 
                     double A = 0.25, B = 0.75, tao = input_parameter["tao"], T = 0.04, n = 2;
                     try {
-                        Graph graph(filename, time_limit, swap_prob, avg_memory,
-                                    min_fid, max_fid, fid_th, A, B, n, T, tao /*, entangle_prob*/);
-
+                        Graph graph(filename, time_limit, swap_prob, avg_memory, min_fidelity, max_fidelity, fidelity_threshold, A, B, n, T, tao);
                         // ... 後面的 build_paths / run algos ...
                     } catch (const std::exception& e) {
                         #pragma omp critical
@@ -217,7 +215,7 @@ int main(){
                             "  params{time=%d, swap=%.3f, avg_mem=%d, fid=[%.2f,%.2f], th=%.2f, A=%.2f, B=%.2f, n=%.1f, T=%.3f, tao=%.4f}\n"
                             "  what(): %s\n",
                             r, omp_get_thread_num(), filename.c_str(),
-                            time_limit, swap_prob, avg_memory, min_fid, max_fid, fid_th,
+                            time_limit, swap_prob, avg_memory, min_fidelity, max_fidelity, fidelity_threshold,
                             A, B, n, T, tao, e.what());
                         }
                         continue; // 該回合跳過，不要 abort 全程
