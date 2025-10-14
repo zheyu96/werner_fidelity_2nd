@@ -271,7 +271,7 @@ int main(){
                     cerr << "Max path length = " << mx_path_len << "\n";
                     vector<AlgorithmBase*> algorithms;
                     algorithms.emplace_back(new WernerAlgo(graph,requests,paths));
-                    if(X_name!="Zmin"){
+                    if(X_name!="Zmin"&&X_name!="bucket_eps"&&X_name!="time_eta"){
                         algorithms.emplace_back(new MyAlgo1(graph, requests, paths));
                         algorithms.emplace_back(new MyAlgo2(graph, requests, paths));
                         algorithms.emplace_back(new MyAlgo3(graph, requests, paths));
