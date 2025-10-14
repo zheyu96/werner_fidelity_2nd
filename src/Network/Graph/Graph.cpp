@@ -9,8 +9,8 @@ int rnd(int lower_bound, int upper_bound) {
     return unif(generator) % (upper_bound - lower_bound + 1) + lower_bound;
 }
 
-Graph::Graph(string filename, int _time_limit, double _swap_prob, int avg_memory, double min_fidelity, double max_fidelity, double _fidelity_threshold, double _A, double _B, double _n, double _T, double _tao,double _Zmin):
-    time_limit(_time_limit), fidelity_threshold(_fidelity_threshold), A(_A), B(_B), n(_n), T(_T), tao(_tao),Zmin(_Zmin), fidelity_gain(0), usage(0), succ_request_cnt(0) {
+Graph::Graph(string filename, int _time_limit, double _swap_prob, int avg_memory, double min_fidelity, double max_fidelity, double _fidelity_threshold, double _A, double _B, double _n, double _T, double _tao,double _Zmin,double _bucket_eps,double _time_eta):
+    time_limit(_time_limit), fidelity_threshold(_fidelity_threshold), A(_A), B(_B), n(_n), T(_T), tao(_tao),Zmin(_Zmin),bucket_eps(_bucket_eps),time_eta(_time_eta), fidelity_gain(0), usage(0), succ_request_cnt(0) {
     // geneator an adj list
 
     ifstream graph_file(filename);
@@ -19,10 +19,8 @@ Graph::Graph(string filename, int _time_limit, double _swap_prob, int avg_memory
     }
 
     file_name = filename;
-    //graph_file >> num_nodes;
-    if (!(graph_file >> num_nodes) || num_nodes <= 0) {
-        throw runtime_error("Invalid num_nodes in: " + filename);
-    }
+    graph_file >> num_nodes;
+    
     adj_set.clear();
     adj_set.resize(num_nodes);
     adj_list.clear();
@@ -89,6 +87,8 @@ double Graph::get_entangle_succ_prob(int u, int v) { return entangle_succ_prob[{
 double Graph::get_fidelity_gain() { return fidelity_gain; }
 double Graph::get_fidelity_threshold() { return fidelity_threshold; }
 double Graph::get_Zmin(){ return Zmin; }
+double Graph::get_bucket_eps(){ return bucket_eps; }
+double Graph::get_time_eta(){ return time_eta; }
 double Graph::get_succ_request_cnt() { return succ_request_cnt;}
 int Graph::get_usage() { return usage; }
 

@@ -14,7 +14,8 @@ class Graph {
     int num_nodes;
     int time_limit;
     double fidelity_threshold;
-    double A, B, n, T, tao, Zmin;
+    double A, B, n, T, tao;
+    double Zmin,bucket_eps,time_eta;
     double fidelity_gain;
     double swapping_succ_prob;
     double avg_entangle_prob;
@@ -28,7 +29,7 @@ class Graph {
     string file_name;
     Path get_path(int from, int to);
 public:
-    Graph(string filename, int _time_limit, double _swap_prob, int avg_memory, double min_fidelity, double max_fidelity, double _fidelity_threshold, double _A, double _B, double _n, double _T, double _tao,double _Zmin);
+    Graph(string filename, int _time_limit, double _swap_prob, int avg_memory, double min_fidelity, double max_fidelity, double _fidelity_threshold, double _A, double _B, double _n, double _T, double _tao,double _Zmin,double _bucket_eps,double _time_eta);
     Graph() {}
     ~Graph();
     int get_node_memory_at(int node_id, int t);
@@ -40,6 +41,8 @@ public:
     int get_memory_total();
     int get_usage();
     double get_Zmin();
+    double get_bucket_eps();
+    double get_time_eta();
     double get_A();
     double get_B();
     double get_n();

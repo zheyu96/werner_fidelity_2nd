@@ -18,10 +18,10 @@ void WernerAlgo::variable_initialize() {
     x.resize(requests.size());
     int V = graph.get_num_nodes();
     int T = graph.get_time_limit();
-    dpp.eps_bucket = 0.05;
+    dpp.eps_bucket = graph.get_bucket_eps();
     dpp.Zhat =1e18;
     dpp.Zmin = graph.get_Zmin();
-    dpp.eta  = 0.0;
+    dpp.eta  = graph.get_time_eta();
     dpp.T    = time_limit-1;
     beta.assign(V, vector<double>(T, INF));
 
