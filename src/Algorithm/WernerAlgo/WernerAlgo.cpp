@@ -20,7 +20,7 @@ void WernerAlgo::variable_initialize() {
     int T = graph.get_time_limit();
     dpp.eps_bucket = 0.05;
     dpp.Zhat =1e18;
-    dpp.Zmin = 0.02702867239;
+    dpp.Zmin = graph.get_Zmin();
     dpp.eta  = 0.00001;
     dpp.T    = time_limit-1;
     beta.assign(V, vector<double>(T, INF));

@@ -9,8 +9,8 @@ int rnd(int lower_bound, int upper_bound) {
     return unif(generator) % (upper_bound - lower_bound + 1) + lower_bound;
 }
 
-Graph::Graph(string filename, int _time_limit, double _swap_prob, int avg_memory, double min_fidelity, double max_fidelity, double _fidelity_threshold, double _A, double _B, double _n, double _T, double _tao):
-    time_limit(_time_limit), fidelity_threshold(_fidelity_threshold), A(_A), B(_B), n(_n), T(_T), tao(_tao), fidelity_gain(0), usage(0), succ_request_cnt(0) {
+Graph::Graph(string filename, int _time_limit, double _swap_prob, int avg_memory, double min_fidelity, double max_fidelity, double _fidelity_threshold, double _A, double _B, double _n, double _T, double _tao,double _Zmin):
+    time_limit(_time_limit), fidelity_threshold(_fidelity_threshold), A(_A), B(_B), n(_n), T(_T), tao(_tao),Zmin(_Zmin), fidelity_gain(0), usage(0), succ_request_cnt(0) {
     // geneator an adj list
 
     ifstream graph_file(filename);
@@ -88,7 +88,7 @@ double Graph::get_tao() { return tao; }
 double Graph::get_entangle_succ_prob(int u, int v) { return entangle_succ_prob[{u, v}]; };
 double Graph::get_fidelity_gain() { return fidelity_gain; }
 double Graph::get_fidelity_threshold() { return fidelity_threshold; }
-
+double Graph::get_Zmin(){ return Zmin; }
 double Graph::get_succ_request_cnt() { return succ_request_cnt;}
 int Graph::get_usage() { return usage; }
 

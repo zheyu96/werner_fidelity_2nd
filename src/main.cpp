@@ -78,7 +78,7 @@ int main(){
     default_setting["fidelity_threshold"] = 0.5;
     default_setting["entangle_time"] = 0.00025;
     default_setting["entangle_prob"] = 0.01;
-
+    default_setting["Zmin"]=0.028;
     map<string, vector<double>> change_parameter;
     change_parameter["request_cnt"] = {10, 30, 50, 70, 90};
     change_parameter["num_nodes"] = {40, 70, 100, 130, 160};
@@ -93,7 +93,7 @@ int main(){
     change_parameter["entangle_lambda"] = {0.025, 0.035, 0.045, 0.055, 0.065};
     change_parameter["entangle_time"] = {0.0001, 0.00025, 0.0004, 0.00055, 0.0007};
     //change_parameter["entangle_prob"] = {0.0001, 0.001, 0.01, 0.1, 1};
-
+    chang_parameter["Zmin"]={0.038,0.158,0.278,0.398,0.518};
     int round = 50;
     vector<vector<SDpair>> default_requests(round);
     #pragma omp parallel for
@@ -104,7 +104,7 @@ int main(){
         int time_limit = default_setting["time_limit"];
         double min_fidelity = default_setting["min_fidelity"];
         double max_fidelity = default_setting["max_fidelity"];
-
+        double Zmin=default_setting["Zmin"];
         double swap_prob = default_setting["swap_prob"];
         double fidelity_threshold = default_setting["fidelity_threshold"];
         int length_upper = default_setting["path_length"] + 1;
@@ -124,7 +124,7 @@ int main(){
             cerr<<"error:\tsystem proccess python error"<<endl;
             exit(1);
         }
-        Graph graph(filename, time_limit, swap_prob, avg_memory, min_fidelity, max_fidelity, fidelity_threshold, A, B, n, T, tao);
+        Graph graph(filename, time_limit, swap_prob, avg_memory, min_fidelity, max_fidelity, fidelity_threshold, A, B, n, T, tao,Zmin);
         default_requests[r] = generate_requests(graph, 100, length_lower, length_upper);
     }
 
@@ -133,7 +133,7 @@ int main(){
 
     // vector<string> X_names = {"time_limit", "request_cnt", "num_nodes", "avg_memory", "tao"};
     //vector<string> X_names = {"entangle_prob","request_cnt"};
-    vector<string> X_names = {"entangle_time", "request_cnt", "time_limit", "tao", "fidelity_threshold", "avg_memory", "min_fidelity", "entangle_lambda", "swap_prob"};
+    vector<string> X_names = {"entangle_time", "request_cnt", "time_limit", "tao", "fidelity_threshold", "avg_memory", "min_fidelity", "entangle_lambda", "swap_prob","Zmin"};
     vector<string> Y_names = {"fidelity_gain", "succ_request_cnt"};
     vector<string> algo_names = {"WernerAlgo","MyAlgo1", "MyAlgo2", "MyAlgo3", "Merge", "Linear", "ASAP"};
     // init result
@@ -168,6 +168,7 @@ int main(){
                 int time_limit = input_parameter["time_limit"];
                 double min_fidelity = input_parameter["min_fidelity"];
                 double max_fidelity = input_parameter["max_fidelity"];
+                double Zmin = input_parameter["Zmin"];
                 // double entangle_lambda = input_parameter["entangle_lambda"];
                 // double entangle_time = input_parameter["entangle_time"];
                 double entangle_prob = input_parameter["entangle_prob"];
@@ -200,7 +201,7 @@ int main(){
                     double A = 0.25, B = 0.75, tao = input_parameter["tao"], T = 0.04, n = 2;
                     Graph graph;
                     try {
-                        graph=Graph(filename, time_limit, swap_prob, avg_memory, min_fidelity, max_fidelity, fidelity_threshold, A, B, n, T, tao);
+                        graph=Graph(filename, time_limit, swap_prob, avg_memory, min_fidelity, max_fidelity, fidelity_threshold, A, B, n, T, tao, Zmin);
                         // ... 後面的 build_paths / run algos ...
                     } catch (const std::exception& e) {
                         #pragma omp critical
@@ -282,12 +283,14 @@ int main(){
                     cerr << "Max path length = " << mx_path_len << "\n";
                     vector<AlgorithmBase*> algorithms;
                     algorithms.emplace_back(new WernerAlgo(graph,requests,paths));
-                    algorithms.emplace_back(new MyAlgo1(graph, requests, paths));
-                    algorithms.emplace_back(new MyAlgo2(graph, requests, paths));
-                    algorithms.emplace_back(new MyAlgo3(graph, requests, paths));
-                    algorithms.emplace_back(new MyAlgo4(graph, requests, paths));
-                    algorithms.emplace_back(new MyAlgo5(graph, requests, paths));
-                    algorithms.emplace_back(new MyAlgo6(graph, requests, paths));
+                    if(X_name!="Zmin"){
+                        algorithms.emplace_back(new MyAlgo1(graph, requests, paths));
+                        algorithms.emplace_back(new MyAlgo2(graph, requests, paths));
+                        algorithms.emplace_back(new MyAlgo3(graph, requests, paths));
+                        algorithms.emplace_back(new MyAlgo4(graph, requests, paths));
+                        algorithms.emplace_back(new MyAlgo5(graph, requests, paths));
+                        algorithms.emplace_back(new MyAlgo6(graph, requests, paths));
+                    }
 
 
                     #pragma omp parallel for
