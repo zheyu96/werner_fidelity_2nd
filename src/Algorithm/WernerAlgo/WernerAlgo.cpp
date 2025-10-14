@@ -258,7 +258,7 @@ Shape_vector WernerAlgo::backtrack_shape(ZLabel leaf,const vector<int>& path){
     // Handle unexpected Op value
     cerr << "[WernerAlgo::backtrack_shape] Warning: Unknown Op value encountered." << std::endl;
 }
-int split_dis(int s,int d,WernerAlgo::ZLabel& L){
+int WernerAlgo::split_dis(int s,int d,WernerAlgo::ZLabel& L){
     if(L.op!=WernerAlgo::Op::MERGE||L.k<0) return 1e18/4;
     int mid=(s+d)/2;
     return abs(mid-L.k);
