@@ -14,8 +14,15 @@ Graph::Graph(string filename, int _time_limit, double _swap_prob, int avg_memory
     // geneator an adj list
 
     ifstream graph_file(filename);
+    if (!graph_file) {
+        throw runtime_error("Cannot open input file: " + filename);
+    }
+
     file_name = filename;
-    graph_file >> num_nodes;
+    //graph_file >> num_nodes;
+    if (!(graph_file >> num_nodes) || num_nodes <= 0) {
+        throw runtime_error("Invalid num_nodes in: " + filename);
+    }
     adj_set.clear();
     adj_set.resize(num_nodes);
     adj_list.clear();
