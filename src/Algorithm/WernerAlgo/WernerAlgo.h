@@ -74,7 +74,7 @@ private:
     void bucket_by_Z(vector<ZLabel>& cand);
 
     Shape_vector backtrack_shape(ZLabel leaf, const vector<int>& path);
-    int WernerAlgo::split_dis(int s,int d,WernerAlgo::ZLabel& L);
+    int split_dis(int s,int d,WernerAlgo::ZLabel& L);
     pair<double,WernerAlgo::ZLabel> eval_best_J(int s, int d, int t, double alp);
 
 private:
