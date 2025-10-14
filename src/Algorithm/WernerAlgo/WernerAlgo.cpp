@@ -54,7 +54,7 @@ Shape_vector WernerAlgo::separation_oracle(){
             }
             for(int t=1;t<=dpp.T;t++){
                 run_dp_in_t(paths[p],dpp,t);
-                auto cur_val=eval_best_J(0,paths[p].size()-1,t,alpha[i]);
+                auto cur_val=eval_best_J(0,paths[p].size()-1,t,alpha[i],paths[p]);
                 if(cur_val.first<most_violate){
                     most_violate=cur_val.first;
                     todo_shape=backtrack_shape(cur_val.second,paths[p]);
@@ -263,13 +263,13 @@ int WernerAlgo::split_dis(int s,int d,WernerAlgo::ZLabel& L){
     int mid=(s+d)/2;
     return abs(mid-L.k);
 }
-pair<double,WernerAlgo::ZLabel> WernerAlgo::eval_best_J(int s, int d, int t, double alp){
+pair<double,WernerAlgo::ZLabel> WernerAlgo::eval_best_J(int s, int d, int t, double alp,Path path){
     double bestJ=1e18;
     int bestdis=1e18/4;
     int flag=0;
     ZLabel tmp={};
     for(auto L:DP_table[t][s][d]){
-        double J=(alp+L.B)*exp(L.Z)*exp(L.Z);
+        double J=(alp+L.B)*exp(L.Z)*exp(L.Z)/graph.path_Pr(path);
         int dis=split_dis(s,d,L);
         if(J+EPS<bestJ||(fabs(J-bestJ)<=EPS&&dis<bestdis)){
             bestJ=J;
