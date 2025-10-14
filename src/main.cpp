@@ -199,28 +199,7 @@ int main(){
 
 
                     double A = 0.25, B = 0.75, tao = input_parameter["tao"], T = 0.04, n = 2;
-                    Graph graph;
-                    try {
-                        graph=Graph(filename, time_limit, swap_prob, avg_memory, min_fidelity, max_fidelity, fidelity_threshold, A, B, n, T, tao, Zmin);
-                        // ... 後面的 build_paths / run algos ...
-                    } catch (const std::exception& e) {
-                        #pragma omp critical
-                        {
-                        std::fprintf(stderr,
-                            "[Graph NEW FAIL] r=%d thread=%d file=%s\n"
-                            "  params{time=%d, swap=%.3f, avg_mem=%d, fid=[%.2f,%.2f], th=%.2f, A=%.2f, B=%.2f, n=%.1f, T=%.3f, tao=%.4f}\n"
-                            "  what(): %s\n",
-                            r, omp_get_thread_num(), filename.c_str(),
-                            time_limit, swap_prob, avg_memory, min_fidelity, max_fidelity, fidelity_threshold,
-                            A, B, n, T, tao, e.what());
-                        }
-                        continue; // 該回合跳過，不要 abort 全程
-                    } catch (...) {
-                        #pragma omp critical
-                        std::fprintf(stderr, "[Graph NEW FAIL] r=%d unknown exception\n", r);
-                        continue;
-                    }
-                    //Graph graph(filename, time_limit, swap_prob, avg_memory, min_fidelity, max_fidelity, fidelity_threshold, A, B, n, T, tao);
+                    Graph graph(filename, time_limit, swap_prob, avg_memory, min_fidelity, max_fidelity, fidelity_threshold, A, B, n, T, taoZ,Zmin);
 
                     ofs << "--------------- in round " << r << " -------------" <<endl;
                     vector<pair<int, int>> requests;
