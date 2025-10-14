@@ -65,7 +65,7 @@ int main(){
     string file_path = "../data/";
 
     map<string, double> default_setting;
-    default_setting["num_nodes"] = 100;
+    default_setting["num_nodes"] = 200;
     default_setting["request_cnt"] = 50;
     default_setting["entangle_lambda"] = 0.045;
     default_setting["time_limit"] = 13;
