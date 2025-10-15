@@ -55,8 +55,8 @@ Shape_vector WernerAlgo::separation_oracle(){
             for(int t=1;t<=dpp.T;t++){
                 run_dp_in_t(paths[p],dpp,t);
                 auto cur_val=eval_best_J(0,paths[p].size()-1,t,alpha[i]);
-                if(cur_val.first<most_violate){
-                    most_violate=cur_val.first;
+                if(cur_val.first/graph.path_Pr(paths[p])<most_violate){
+                    most_violate=cur_val.first/graph.path_Pr(paths[p]);
                     todo_shape=backtrack_shape(cur_val.second,paths[p]);
                 }
             }
