@@ -375,8 +375,8 @@ void WernerAlgo::run() {
         double pL = max(this->graph.path_Pr(sL), 1e-12);
         double pR = max(this->graph.path_Pr(sR), 1e-12);
          // score = x_weight * fidelity * path_Pr
-        double scoreL = L.first * fL * pL;
-        double scoreR = R.first * fR * pR;
+        double scoreL = L.first  * pL;
+        double scoreR = R.first  * pR;
         if (fabs(scoreL - scoreR) > EPS) return scoreL > scoreR;
         return scoreL>scoreR;
      });
