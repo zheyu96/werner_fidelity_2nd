@@ -19,7 +19,7 @@ void WernerAlgo::variable_initialize() {
     int V = graph.get_num_nodes();
     int T = graph.get_time_limit();
     dpp.eps_bucket = graph.get_bucket_eps();
-    dpp.Zhat =1e18;
+    dpp.Zhat =100.0;
     dpp.Zmin = graph.get_Zmin();
     dpp.eta  = graph.get_time_eta();
     dpp.T    = time_limit-1;
