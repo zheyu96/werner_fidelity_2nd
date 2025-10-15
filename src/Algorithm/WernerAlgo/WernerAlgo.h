@@ -75,7 +75,7 @@ private:
 
     Shape_vector backtrack_shape(ZLabel leaf, const vector<int>& path);
     int split_dis(int s,int d,WernerAlgo::ZLabel& L);
-    pair<double,WernerAlgo::ZLabel> eval_best_J(int s, int d, int t, double alp,Path path);
+    pair<double,WernerAlgo::ZLabel> eval_best_J(int s, int d, int t, double alp);
 
 private:
     // 你可在此添加暫存/緩衝成員

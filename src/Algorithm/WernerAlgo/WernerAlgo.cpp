@@ -54,7 +54,7 @@ Shape_vector WernerAlgo::separation_oracle(){
             }
             for(int t=1;t<=dpp.T;t++){
                 run_dp_in_t(paths[p],dpp,t);
-                auto cur_val=eval_best_J(0,paths[p].size()-1,t,alpha[i],paths[p]);
+                auto cur_val=eval_best_J(0,paths[p].size()-1,t,alpha[i]);
                 if(cur_val.first<most_violate){
                     most_violate=cur_val.first;
                     todo_shape=backtrack_shape(cur_val.second,paths[p]);
@@ -263,13 +263,13 @@ int WernerAlgo::split_dis(int s,int d,WernerAlgo::ZLabel& L){
     int mid=(s+d)/2;
     return abs(mid-L.k);
 }
-pair<double,WernerAlgo::ZLabel> WernerAlgo::eval_best_J(int s, int d, int t, double alp,Path path){
+pair<double,WernerAlgo::ZLabel> WernerAlgo::eval_best_J(int s, int d, int t, double alp){
     double bestJ=1e18;
     int bestdis=1e18/4;
     int flag=0;
     ZLabel tmp={};
     for(auto L:DP_table[t][s][d]){
-        double J=(alp+L.B)*exp(L.Z)*exp(L.Z)/graph.path_Pr(path);
+        double J=(alp+L.B)*exp(L.Z)*exp(L.Z);
         int dis=split_dis(s,d,L);
         if(J+EPS<bestJ||(fabs(J-bestJ)<=EPS&&dis<bestdis)){
             bestJ=J;
@@ -364,9 +364,23 @@ void WernerAlgo::run() {
         //     if(left.second.size() != right.second.size()) return left.second.size() < right.second.size();
         //     return left.second < right.second;
         // });
-        sort(shapes.begin(), shapes.end(), [](pair<double, Shape_vector> left, pair<double, Shape_vector> right) {
-            return left.first > right.first;
-        });
+        sort(shapes.begin(), shapes.end(),
+        [this](const pair<double, Shape_vector>& L,const pair<double, Shape_vector>& R){
+        Shape sL(L.second), sR(R.second);
+        double fL = sL.get_fidelity(A, B, n, T, tao, this->graph.get_F_init());
+        double fR = sR.get_fidelity(A, B, n, T, tao, this->graph.get_F_init());
+        if (fL < 0.0) fL = 0.0;
+        if (fR < 0.0) fR = 0.0;
+         // path success probability
+        double pL = max(this->graph.path_Pr(sL), 1e-12);
+        double pR = max(this->graph.path_Pr(sR), 1e-12);
+         // score = x_weight * fidelity * path_Pr
+        double scoreL = L.first * fL * pL;
+        double scoreR = R.first * fR * pR;
+        if (fabs(scoreL - scoreR) > EPS) return scoreL > scoreR;
+        return scoreL>scoreR;
+     });
+
         // cerr << "[MyAlgo1] " << shapes.size() << endl;
         vector<bool> used(requests.size(), false);
         vector<int> finished;
