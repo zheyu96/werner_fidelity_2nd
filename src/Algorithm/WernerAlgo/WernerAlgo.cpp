@@ -133,7 +133,7 @@ void WernerAlgo::run_dp_in_t(const Path& path, const DPParam& dpp,int t) {
             for(int p_id=0;p_id<pre.size();p_id++){
                 double Zp=pre[p_id].Z+dpp.eta;
                 if(Zp<=dpp.Zhat){
-                    double Bp=pre[p_id].B+beta[a][t]+beta[b][t];
+                    double Bp=pre[p_id].B+beta[s][t]+beta[e][t];
                     ZLabel L(Bp,Zp,Op::CONT,a,b,t,-1,p_id);
                     cand.push_back(L);
                 }
@@ -148,7 +148,7 @@ void WernerAlgo::run_dp_in_t(const Path& path, const DPParam& dpp,int t) {
                         double Zp=sqrt((left_seg.Z+dpp.eta)*(left_seg.Z+dpp.eta)+
                                         (right_seg.Z+dpp.eta)*(right_seg.Z+dpp.eta));
                         if(Zp<=dpp.Zhat){
-                            double Bp=left_seg.B+right_seg.B+beta[a][t]+beta[b][t];
+                            double Bp=left_seg.B+right_seg.B+beta[s][t]+beta[e][t];
                             ZLabel L(Bp,Zp,Op::MERGE,a,b,t,k,-1,lid,rid);
                             cand.push_back(L);
                         }
@@ -269,7 +269,7 @@ pair<double,WernerAlgo::ZLabel> WernerAlgo::eval_best_J(int s, int d, int t, dou
     int flag=0;
     ZLabel tmp={};
     for(auto L:DP_table[t][s][d]){
-        double J=(alp+L.B)*exp(L.Z)*exp(L.Z);
+        double J=(alp+L.B)*exp(L.Z*L.Z);
         int dis=split_dis(s,d,L);
         if(J+EPS<bestJ||(fabs(J-bestJ)<=EPS&&dis<bestdis)){
             bestJ=J;
