@@ -96,8 +96,8 @@ int main(){
     change_parameter["entangle_time"] = {0.0001, 0.00025, 0.0004, 0.00055, 0.0007};
     change_parameter["entangle_prob"] = {0.0001, 0.001, 0.01, 0.1, 1};
     
-    change_parameter["Zmin"]={0.0095,0.019,0.038,0.158,0.278,0.398,0.518};
-    change_parameter["bucket_eps"]={0.01,0.005,0.001,0.0005,0.0001,0.00005,0.000001};
+    change_parameter["Zmin"]={0.028,0.150,0.272,0.394,0.518};
+    change_parameter["bucket_eps"]={0.00001,0.0001,0.001,0.01,0.1};
     change_parameter["time_eta"]={0.00001,0.0001,0.001,0.01,0.1};
     int round = 50;
     vector<vector<SDpair>> default_requests(round);
