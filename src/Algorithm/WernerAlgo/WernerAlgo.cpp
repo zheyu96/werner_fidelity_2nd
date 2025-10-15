@@ -364,7 +364,7 @@ void WernerAlgo::run() {
         //     if(left.second.size() != right.second.size()) return left.second.size() < right.second.size();
         //     return left.second < right.second;
         // });
-        sort(shapes.begin(), shapes.end(),
+        /* sort(shapes.begin(), shapes.end(),
         [this](const pair<double, Shape_vector>& L,const pair<double, Shape_vector>& R){
         Shape sL(L.second), sR(R.second);
         double fL = sL.get_fidelity(A, B, n, T, tao, this->graph.get_F_init());
@@ -379,8 +379,10 @@ void WernerAlgo::run() {
         double scoreR = R.first  * pR;
         if (fabs(scoreL - scoreR) > EPS) return scoreL > scoreR;
         return scoreL>scoreR;
-     });
-
+     }); */
+        sort(shapes.begin(), shapes.end(), [](pair<double, Shape_vector> left, pair<double, Shape_vector> right) {
+            return left.first > right.first;
+        });
         // cerr << "[MyAlgo1] " << shapes.size() << endl;
         vector<bool> used(requests.size(), false);
         vector<int> finished;
