@@ -82,14 +82,14 @@ int main(){
     default_setting["bucket_eps"]=0.01;
     default_setting["time_eta"]=0.0;
     map<string, vector<double>> change_parameter;
-    change_parameter["request_cnt"] = {10, 30, 50, 70, 90};
+    change_parameter["request_cnt"] = {50, 70, 90,110,130};
     change_parameter["num_nodes"] = {40, 70, 100, 130, 160};
     change_parameter["min_fidelity"] = {0.6, 0.7, 0.8, 0.9, 0.95};
     change_parameter["avg_memory"] = {6, 8, 10, 12, 14};
     // change_parameter["tao"] = {0.3, 0.4, 0.5, 0.6, 0.7};
-    change_parameter["tao"] = {0.00125, 0.0015, 0.002, 0.00225, 0.0023};
+    change_parameter["tao"] = {0.00100, 0.00125, 0.0015, 0.00175, 0.002};
     change_parameter["path_length"] = {3, 6, 9, 12, 15};
-    change_parameter["swap_prob"] = {0.5, 0.6, 0.7, 0.8, 0.9};
+    change_parameter["swap_prob"] = {0.6, 0.7, 0.8, 0.9,0.95};
     change_parameter["fidelity_threshold"] = {0.4, 0.45, 0.5, 0.55, 0.6};
     change_parameter["time_limit"] = {5, 9, 13, 17, 21};
     change_parameter["entangle_lambda"] = {0.025, 0.035, 0.045, 0.055, 0.065};
