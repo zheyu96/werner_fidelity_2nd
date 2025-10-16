@@ -85,6 +85,7 @@ double Graph::get_T() { return T; }
 double Graph::get_tao() { return tao; }
 double Graph::get_entangle_succ_prob(int u, int v) { return entangle_succ_prob[{u, v}]; };
 double Graph::get_fidelity_gain() { return fidelity_gain; }
+double Graph::get_pure_fidelity() { return pure_fidelity; }
 double Graph::get_fidelity_threshold() { return fidelity_threshold; }
 double Graph::get_Zmin(){ return Zmin; }
 double Graph::get_bucket_eps(){ return bucket_eps; }
@@ -283,6 +284,7 @@ void Graph::reserve_shape_ASAP(Shape shape) {
     double shape_fidelity = shape.get_fidelity(A, B, n, T, tao, F_init);
     if(shape_fidelity > fidelity_threshold) {
         fidelity_gain += (shape_fidelity * path_Pr(shape));
+        pure_fidelity += shape_fidelity;
         succ_request_cnt += path_Pr(shape);
     }
 
@@ -340,6 +342,7 @@ void Graph::reserve_shape(Shape shape) {
         exit(1);
     }
     fidelity_gain += (shape_fidelity * path_Pr(shape));
+    pure_fidelity += shape_fidelity;
     succ_request_cnt += path_Pr(shape);
 
     for(int i = 0; i < (int)boundary.size(); i++) {
@@ -391,6 +394,7 @@ void Graph::reserve_shape2(Shape shape) {
     double shape_fidelity = shape.get_fidelity(A, B, n, T, tao, F_init);
     if(shape_fidelity > fidelity_threshold) {
         fidelity_gain += (shape_fidelity * path_Pr(shape));
+        pure_fidelity += shape_fidelity;
         succ_request_cnt += path_Pr(shape);
     }
 

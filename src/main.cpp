@@ -87,7 +87,7 @@ int main(){
     change_parameter["min_fidelity"] = {0.6, 0.7, 0.8, 0.9, 0.95};
     change_parameter["avg_memory"] = {6, 8, 10, 12, 14};
     // change_parameter["tao"] = {0.3, 0.4, 0.5, 0.6, 0.7};
-    change_parameter["tao"] = {0.00100, 0.00125, 0.0015, 0.00175, 0.002};
+    change_parameter["tao"] = {0.0015, 0.00175, 0.002,0.00225,0.0025};
     change_parameter["path_length"] = {3, 6, 9, 12, 15};
     change_parameter["swap_prob"] = {0.6, 0.7, 0.8, 0.9,0.95};
     change_parameter["fidelity_threshold"] = {0.4, 0.45, 0.5, 0.55, 0.6};
@@ -142,7 +142,7 @@ int main(){
     //vector<string> X_names = {"entangle_prob","request_cnt"};
     vector<string> X_names = {"entangle_prob","entangle_time", "request_cnt", "time_limit", "tao", "fidelity_threshold", "avg_memory", "min_fidelity", "entangle_lambda", "swap_prob","Zmin","bucket_eps","time_eta"};
     //vector<string> X_names = {"Zmin","bucket_eps","time_eta"};
-    vector<string> Y_names = {"fidelity_gain", "succ_request_cnt"};
+    vector<string> Y_names = {"fidelity_gain", "succ_request_cnt","pure_fidelity"};
     vector<string> algo_names = {"WernerAlgo","MyAlgo1", "MyAlgo2", "MyAlgo3", "Merge", "Linear", "ASAP"};
     // init result
 

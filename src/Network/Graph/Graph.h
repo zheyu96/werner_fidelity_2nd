@@ -18,6 +18,7 @@ class Graph {
     double Zmin,bucket_eps,time_eta;
     double fidelity_gain;
     double swapping_succ_prob;
+    double pure_fidelity;
     double avg_entangle_prob;
     int usage;
     double succ_request_cnt;
@@ -51,7 +52,7 @@ public:
     double get_fidelity_gain();
     double get_entangle_succ_prob(int u, int v);
     double get_fidelity_threshold();
-
+    double get_pure_fidelity();
     double get_F_init(int u, int v);
     map<pair<int, int>, double> get_F_init();
 
