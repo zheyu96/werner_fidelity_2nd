@@ -82,7 +82,7 @@ int main(){
     default_setting["bucket_eps"]=0.01;
     default_setting["time_eta"]=0.0;
     map<string, vector<double>> change_parameter;
-    change_parameter["request_cnt"] = {50, 70, 90,110,130};
+    change_parameter["request_cnt"] = {50, 70, 90,110,130,150,170,190,210,230};
     change_parameter["num_nodes"] = {40, 70, 100, 130, 160};
     change_parameter["min_fidelity"] = {0.6, 0.7, 0.8, 0.9, 0.95};
     change_parameter["avg_memory"] = {6, 8, 10, 12, 14};
