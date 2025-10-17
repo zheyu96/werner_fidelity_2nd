@@ -78,7 +78,7 @@ int main(){
     default_setting["fidelity_threshold"] = 0.5;
     default_setting["entangle_time"] = 0.00025;
     default_setting["entangle_prob"] = 0.01;
-    default_setting["Zmin"]=0.028;
+    default_setting["Zmin"]=0.02702867239;
     default_setting["bucket_eps"]=0.01;
     default_setting["time_eta"]=0.0;
     map<string, vector<double>> change_parameter;
@@ -96,7 +96,7 @@ int main(){
     change_parameter["entangle_time"] = {0.0001, 0.00025, 0.0004, 0.00055, 0.0007};
     change_parameter["entangle_prob"] = {0.0001, 0.001, 0.01, 0.1, 1};
     
-    change_parameter["Zmin"]={0.028,0.150,0.272,0.394,0.518};
+    //change_parameter["Zmin"]={0.028,0.150,0.272,0.394,0.518};
     change_parameter["bucket_eps"]={0.00001,0.0001,0.001,0.01,0.1};
     change_parameter["time_eta"]={0.00001,0.0001,0.001,0.01,0.1};
     int round = 50;
@@ -140,7 +140,7 @@ int main(){
 
     // vector<string> X_names = {"time_limit", "request_cnt", "num_nodes", "avg_memory", "tao"};
     //vector<string> X_names = {"entangle_prob","request_cnt"};
-    vector<string> X_names = {"entangle_prob","entangle_time", "request_cnt", "time_limit", "tao", "fidelity_threshold", "avg_memory", "min_fidelity", "entangle_lambda", "swap_prob","Zmin","bucket_eps","time_eta"};
+    vector<string> X_names = {"entangle_prob","entangle_time", "request_cnt", "time_limit", "tao", "fidelity_threshold", "avg_memory", "min_fidelity", "entangle_lambda", "swap_prob","bucket_eps","time_eta"};
     //vector<string> X_names = {"Zmin","bucket_eps","time_eta"};
     vector<string> Y_names = {"fidelity_gain", "succ_request_cnt","pure_fidelity"};
     vector<string> algo_names = {"WernerAlgo","MyAlgo1", "MyAlgo2", "MyAlgo3", "Merge", "Linear", "ASAP"};
