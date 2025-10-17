@@ -16,6 +16,7 @@ runtime: runtime.cpp $(dependency) $(algorithm2) $(routing)
 
 a.out: main.cpp $(dependency) $(algorithm) $(routing)
 	g++ -fopenmp $(gcc_flag) main.cpp $(dependency) $(algorithm) $(routing) -I/home/oba/danger/gurobi951/linux64/include/ -L/home/oba/danger/gurobi951/linux64/lib/ -lgurobi_c++ -lgurobi95
+	./a.out
 
 Network/Node/Node.o: Network/Node/Node.cpp Network/Node/Node.h config.h
 	g++ -c $(gcc_flag) Network/Node/Node.cpp Network/Node/Node.h config.h
