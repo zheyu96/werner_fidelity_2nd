@@ -139,8 +139,8 @@ int main(){
 
 
     // vector<string> X_names = {"time_limit", "request_cnt", "num_nodes", "avg_memory", "tao"};
-    //vector<string> X_names = {"entangle_prob","request_cnt"};
-    vector<string> X_names = {"entangle_prob","entangle_time", "request_cnt", "time_limit", "tao", "fidelity_threshold", "avg_memory", "min_fidelity", "entangle_lambda", "swap_prob","bucket_eps","time_eta"};
+    vector<string> X_names = {"entangle_prob","request_cnt"};
+    //vector<string> X_names = {"entangle_prob","entangle_time", "request_cnt", "time_limit", "tao", "fidelity_threshold", "avg_memory", "min_fidelity", "entangle_lambda", "swap_prob","bucket_eps","time_eta"};
     //vector<string> X_names = {"Zmin","bucket_eps","time_eta"};
     vector<string> Y_names = {"fidelity_gain", "succ_request_cnt","pure_fidelity"};
     vector<string> algo_names = {"WernerAlgo","MyAlgo1", "MyAlgo2", "MyAlgo3", "Merge", "Linear", "ASAP"};
