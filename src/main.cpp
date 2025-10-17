@@ -69,7 +69,7 @@ int main(){
     default_setting["request_cnt"] = 50;
     default_setting["entangle_lambda"] = 0.045;
     default_setting["time_limit"] = 13;
-    default_setting["avg_memory"] = 10; // 16
+    default_setting["avg_memory"] = 5; // 16
     default_setting["tao"] = 0.002;
     default_setting["path_length"] = 5;
     default_setting["min_fidelity"] = 0.7;
@@ -85,7 +85,7 @@ int main(){
     change_parameter["request_cnt"] = {50, 70, 90,110,130};
     change_parameter["num_nodes"] = {40, 70, 100, 130, 160};
     change_parameter["min_fidelity"] = {0.6, 0.7, 0.8, 0.9, 0.95};
-    change_parameter["avg_memory"] = {2, 4, 6, 8, 10, 12, 14};
+    change_parameter["avg_memory"] = {6, 8, 10, 12, 14};
     // change_parameter["tao"] = {0.3, 0.4, 0.5, 0.6, 0.7};
     change_parameter["tao"] = {0.0015, 0.00175, 0.002,0.00225,0.0025};
     change_parameter["path_length"] = {3, 6, 9, 12, 15};
