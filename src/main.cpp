@@ -66,10 +66,10 @@ int main(){
 
     map<string, double> default_setting;
     default_setting["num_nodes"] = 100;
-    default_setting["request_cnt"] = 50;
+    default_setting["request_cnt"] = 130;
     default_setting["entangle_lambda"] = 0.045;
     default_setting["time_limit"] = 13;
-    default_setting["avg_memory"] = 10; // 16
+    default_setting["avg_memory"] = 20; // 16
     default_setting["tao"] = 0.002;
     default_setting["path_length"] = 5;
     default_setting["min_fidelity"] = 0.7;
