@@ -123,7 +123,7 @@ with open(path, 'w') as f:
             # F = random.random()*(max_fidelity-min_fidelity) + min_fidelity  # fidelity
             # ratio_list=[0.98,0.7]
             # ratio=numpy.random.choice(ratio_list,p=[0.3,0.7])
-            ratio = numpy.random.normal(1, 0.2)
+            ratio = numpy.random.normal(1, 0.15)
             dif = abs(1 - ratio)
             ratio = 1 - dif
             if ratio > 1:
