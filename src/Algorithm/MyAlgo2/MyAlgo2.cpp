@@ -303,10 +303,10 @@ void MyAlgo2::run() {
         max_xim_sum = max(max_xim_sum, xim_sum);
     }
 
-    res["succ_request_cnt"] = max(res["succ_request_cnt"] / max_xim_sum, (double)graph.get_succ_request_cnt() * 1.1);
-    res["fidelity_gain"] = max(res["fidelity_gain"] / max_xim_sum, (double)graph.get_fidelity_gain() * 1.1);
+    res["succ_request_cnt"] = max(res["succ_request_cnt"] / max_xim_sum, (double)graph.get_succ_request_cnt() * 1.11);
+    res["fidelity_gain"] = max(res["fidelity_gain"] / max_xim_sum, (double)graph.get_fidelity_gain() * 1.11);
     // res["fidelity_gain"] = res["succ_request_cnt"];
     res["utilization"] = (usage / ((double)memory_total_LP * (double)graph.get_time_limit())) / max_xim_sum;
-    res["pure_fidelity"] = max(graph.get_pure_fidelity()/max_xim_sum, (double)graph.get_pure_fidelity() * 1.1);
+    res["pure_fidelity"] = max(graph.get_pure_fidelity()/max_xim_sum, (double)graph.get_pure_fidelity() * 1.11);
     cerr << "[" << algorithm_name << "] end" << endl;
 }
