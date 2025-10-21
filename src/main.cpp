@@ -66,7 +66,7 @@ int main(){
 
     map<string, double> default_setting;
     default_setting["num_nodes"] = 100;
-    default_setting["request_cnt"] = 130;
+    default_setting["request_cnt"] = 190;
     default_setting["entangle_lambda"] = 0.045;
     default_setting["time_limit"] = 13;
     default_setting["avg_memory"] = 16; // 16
@@ -80,7 +80,7 @@ int main(){
     default_setting["entangle_prob"] = 0.01;
     default_setting["Zmin"]=0.02702867239;
     default_setting["bucket_eps"]=0.01;
-    default_setting["time_eta"]=0.0;
+    default_setting["time_eta"]=0.001;
     map<string, vector<double>> change_parameter;
     change_parameter["request_cnt"] = {150,170,190,210,230};
     change_parameter["num_nodes"] = {40, 70, 100, 130, 160};
@@ -140,10 +140,10 @@ int main(){
 
     // vector<string> X_names = {"time_limit", "request_cnt", "num_nodes", "avg_memory", "tao"};
     //vector<string> X_names = {"request_cnt"};
-    vector<string> X_names = {"entangle_prob","entangle_time", "request_cnt", "time_limit", "tao", "fidelity_threshold", "avg_memory", "min_fidelity", "entangle_lambda", "swap_prob"};
+    vector<string> X_names = {"request_cnt", "time_limit", "tao", "fidelity_threshold", "avg_memory","min_fidelity"};
     //vector<string> X_names = {"Zmin","bucket_eps","time_eta"};
-    vector<string> Y_names = {"fidelity_gain", "succ_request_cnt","pure_fidelity"};
-    vector<string> algo_names = {"WernerAlgo","MyAlgo1", "MyAlgo2", "MyAlgo3", "Merge", "Linear", "ASAP"};
+    vector<string> Y_names = {"fidelity_gain", "succ_request_cnt"};
+    vector<string> algo_names = {"ZFA","MyAlgo1", "MyAlgo2", "MyAlgo3", "Merge", "Linear", "ASAP"};
     // init result
 
 

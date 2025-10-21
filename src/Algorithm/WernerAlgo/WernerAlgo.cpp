@@ -2,7 +2,7 @@
 
 WernerAlgo::WernerAlgo(Graph graph,vector<pair<int,int>> requests,map<SDpair, vector<Path>> paths): AlgorithmBase(graph, requests, paths)
 {
-    algorithm_name = "WernerAlgo";
+    algorithm_name = "ZFA";
 }
 
 void WernerAlgo::variable_initialize() {
