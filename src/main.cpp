@@ -85,13 +85,13 @@ int main(){
     change_parameter["request_cnt"] = {150,170,190,210,230};
     change_parameter["num_nodes"] = {40, 70, 100, 130, 160};
     change_parameter["min_fidelity"] = {0.6, 0.7, 0.8, 0.9, 0.95};
-    change_parameter["avg_memory"] = {4,6, 8, 10, 12, 14};
+    change_parameter["avg_memory"] = {6, 8, 10, 12, 14};
     // change_parameter["tao"] = {0.3, 0.4, 0.5, 0.6, 0.7};
-    change_parameter["tao"] = {0.00001, 0.00075, 0.0015, 0.00175, 0.002,0.00225,0.0025};
+    change_parameter["tao"] = {0.0015, 0.00175, 0.002,0.00225,0.0025};
     change_parameter["path_length"] = {3, 6, 9, 12, 15};
     change_parameter["swap_prob"] = {0.6, 0.7, 0.8, 0.9,0.95};
-    change_parameter["fidelity_threshold"] = {0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.7, 0.8};
-    change_parameter["time_limit"] = {7, 9, 11, 13, 15, 17};
+    change_parameter["fidelity_threshold"] = {0.35, 0.4, 0.45, 0.5, 0.55};
+    change_parameter["time_limit"] = {7, 9, 11, 13, 15};
     change_parameter["entangle_lambda"] = {0.0125, 0.025, 0.035, 0.045, 0.055, 0.065};
     change_parameter["entangle_time"] = {0.0001, 0.00025, 0.0004, 0.00055, 0.0007,0.00085,0.001};
     change_parameter["entangle_prob"] = {0.0001, 0.001, 0.01, 0.1, 1};
