@@ -9,7 +9,7 @@ MyAlgo2::MyAlgo2(Graph graph, vector<pair<int, int>> requests, map<SDpair, vecto
     // alpha(i) = delta 
     // beta(v, t) = delta / C(v)
 
-    epsilon = (0.7);
+    epsilon = (0.45);
     double m = requests.size() + (double)graph.get_num_nodes() * (double)graph.get_time_limit();
     double delta = (1 + epsilon) * (1.0 / pow((1 + epsilon) * m, 1.0 / epsilon));
     obj = m * delta;
