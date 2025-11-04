@@ -173,6 +173,9 @@ int main(){
         Graph graph(filename, time_limit, swap_prob, avg_memory, min_fidelity, max_fidelity, fidelity_threshold, A, B, n, T, tao,Zmin,bucket_eps,time_eta);
         //default_requests[r] = generate_requests(graph, 100, length_lower, length_upper);
         default_requests[r]=generate_requests_fid(graph,100,fidelity_threshold);
+        assert(!default_requests[r].empty());
+        cerr  << "Generated requests for round " << r << ", cnt: " << default_requests[r].size() << endl;
+        assert((int)default_requests[r].size()>=190);
     }
 
 
