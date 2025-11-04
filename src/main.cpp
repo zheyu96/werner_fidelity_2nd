@@ -105,7 +105,7 @@ int main(){
 
     map<string, double> default_setting;
     default_setting["num_nodes"] = 100;
-    default_setting["request_cnt"] = 100;
+    default_setting["request_cnt"] = 50;
     default_setting["entangle_lambda"] = 0.045;
     default_setting["time_limit"] = 13;
     default_setting["avg_memory"] = 16; // 16
@@ -172,7 +172,7 @@ int main(){
         }
         Graph graph(filename, time_limit, swap_prob, avg_memory, min_fidelity, max_fidelity, fidelity_threshold, A, B, n, T, tao,Zmin,bucket_eps,time_eta);
         //default_requests[r] = generate_requests(graph, 100, length_lower, length_upper);
-        default_requests[r]=generate_requests_fid(graph,100,fidelity_threshold);
+        default_requests[r]=generate_requests_fid(graph,190,fidelity_threshold);
         assert(!default_requests[r].empty());
         cerr  << "Generated requests for round " << r << ", cnt: " << default_requests[r].size() << endl;
         assert((int)default_requests[r].size()>=190);
