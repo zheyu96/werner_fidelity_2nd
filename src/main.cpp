@@ -66,6 +66,7 @@ vector<SDpair> generate_requests_fid(Graph graph, int requests_cnt,double th) {
     random_device rd;
     default_random_engine generator = default_random_engine(rd());
     uniform_int_distribution<int> unif(0, 1e9);
+    int sd_cnt=0;
     for(int i = 0; i < n; i++) {
         for(int j = 0; j < n; j++) {
             if(i == j) continue;
@@ -78,10 +79,11 @@ vector<SDpair> generate_requests_fid(Graph graph, int requests_cnt,double th) {
                 if(index < 0) continue;
                 if(index > 9) index = 9;
                 cand[index].emplace_back(i, j);
+                sd_cnt++;
             }
         }
     }
-
+    cerr << "\033[1;32m"<< "[SD ini pairs > 0.7] : "<<sd_cnt<< "\033[0m"<< endl;
     for(int i=9;i>=0;i--){
         if(!cand[i].empty()){
             random_shuffle(cand[i].begin(), cand[i].end());
