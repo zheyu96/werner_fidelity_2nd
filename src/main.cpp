@@ -79,7 +79,7 @@ vector<SDpair> generate_requests_fid(Graph graph, int requests_cnt,double th) {
                 if(index < 0) continue;
                 if(index > 20) index = 20;
                 int d=graph.distance(i, j),f0=fid,prob=pow(0.1,d)*pow(0.9,max(d-1,0));
-                double score = f0+prob-0.15*d;
+                double score = f0+prob*100-0.15*d;
                 cand[index].emplace_back(std::make_pair(std::make_pair(i, j), score));
                 if(graph.distance(i,j)>=3)sd_cnt++;
             }
