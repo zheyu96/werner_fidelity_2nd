@@ -70,7 +70,7 @@ vector<SDpair> generate_requests_fid(Graph graph, int requests_cnt,double th) {
         for(int j = 0; j < n; j++) {
             if(i == j) continue;
             double fid = graph.get_ini_fid(i,j);
-            cerr<<"fid of "<<i<<" "<<j<<" : "<<fid<<endl;
+            //cerr<<"fid of "<<i<<" "<<j<<" : "<<fid<<endl;
             assert(fid>=0.0&&fid<=1.0);
             if(fid >= th) {
                 int index = fid/0.1;
@@ -111,10 +111,10 @@ int main(){
 
     map<string, double> default_setting;
     default_setting["num_nodes"] = 100;
-    default_setting["request_cnt"] = 50;
+    default_setting["request_cnt"] = 130;
     default_setting["entangle_lambda"] = 0.045;
     default_setting["time_limit"] = 13;
-    default_setting["avg_memory"] = 16; // 16
+    default_setting["avg_memory"] = 10; // 16
     default_setting["tao"] = 0.002;
     default_setting["path_length"] = 5;
     default_setting["min_fidelity"] = 0.7;
@@ -127,7 +127,7 @@ int main(){
     default_setting["bucket_eps"]=0.01;
     default_setting["time_eta"]=0.001;
     map<string, vector<double>> change_parameter;
-    change_parameter["request_cnt"] = {30,50,70,90,110,130,150,170};
+    change_parameter["request_cnt"] = {110,130,150,170,190,210};
     change_parameter["num_nodes"] = {40, 70, 100, 130, 160};
     change_parameter["min_fidelity"] = {0.6, 0.7, 0.8, 0.9, 0.95};
     change_parameter["avg_memory"] = {6, 8, 10, 12, 14};
@@ -135,7 +135,7 @@ int main(){
     change_parameter["tao"] = {0.0015, 0.00175, 0.002,0.00225,0.0025};
     change_parameter["path_length"] = {3, 6, 9, 12, 15};
     change_parameter["swap_prob"] = {0.6, 0.7, 0.8, 0.9,0.95};
-    change_parameter["fidelity_threshold"] = {0.35, 0.4, 0.45, 0.5, 0.55};
+    change_parameter["fidelity_threshold"] = {0.7, 0.75, 0.8, 0.85, 0.9};
     change_parameter["time_limit"] = {7, 9, 11, 13, 15};
     change_parameter["entangle_lambda"] = {0.0125, 0.025, 0.035, 0.045, 0.055, 0.065};
     change_parameter["entangle_time"] = {0.0001, 0.00025, 0.0004, 0.00055, 0.0007,0.00085,0.001};
@@ -178,10 +178,10 @@ int main(){
         }
         Graph graph(filename, time_limit, swap_prob, avg_memory, min_fidelity, max_fidelity, fidelity_threshold, A, B, n, T, tao,Zmin,bucket_eps,time_eta);
         //default_requests[r] = generate_requests(graph, 100, length_lower, length_upper);
-        default_requests[r]=generate_requests_fid(graph,190,fidelity_threshold);
-        cerr<<"Generated requests for round " << r << ", cnt: " << default_requests[r].size() << endl;
+        default_requests[r]=generate_requests_fid(graph,220,fidelity_threshold);
+        //cerr<<"Generated requests for round " << r << ", cnt: " << default_requests[r].size() << endl;
         assert(!default_requests[r].empty());
-        cerr  << "Generated requests for round " << r << ", cnt: " << default_requests[r].size() << endl;
+        //cerr  << "Generated requests for round " << r << ", cnt: " << default_requests[r].size() << endl;
         assert((int)default_requests[r].size()>=190);
     }
 
@@ -190,7 +190,7 @@ int main(){
 
     // vector<string> X_names = {"time_limit", "request_cnt", "num_nodes", "avg_memory", "tao"};
     //vector<string> X_names = {"request_cnt"};
-    vector<string> X_names = {"request_cnt", "time_limit", "tao", "fidelity_threshold", "avg_memory","min_fidelity"};
+    vector<string> X_names = {"request_cnt", "time_limit", "tao", "fidelity_threshold", "avg_memory"};
     //vector<string> X_names = {"Zmin","bucket_eps","time_eta"};
     vector<string> Y_names = {"fidelity_gain", "succ_request_cnt"};
     vector<string> algo_names = {"ZFA","MyAlgo1", "MyAlgo2", "MyAlgo3", "Merge", "Linear", "ASAP"};
