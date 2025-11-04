@@ -144,7 +144,7 @@ double MyAlgo3::solve_fidelity(int left, int right, int t, int state, vector<int
     double best = pass_tao(solve_fidelity(left, right, t - 1, state, path));
     pair<int, int> record = {-1, -1};
 
-    for(int k = left + 1; k < right; k++) {
+    for(int k = left + 1; k < right; k+=2) {
         for(int s = 1; s <= 2; s++) {
             int l_state = (state & 1) | ((s & 1) << 1);
             int r_state = (state & 2) | ((s & 2) >> 1);
