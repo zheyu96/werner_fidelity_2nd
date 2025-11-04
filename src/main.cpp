@@ -114,7 +114,7 @@ int main(){
     default_setting["request_cnt"] = 150;
     default_setting["entangle_lambda"] = 0.045;
     default_setting["time_limit"] = 13;
-    default_setting["avg_memory"] = 10; // 16
+    default_setting["avg_memory"] = 13; // 16
     default_setting["tao"] = 0.002;
     default_setting["path_length"] = 5;
     default_setting["min_fidelity"] = 0.7;
