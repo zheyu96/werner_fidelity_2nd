@@ -168,6 +168,7 @@ double Graph::get_ini_fid(int src,int dst){
     vector<double> f(num_nodes+1,0.0);
     f[src]=1.0;
     queue<int> que;
+    que.push(src);
     while(que.size()){
         int cur=que.front();
         que.pop();
