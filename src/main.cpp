@@ -91,11 +91,11 @@ vector<SDpair> generate_requests_fid(Graph graph, int requests_cnt,double th) {
             random_shuffle(cand[i].begin(), cand[i].end());
         }
     } */
-    /* for(int i=21;i>=0;i--){
+    for(int i=21;i>=0;i--){
         sort(cand[i].begin(),cand[i].end(),[](const pair<SDpair,double>& L,const pair<SDpair,double>& R){
             return L.second > R.second;
         }) ;
-    } */
+    } 
     for(int i=0;i<22;i++){
         random_shuffle(cand[i].begin(), cand[i].end());
     }
