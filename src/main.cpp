@@ -62,7 +62,7 @@ vector<SDpair> generate_requests(Graph graph, int requests_cnt, int length_lower
 }
 vector<SDpair> generate_requests_fid(Graph graph, int requests_cnt,double th) {
     int n = graph.get_num_nodes();
-    vector<SDpair> cand[22];
+    vector<pair<SDpair,int>> cand[22];
     random_device rd;
     default_random_engine generator = default_random_engine(rd());
     uniform_int_distribution<int> unif(0, 1e9);
@@ -78,17 +78,23 @@ vector<SDpair> generate_requests_fid(Graph graph, int requests_cnt,double th) {
                 index-=5;
                 if(index < 0) continue;
                 if(index > 20) index = 20;
-                cand[index].emplace_back(i, j);
+                cand[index].emplace_back({{i, j},graph.distance(i,j)});
                 if(graph.distance(i,j)>=3)sd_cnt++;
             }
         }
     }
     cerr << "\033[1;32m"<< "[SD ini pairs > 0.7] : "<<sd_cnt<< "\033[0m"<< endl;
-    for(int i=21;i>=0;i--){
+    /* for(int i=21;i>=0;i--){
         if(!cand[i].empty()){
             random_shuffle(cand[i].begin(), cand[i].end());
         }
+    } */
+    for(int i=21;i>=0;i--){
+        sort(cand[i].begin(),cand[i].end(),[](const pair<SDpair,int>& L,const pair<SDpair,int>& R){
+            return L.second > R.second;
+        }) ;
     }
+    
     vector<SDpair> requests;
     int pos[22];
     for(int i=0;i<22;i++) pos[i]=0;
