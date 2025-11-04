@@ -89,12 +89,14 @@ vector<SDpair> generate_requests_fid(Graph graph, int requests_cnt,double th) {
             random_shuffle(cand[i].begin(), cand[i].end());
         }
     } */
-    for(int i=21;i>=0;i--){
+    /* for(int i=21;i>=0;i--){
         sort(cand[i].begin(),cand[i].end(),[](const pair<SDpair,int>& L,const pair<SDpair,int>& R){
             return L.second > R.second;
         }) ;
+    } */
+    for(int i=0;i<22;i++){
+        random_shuffle(cand[i].begin(), cand[i].end());
     }
-    
     vector<SDpair> requests;
     int pos[22];
     for(int i=0;i<22;i++) pos[i]=0;
