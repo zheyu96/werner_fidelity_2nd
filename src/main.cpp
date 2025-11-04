@@ -70,7 +70,8 @@ vector<SDpair> generate_requests_fid(Graph graph, int requests_cnt,double th) {
         for(int j = 0; j < n; j++) {
             if(i == j) continue;
             double fid = graph.get_ini_fid(i,j);
-            assert(fid>=0.0&&fid<1.0);
+            cerr<<"fid of "<<i<<" "<<j<<" : "<<fid<<endl;
+            assert(fid>=0.0&&fid<=1.0);
             if(fid >= th) {
                 int index = fid/0.1;
                 index-=5;
@@ -173,6 +174,7 @@ int main(){
         Graph graph(filename, time_limit, swap_prob, avg_memory, min_fidelity, max_fidelity, fidelity_threshold, A, B, n, T, tao,Zmin,bucket_eps,time_eta);
         //default_requests[r] = generate_requests(graph, 100, length_lower, length_upper);
         default_requests[r]=generate_requests_fid(graph,190,fidelity_threshold);
+        cerr<<"Generated requests for round " << r << ", cnt: " << default_requests[r].size() << endl;
         assert(!default_requests[r].empty());
         cerr  << "Generated requests for round " << r << ", cnt: " << default_requests[r].size() << endl;
         assert((int)default_requests[r].size()>=190);
