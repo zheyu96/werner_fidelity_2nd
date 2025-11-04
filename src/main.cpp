@@ -105,7 +105,7 @@ vector<SDpair> generate_requests_fid(Graph graph, int requests_cnt,double th) {
             if(idx>=22) idx=0;
         }
         if(!cand[idx].empty()){
-            requests.push_back(cand[idx][pos[idx]]);
+            requests.push_back(cand[idx][pos[idx]].first);
             pos[idx]++;
             pos[idx]%=cand[idx].size();
         }
