@@ -82,7 +82,7 @@ vector<SDpair> generate_requests_fid(Graph graph, int requests_cnt,double th) {
         }
     }
 
-    for(int i=9;i>0;i--){
+    for(int i=9;i>=0;i--){
         if(!cand[i].empty()){
             random_shuffle(cand[i].begin(), cand[i].end());
         }
@@ -91,13 +91,18 @@ vector<SDpair> generate_requests_fid(Graph graph, int requests_cnt,double th) {
     vector<SDpair> requests;
     int pos[5];
     for(int i=0;i<5;i++) pos[i]=0;
+    int idx=0;
     for(int i=0;i<requests_cnt;i++){
-        int idx=i%5;
+        while(cand[idx].empty()){
+            idx++;
+            if(idx>=5) idx=0;
+        }
         if(!cand[idx].empty()){
             requests.push_back(cand[idx][pos[idx]]);
             pos[idx]++;
             pos[idx]%=cand[idx].size();
         }
+        idx=(idx+1)%5;
     }
     return requests;
 }
