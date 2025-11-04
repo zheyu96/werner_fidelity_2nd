@@ -62,7 +62,7 @@ vector<SDpair> generate_requests(Graph graph, int requests_cnt, int length_lower
 }
 vector<SDpair> generate_requests_fid(Graph graph, int requests_cnt,double th) {
     int n = graph.get_num_nodes();
-    vector<pair<SDpair,int>> cand[22];
+    vector<pair<SDpair,double>> cand[22];
     random_device rd;
     default_random_engine generator = default_random_engine(rd());
     uniform_int_distribution<int> unif(0, 1e9);
@@ -78,7 +78,9 @@ vector<SDpair> generate_requests_fid(Graph graph, int requests_cnt,double th) {
                 index-=5;
                 if(index < 0) continue;
                 if(index > 20) index = 20;
-                cand[index].emplace_back(std::make_pair(std::make_pair(i, j), graph.distance(i, j)));
+                int d=graph.distance(i, j),f0=fid,prob=pow(0.1,d)*pow(0.9,max(d-1,0));
+                double score = f0+prob-0.15*d;
+                cand[index].emplace_back(std::make_pair(std::make_pair(i, j), score));
                 if(graph.distance(i,j)>=3)sd_cnt++;
             }
         }
@@ -90,7 +92,7 @@ vector<SDpair> generate_requests_fid(Graph graph, int requests_cnt,double th) {
         }
     } */
     /* for(int i=21;i>=0;i--){
-        sort(cand[i].begin(),cand[i].end(),[](const pair<SDpair,int>& L,const pair<SDpair,int>& R){
+        sort(cand[i].begin(),cand[i].end(),[](const pair<SDpair,double>& L,const pair<SDpair,double>& R){
             return L.second > R.second;
         }) ;
     } */
