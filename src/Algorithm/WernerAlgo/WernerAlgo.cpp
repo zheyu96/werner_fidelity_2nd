@@ -286,7 +286,7 @@ void WernerAlgo::run() {
     int round = 1;
     while (round-- && !requests.empty()) {
         variable_initialize();
-        cerr << "\033[1;31m"<< "[WernerAlgo's parameter] : "<< dpp.Zmin<<" "<<dpp.eps_bucket<<" "<<dpp.eta<< "\033[0m"<< endl;
+        //cerr << "\033[1;31m"<< "[WernerAlgo's parameter] : "<< dpp.Zmin<<" "<<dpp.eps_bucket<<" "<<dpp.eta<< "\033[0m"<< endl;
         while (obj < 1.0) {
             Shape_vector shape=separation_oracle();
             if (shape.empty()) break;
