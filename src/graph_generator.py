@@ -123,13 +123,13 @@ with open(path, 'w') as f:
             # F = random.random()*(max_fidelity-min_fidelity) + min_fidelity  # fidelity
             # ratio_list=[0.98,0.7]
             # ratio=numpy.random.choice(ratio_list,p=[0.3,0.7])
-            ratio = numpy.random.normal(1, 0.15)
+            ratio = numpy.random.normal(0.91, 0.08)
             dif = abs(1 - ratio)
             ratio = 1 - dif
             if ratio > 1:
                 ratio = 1
-            if ratio < 0:
-                ratio = 0
+            if ratio < 0.85:
+                ratio = 0.85
             F = ratio
             print(e0 + " " + e1 + " " + str(F), file=f)
             avg_l += dis

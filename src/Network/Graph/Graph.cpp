@@ -163,7 +163,28 @@ int Graph::distance(int src, int dst) {
     }
     assert(false);
 }
-
+double Graph::get_ini_fid(int src,int dst){
+    vector<bool> vis(num_nodes+1,false);
+    vector<double> f(num_nodes+1,0.0);
+    f[src]=1.0;
+    queue<int> que;
+    while(que.size()){
+        int cur=que.front();
+        que.pop();
+        if(vis[cur]) continue;
+        vis[cur]=1;
+        for(int v:adj_list[cur]){
+            if(!vis[v]){
+                double  fid=f[cur]*get_F_init(cur,v);
+                if(fid>f[v]){
+                    f[v]=fid;
+                    que.push(v);
+                }
+            }
+        }
+    }
+    return f[dst];
+}
 bool Graph::check_resource(Shape shape, bool threshold /*= true*/) {
     Shape_vector nm = shape.get_node_mem_range();
     if(threshold && shape.get_fidelity(A, B, n, T, tao, F_init) < fidelity_threshold) return false;
@@ -283,7 +304,7 @@ void Graph::reserve_shape_ASAP(Shape shape) {
 
     double shape_fidelity = shape.get_fidelity(A, B, n, T, tao, F_init);
     if(shape_fidelity > fidelity_threshold) {
-        fidelity_gain += (shape_fidelity * path_Pr(shape));
+        fidelity_gain += ((shape_fidelity*3.0L-1.0L)/4.0L * path_Pr(shape));
         pure_fidelity += shape_fidelity;
         succ_request_cnt += path_Pr(shape);
     }
@@ -341,7 +362,7 @@ void Graph::reserve_shape(Shape shape) {
         assert(false);
         exit(1);
     }
-    fidelity_gain += (shape_fidelity * path_Pr(shape));
+    fidelity_gain += ((shape_fidelity*4.0L-1.0L)/3.0L * path_Pr(shape));
     pure_fidelity += shape_fidelity;
     succ_request_cnt += path_Pr(shape);
 
@@ -393,7 +414,7 @@ void Graph::reserve_shape2(Shape shape) {
 
     double shape_fidelity = shape.get_fidelity(A, B, n, T, tao, F_init);
     if(shape_fidelity > fidelity_threshold) {
-        fidelity_gain += (shape_fidelity * path_Pr(shape));
+        fidelity_gain += ((shape_fidelity*4.0L-1.0L)/3.0L * path_Pr(shape));
         pure_fidelity += shape_fidelity;
         succ_request_cnt += path_Pr(shape);
     }

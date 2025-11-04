@@ -60,13 +60,52 @@ vector<SDpair> generate_requests(Graph graph, int requests_cnt, int length_lower
 
     return requests;
 }
+vector<SDpair> generate_requests_fid(Graph graph, int requests_cnt,double th) {
+    int n = graph.get_num_nodes();
+    vector<SDpair> cand[10];
+    random_device rd;
+    default_random_engine generator = default_random_engine(rd());
+    uniform_int_distribution<int> unif(0, 1e9);
+    for(int i = 0; i < n; i++) {
+        for(int j = 0; j < n; j++) {
+            if(i == j) continue;
+            double fid = graph.get_ini_fid(i,j);
+            assert(fid>=0.0&&fid<1.0);
+            if(fid >= th) {
+                int index = fid/0.1;
+                index-=5;
+                if(index < 0) continue;
+                if(index > 9) index = 9;
+                cand[index].emplace_back(i, j);
+            }
+        }
+    }
 
+    for(int i=9;i>0;i--){
+        if(!cand[i].empty()){
+            random_shuffle(cand[i].begin(), cand[i].end());
+        }
+    }
+    int cnt_each=requests_cnt/5;
+    vector<SDpair> requests;
+    int pos[5];
+    for(int i=0;i<5;i++) pos[i]=0;
+    for(int i=0;i<requests_cnt;i++){
+        int idx=i%5;
+        if(!cand[idx].empty()){
+            requests.push_back(cand[idx][pos[idx]]);
+            pos[idx]++;
+            pos[idx]%=cand[idx].size();
+        }
+    }
+    return requests;
+}
 int main(){
     string file_path = "../data/";
 
     map<string, double> default_setting;
     default_setting["num_nodes"] = 100;
-    default_setting["request_cnt"] = 190;
+    default_setting["request_cnt"] = 100;
     default_setting["entangle_lambda"] = 0.045;
     default_setting["time_limit"] = 13;
     default_setting["avg_memory"] = 16; // 16
@@ -75,14 +114,14 @@ int main(){
     default_setting["min_fidelity"] = 0.7;
     default_setting["max_fidelity"] = 0.98;
     default_setting["swap_prob"] = 0.9;
-    default_setting["fidelity_threshold"] = 0.5;
+    default_setting["fidelity_threshold"] = 0.7;
     default_setting["entangle_time"] = 0.00025;
     default_setting["entangle_prob"] = 0.01;
     default_setting["Zmin"]=0.02702867239;
     default_setting["bucket_eps"]=0.01;
     default_setting["time_eta"]=0.001;
     map<string, vector<double>> change_parameter;
-    change_parameter["request_cnt"] = {150,170,190,210,230};
+    change_parameter["request_cnt"] = {30,50,70,90,110,130,150,170};
     change_parameter["num_nodes"] = {40, 70, 100, 130, 160};
     change_parameter["min_fidelity"] = {0.6, 0.7, 0.8, 0.9, 0.95};
     change_parameter["avg_memory"] = {6, 8, 10, 12, 14};
@@ -132,7 +171,8 @@ int main(){
             exit(1);
         }
         Graph graph(filename, time_limit, swap_prob, avg_memory, min_fidelity, max_fidelity, fidelity_threshold, A, B, n, T, tao,Zmin,bucket_eps,time_eta);
-        default_requests[r] = generate_requests(graph, 100, length_lower, length_upper);
+        //default_requests[r] = generate_requests(graph, 100, length_lower, length_upper);
+        default_requests[r]=generate_requests_fid(graph,100,fidelity_threshold);
     }
 
 
@@ -216,7 +256,7 @@ int main(){
                     ofs << "--------------- in round " << r << " -------------" <<endl;
                     vector<pair<int, int>> requests;
                     for(int i = 0; i < request_cnt; i++) {
-                        requests.emplace_back(default_requests[r][i]);
+                        requests.emplace_back(default_requests[r][i%default_requests[r].size()]);
                     }
 
                     Graph path_graph = graph;
