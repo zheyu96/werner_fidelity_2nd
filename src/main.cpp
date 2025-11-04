@@ -79,7 +79,7 @@ vector<SDpair> generate_requests_fid(Graph graph, int requests_cnt,double th) {
                 if(index < 0) continue;
                 if(index > 9) index = 9;
                 cand[index].emplace_back(i, j);
-                sd_cnt++;
+                if(graph.distance(i,j)>=3)sd_cnt++;
             }
         }
     }
