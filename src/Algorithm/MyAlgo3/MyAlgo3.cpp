@@ -37,7 +37,7 @@ pair<Shape, double> MyAlgo3::calculate_best_shape(int src, int dst) {
 
         double best = EPS;
         int best_time = -1;
-        for(int t = time_limit - 1; t >= 0; t--) {
+        for(int t = time_limit - 1; t >= 0; t-=2) {
             double result = solve_fidelity(0, path.size() - 1, t, 0, path) * path_prob;
             if(result > best) {
                 best_time = t;
@@ -95,7 +95,7 @@ pair<Shape, double> MyAlgo3::calculate_best_shape2(int src, int dst) {
 
         double best = INF;
         int best_time = -1;
-        for(int t = time_limit - 1; t >= 0; t--) {
+        for(int t = time_limit - 1; t >= 0; t-=2) {
             double result = solve2(0, path.size() - 1, t, 0, path);
             if(result < best) {
                 best_time = t;
@@ -191,7 +191,7 @@ double MyAlgo3::solve2(int left, int right, int t, int state, vector<int> &path)
 
     pair<int, int> record = {-1, -1};
 
-    for(int k = left + 1; k < right; k++) {
+    for(int k = left + 1; k < right; k+=2) {
         for(int s = 1; s <= 2; s++) {
             int l_state = (state & 1) | ((s & 1) << 1);
             int r_state = (state & 2) | ((s & 2) >> 1);
