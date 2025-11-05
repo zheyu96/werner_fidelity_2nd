@@ -86,16 +86,16 @@ vector<SDpair> generate_requests_fid(Graph graph, int requests_cnt,double th) {
         }
     }
     cerr << "\033[1;32m"<< "[SD ini pairs > 0.7] : "<<sd_cnt<< "\033[0m"<< endl;
-    /* for(int i=21;i>=0;i--){
+    for(int i=21;i>=0;i--){
         if(!cand[i].empty()){
             random_shuffle(cand[i].begin(), cand[i].end());
         }
-    } */
-    for(int i=21;i>=0;i--){
+    }
+    /* for(int i=21;i>=0;i--){
         sort(cand[i].begin(),cand[i].end(),[](const pair<SDpair,double>& L,const pair<SDpair,double>& R){
             return L.second > R.second;
         }) ;
-    } 
+    }  */
     /* for(int i=0;i<22;i++){
         random_shuffle(cand[i].begin(), cand[i].end());
     } */
