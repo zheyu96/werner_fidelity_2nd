@@ -105,16 +105,16 @@ vector<SDpair> generate_requests_fid(Graph graph, int requests_cnt,double th) {
     int idx=0;
     while(requests.size()<requests_cnt){
         int cnt=unif(generator) % 4 +4;
-        while(cand[idx].empty()){
+        while(cand[21-idx].empty()){
             idx++;
             if(idx>=22) idx=0;
         }
-        if(!cand[idx].empty()){
+        if(!cand[21-idx].empty()){
             for(int i=0;i<cnt;i++){
-                requests.push_back(cand[idx][pos[idx]].first);
+                requests.push_back(cand[21-idx][pos[21-idx]].first);
             }
-            pos[idx]++;
-            pos[idx]%=cand[idx].size();
+            pos[21-idx]++;
+            pos[21-idx]%=cand[21-idx].size();
         }
         idx=(idx+1)%22;
     }
@@ -128,7 +128,7 @@ int main(){
     default_setting["request_cnt"] = 150;
     default_setting["entangle_lambda"] = 0.045;
     default_setting["time_limit"] = 13;
-    default_setting["avg_memory"] = 10; // 16
+    default_setting["avg_memory"] = 6; // 16
     default_setting["tao"] = 0.002;
     default_setting["path_length"] = 5;
     default_setting["min_fidelity"] = 0.7;
