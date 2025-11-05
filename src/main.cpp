@@ -278,7 +278,7 @@ int main(){
                     vector<pair<int, int>> requests;
                     int idx=0;
                     for(int i = 0; i < request_cnt; i++) {
-                        while(graph.get_ini_fid(default_requests[r][idx].first.first,default_requests[r][idx].first.second)<fidelity_threshold){
+                        while(graph.get_ini_fid(default_requests[r][idx].first,default_requests[r][idx].second)<fidelity_threshold){
                             idx=(idx+1)%default_requests[r].size();
                         }
                         requests.emplace_back(default_requests[r][idx]);
