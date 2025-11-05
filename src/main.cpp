@@ -73,9 +73,9 @@ vector<SDpair> generate_requests_fid(Graph graph, int requests_cnt,double th) {
             double fid = graph.get_ini_fid(i,j);
             //cerr<<"fid of "<<i<<" "<<j<<" : "<<fid<<endl;
             assert(fid>=0.0&&fid<=1.0);
-            if(fid >= th/*&&graph.distance(i,j)>=3*/) {
+            if(fid > th/*&&graph.distance(i,j)>=3*/) {
                 int index = fid/0.05;
-                index-=5;
+                //index-=5;
                 if(index < 0) continue;
                 if(index > 20) index = 20;
                 int d=graph.distance(i, j),f0=fid,prob=pow(0.1,d)*pow(0.9,max(d-1,0));
@@ -189,7 +189,7 @@ int main(){
         }
         Graph graph(filename, time_limit, swap_prob, avg_memory, min_fidelity, max_fidelity, fidelity_threshold, A, B, n, T, tao,Zmin,bucket_eps,time_eta);
         //default_requests[r] = generate_requests(graph, 100, length_lower, length_upper);
-        default_requests[r]=generate_requests_fid(graph,250,0.6);
+        default_requests[r]=generate_requests_fid(graph,250,0.63);
         //cerr<<"Generated requests for round " << r << ", cnt: " << default_requests[r].size() << endl;
         assert(!default_requests[r].empty());
         //cerr  << "Generated requests for round " << r << ", cnt: " << default_requests[r].size() << endl;
@@ -201,7 +201,7 @@ int main(){
 
     // vector<string> X_names = {"time_limit", "request_cnt", "num_nodes", "avg_memory", "tao"};
     //vector<string> X_names = {"request_cnt"};
-    vector<string> X_names = {"request_cnt", "time_limit", "tao", "fidelity_threshold", "avg_memory"};
+    vector<string> X_names = {/* "request_cnt", "time_limit", "tao",  */"fidelity_threshold"/* , "avg_memory" */};
     //vector<string> X_names = {"Zmin","bucket_eps","time_eta"};
     vector<string> Y_names = {"fidelity_gain", "succ_request_cnt"};
     vector<string> algo_names = {"ZFA","MyAlgo1", "MyAlgo2", "MyAlgo3", "Merge", "Linear", "ASAP"};
@@ -278,9 +278,9 @@ int main(){
                     vector<pair<int, int>> requests;
                     int idx=0;
                     for(int i = 0; i < request_cnt; i++) {
-                        while(graph.get_ini_fid(default_requests[r][idx].first,default_requests[r][idx].second)<fidelity_threshold){
+                        /* while(graph.get_ini_fid(default_requests[r][idx].first,default_requests[r][idx].second)<fidelity_threshold){
                             idx=(idx+1)%default_requests[r].size();
-                        }
+                        } */
                         requests.emplace_back(default_requests[r][idx]);
                         idx=(idx+1)%default_requests[r].size();
                     }
