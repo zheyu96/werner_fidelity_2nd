@@ -85,8 +85,8 @@ vector<SDpair> generate_requests_fid(Graph graph, int requests_cnt,double th) {
             }
         }
     }
-    /* cerr << "\033[1;32m"<< "[SD ini pairs > 0.7] : "<<sd_cnt<< "\033[0m"<< endl;
-    for(int i=21;i>=0;i--){
+     cerr << "\033[1;32m"<< "[SD ini pairs] : "<<sd_cnt<< "\033[0m"<< endl;
+    /*for(int i=21;i>=0;i--){
         if(!cand[i].empty()){
             random_shuffle(cand[i].begin(), cand[i].end());
         }
