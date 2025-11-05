@@ -96,20 +96,23 @@ vector<SDpair> generate_requests_fid(Graph graph, int requests_cnt,double th) {
             return L.second > R.second;
         }) ;
     } 
-    for(int i=0;i<22;i++){
+    /* for(int i=0;i<22;i++){
         random_shuffle(cand[i].begin(), cand[i].end());
-    }
+    } */
     vector<SDpair> requests;
     int pos[22];
     for(int i=0;i<22;i++) pos[i]=0;
     int idx=0;
-    for(int i=0;i<requests_cnt;i++){
+    while(requests.size()<requests_cnt){
+        int cnt=unif(generator) % 4 +4;
         while(cand[idx].empty()){
             idx++;
             if(idx>=22) idx=0;
         }
         if(!cand[idx].empty()){
-            requests.push_back(cand[idx][pos[idx]].first);
+            for(int i=0;i<cnt;i++){
+                requests.push_back(cand[idx][pos[idx]].first);
+            }
             pos[idx]++;
             pos[idx]%=cand[idx].size();
         }
