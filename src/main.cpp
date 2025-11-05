@@ -147,7 +147,7 @@ int main(){
     change_parameter["path_length"] = {3, 6, 9, 12, 15};
     change_parameter["swap_prob"] = {0.6, 0.7, 0.8, 0.9,0.95};
     change_parameter["fidelity_threshold"] = {0.55,0.6,0.65,0.7, 0.75, 0.8};
-    change_parameter["time_limit"] = {7, 9, 11, 13, 15};
+    change_parameter["time_limit"] = {3,5,7, 9, 11, 13, 15};
     change_parameter["entangle_lambda"] = {0.0125, 0.025, 0.035, 0.045, 0.055, 0.065};
     change_parameter["entangle_time"] = {0.0001, 0.00025, 0.0004, 0.00055, 0.0007,0.00085,0.001};
     change_parameter["entangle_prob"] = {0.0001, 0.001, 0.01, 0.1, 1};
@@ -189,7 +189,7 @@ int main(){
         }
         Graph graph(filename, time_limit, swap_prob, avg_memory, min_fidelity, max_fidelity, fidelity_threshold, A, B, n, T, tao,Zmin,bucket_eps,time_eta);
         //default_requests[r] = generate_requests(graph, 100, length_lower, length_upper);
-        default_requests[r]=generate_requests_fid(graph,250,0.7);
+        default_requests[r]=generate_requests_fid(graph,250,0.6);
         //cerr<<"Generated requests for round " << r << ", cnt: " << default_requests[r].size() << endl;
         assert(!default_requests[r].empty());
         //cerr  << "Generated requests for round " << r << ", cnt: " << default_requests[r].size() << endl;
