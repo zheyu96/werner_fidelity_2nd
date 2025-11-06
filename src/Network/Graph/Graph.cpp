@@ -144,7 +144,7 @@ Path Graph::get_path(int from, int to) {
 
 int Graph::distance(int src, int dst) {
     vector<bool> vis(num_nodes + 1, false);
-    vector<int> dis(num_nodes + 1, -1);
+    vector<int> dis(num_nodes + 1, 2000);
     // BFS
     queue<int> que;
     dis[src] = 0;
@@ -156,7 +156,7 @@ int Graph::distance(int src, int dst) {
         for(int v : adj_list[frt]) {
             if(!vis[v]) {
                 que.push(v);
-                dis[v] = dis[frt] + 1;
+                dis[v] = min(dis[v], dis[frt] + 1);
                 if(v == dst) return dis[v];
             }
         }
