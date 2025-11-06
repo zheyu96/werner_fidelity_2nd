@@ -79,8 +79,8 @@ vector<SDpair> generate_requests_fid(Graph graph, int requests_cnt,double fid_th
                 if(index < 0) continue;
                 if(index > 20) index = 20;
                 int d=graph.distance(i, j),f0=fid,prob=pow(0.1,d)*pow(0.9,max(d-1,0));
-                double score = f0+prob*100-0.1*d;
-                cand[index].emplace_back(std::make_pair(std::make_pair(i, j), score));
+                //double score = f0+prob*100-0.1*d;
+                cand[index].emplace_back(std::make_pair(std::make_pair(i, j), graph.distance(i, j)));
                 if(graph.distance(i,j)>=3)sd_cnt++;
             }
         }
@@ -152,7 +152,7 @@ int main(){
     change_parameter["tao"] = {0.0015, 0.00175, 0.002,0.00225,0.0025};
     change_parameter["path_length"] = {3, 6, 9, 12, 15};
     change_parameter["swap_prob"] = {0.6, 0.7, 0.8, 0.9,0.95};
-    change_parameter["fidelity_threshold"] = {0.55,0.6,0.65,0.7, 0.75, 0.8};
+    change_parameter["fidelity_threshold"] = {0.55,0.6,0.65,0.7, 0.75, 0.8,0.85,0.9};
     change_parameter["time_limit"] = {3,5,7, 9, 11, 13, 15};
     change_parameter["entangle_lambda"] = {0.0125, 0.025, 0.035, 0.045, 0.055, 0.065};
     change_parameter["entangle_time"] = {0.0001, 0.00025, 0.0004, 0.00055, 0.0007,0.00085,0.001};
