@@ -305,6 +305,8 @@ void Graph::reserve_shape_ASAP(Shape shape) {
 
     double shape_fidelity = shape.get_fidelity(A, B, n, T, tao, F_init);
     if(shape_fidelity > fidelity_threshold) {
+        int src=nm.front().first,dst=nm.back().first;
+        cerr<<"\033[1;34m"<<"inital fid = "<<get_ini_fid(src,dst)<<" real fidelity = "<<shape_fidelity<<"\033[0m"<<endl;
         fidelity_gain += ((shape_fidelity*3.0L-1.0L)/4.0L * path_Pr(shape));
         pure_fidelity += shape_fidelity;
         succ_request_cnt += path_Pr(shape);
@@ -363,6 +365,8 @@ void Graph::reserve_shape(Shape shape) {
         assert(false);
         exit(1);
     }
+    int src=nm.front().first,dst=nm.back().first;
+    cerr<<"\033[1;34m"<<"inital fid = "<<get_ini_fid(src,dst)<<" real fidelity = "<<shape_fidelity<<"\033[0m"<<endl;
     fidelity_gain += ((shape_fidelity*4.0L-1.0L)/3.0L * path_Pr(shape));
     pure_fidelity += shape_fidelity;
     succ_request_cnt += path_Pr(shape);
@@ -415,6 +419,8 @@ void Graph::reserve_shape2(Shape shape) {
 
     double shape_fidelity = shape.get_fidelity(A, B, n, T, tao, F_init);
     if(shape_fidelity > fidelity_threshold) {
+        int src=nm.front().first,dst=nm.back().first;
+        cerr<<"\033[1;34m"<<"inital fid = "<<get_ini_fid(src,dst)<<" real fidelity = "<<shape_fidelity<<"\033[0m"<<endl;
         fidelity_gain += ((shape_fidelity*4.0L-1.0L)/3.0L * path_Pr(shape));
         pure_fidelity += shape_fidelity;
         succ_request_cnt += path_Pr(shape);

@@ -60,7 +60,7 @@ vector<SDpair> generate_requests(Graph graph, int requests_cnt, int length_lower
 
     return requests;
 }
-vector<SDpair> generate_requests_fid(Graph graph, int requests_cnt,double th) {
+vector<SDpair> generate_requests_fid(Graph graph, int requests_cnt,double fid_th,double hop_th) {
     int n = graph.get_num_nodes();
     vector<pair<SDpair,double>> cand[22];
     random_device rd;
@@ -73,7 +73,7 @@ vector<SDpair> generate_requests_fid(Graph graph, int requests_cnt,double th) {
             double fid = graph.get_ini_fid(i,j);
             //cerr<<"fid of "<<i<<" "<<j<<" : "<<fid<<endl;
             assert(fid>=0.0&&fid<=1.0);
-            if(fid > th&&graph.distance(i,j)>=3) {
+            if(fid > fid_th&&graph.distance(i,j)>=hop_th) {
                 int index = fid/0.05;
                 //index-=5;
                 if(index < 0) continue;
@@ -105,6 +105,7 @@ vector<SDpair> generate_requests_fid(Graph graph, int requests_cnt,double th) {
     int idx=0;
     while(requests.size()<requests_cnt){
         int cnt=unif(generator) % 2 +3;
+        cnt=min(cnt,(int)(requests_cnt-requests.size()));
         while(cand[21-idx].empty()){
             idx++;
             if(idx>=22) idx=0;
@@ -118,6 +119,7 @@ vector<SDpair> generate_requests_fid(Graph graph, int requests_cnt,double th) {
         }
         idx=(idx+1)%22;
     }
+    assert((int)requests.size() == requests_cnt);
     return requests;
 }
 int main(){
@@ -140,6 +142,7 @@ int main(){
     default_setting["Zmin"]=0.02702867239;
     default_setting["bucket_eps"]=0.01;
     default_setting["time_eta"]=0.001;
+    default_setting["hop_count"]=3;
     map<string, vector<double>> change_parameter;
     change_parameter["request_cnt"] = {130,150,170,190,210};
     change_parameter["num_nodes"] = {40, 70, 100, 130, 160};
@@ -154,7 +157,7 @@ int main(){
     change_parameter["entangle_lambda"] = {0.0125, 0.025, 0.035, 0.045, 0.055, 0.065};
     change_parameter["entangle_time"] = {0.0001, 0.00025, 0.0004, 0.00055, 0.0007,0.00085,0.001};
     change_parameter["entangle_prob"] = {0.0001, 0.001, 0.01, 0.1, 1};
-    
+    change_parameter["hop_count"] = {1,2,3,4,5,6};
     //change_parameter["Zmin"]={0.028,0.150,0.272,0.394,0.518};
     change_parameter["bucket_eps"]={0.00001,0.0001,0.001,0.01,0.1};
     change_parameter["time_eta"]={0.00001,0.0001,0.001,0.01,0.1};
@@ -192,7 +195,7 @@ int main(){
         }
         Graph graph(filename, time_limit, swap_prob, avg_memory, min_fidelity, max_fidelity, fidelity_threshold, A, B, n, T, tao,Zmin,bucket_eps,time_eta);
         //default_requests[r] = generate_requests(graph, 100, length_lower, length_upper);
-        default_requests[r]=generate_requests_fid(graph,250,0.6);
+        default_requests[r]=generate_requests_fid(graph,250,0.7,3);
         //cerr<<"Generated requests for round " << r << ", cnt: " << default_requests[r].size() << endl;
         assert(!default_requests[r].empty());
         //cerr  << "Generated requests for round " << r << ", cnt: " << default_requests[r].size() << endl;
@@ -204,7 +207,7 @@ int main(){
 
     // vector<string> X_names = {"time_limit", "request_cnt", "num_nodes", "avg_memory", "tao"};
     //vector<string> X_names = {"request_cnt"};
-    vector<string> X_names = { "request_cnt", "time_limit", "tao",  "fidelity_threshold" , "avg_memory" };
+    vector<string> X_names = { "request_cnt", "time_limit", "tao",  "fidelity_threshold" , "avg_memory","hop_count" };
     //vector<string> X_names = {"Zmin","bucket_eps","time_eta"};
     vector<string> Y_names = {"fidelity_gain", "succ_request_cnt"};
     vector<string> algo_names = {"ZFA","MyAlgo1", "MyAlgo2", "MyAlgo3", "Merge", "Linear", "ASAP"};
@@ -250,6 +253,7 @@ int main(){
                 double entangle_prob = input_parameter["entangle_prob"];
                 double swap_prob = input_parameter["swap_prob"];
                 double fidelity_threshold = input_parameter["fidelity_threshold"];
+                int hop_count = input_parameter["hop_count"];
                 // int length_upper, length_lower;
                 // if(input_parameter["path_length"] == -1) {
                 //     length_upper = num_nodes;
@@ -279,15 +283,19 @@ int main(){
 
                     ofs << "--------------- in round " << r << " -------------" <<endl;
                     vector<pair<int, int>> requests;
-                    int idx=0;
-                    for(int i = 0; i < request_cnt; i++) {
-                        /* while(graph.get_ini_fid(default_requests[r][idx].first,default_requests[r][idx].second)<fidelity_threshold){
+                    if(hop_count==3){
+                        int idx=0;
+                        for(int i = 0; i < request_cnt; i++) {
+                            /* while(graph.get_ini_fid(default_requests[r][idx].first,default_requests[r][idx].second)<fidelity_threshold){
+                                idx=(idx+1)%default_requests[r].size();
+                            } */
+                            requests.emplace_back(default_requests[r][idx]);
                             idx=(idx+1)%default_requests[r].size();
-                        } */
-                        requests.emplace_back(default_requests[r][idx]);
-                        idx=(idx+1)%default_requests[r].size();
+                        }
                     }
-
+                    else{
+                        requests=generate_requests_fid(graph,request_cnt,fidelity_threshold,hop_count);
+                    }
                     Graph path_graph = graph;
                     path_graph.increase_resources(10);
                     PathMethod *new_path_method;
