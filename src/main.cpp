@@ -104,7 +104,7 @@ vector<SDpair> generate_requests_fid(Graph graph, int requests_cnt,double th) {
     for(int i=0;i<22;i++) pos[i]=0;
     int idx=0;
     while(requests.size()<requests_cnt){
-        int cnt=unif(generator) % 4 +4;
+        int cnt=unif(generator) % 2 +3;
         while(cand[21-idx].empty()){
             idx++;
             if(idx>=22) idx=0;
@@ -192,7 +192,7 @@ int main(){
         }
         Graph graph(filename, time_limit, swap_prob, avg_memory, min_fidelity, max_fidelity, fidelity_threshold, A, B, n, T, tao,Zmin,bucket_eps,time_eta);
         //default_requests[r] = generate_requests(graph, 100, length_lower, length_upper);
-        default_requests[r]=generate_requests_fid(graph,250,0.6);
+        default_requests[r]=generate_requests_fid(graph,250,0.5);
         //cerr<<"Generated requests for round " << r << ", cnt: " << default_requests[r].size() << endl;
         assert(!default_requests[r].empty());
         //cerr  << "Generated requests for round " << r << ", cnt: " << default_requests[r].size() << endl;
