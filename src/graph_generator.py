@@ -126,8 +126,8 @@ with open(path, 'w') as f:
             ratio = numpy.random.normal(0.94, 0.06)
             dif = abs(1 - ratio)
             ratio = 1 - dif
-            if ratio > 0.98:
-                ratio = 0.98
+            if ratio > 1:
+                ratio = 1
             if ratio < 0.89:
                 ratio = 0.89
             F = ratio
