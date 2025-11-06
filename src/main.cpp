@@ -73,7 +73,7 @@ vector<SDpair> generate_requests_fid(Graph graph, int requests_cnt,double fid_th
             double fid = graph.get_ini_fid(i,j);
             //cerr<<"fid of "<<i<<" "<<j<<" : "<<fid<<endl;
             assert(fid>=0.0&&fid<=1.0);
-            if(fid > fid_th&&graph.distance(i,j)==hop_th) {
+            if(fid > fid_th&&graph.distance(i,j)>=hop_th) {
                 int index = fid/0.05;
                 //index-=5;
                 if(index < 0) continue;
