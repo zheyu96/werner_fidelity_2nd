@@ -73,7 +73,7 @@ vector<SDpair> generate_requests_fid(Graph graph, int requests_cnt,double fid_th
             double fid = graph.get_ini_fid(i,j);
             //cerr<<"fid of "<<i<<" "<<j<<" : "<<fid<<endl;
             assert(fid>=0.0&&fid<=1.0);
-            if(fid > fid_th&&graph.distance(i,j)>=hop_th) {
+            if(fid > fid_th&&graph.distance(i,j)==hop_th) {
                 int index = fid/0.05;
                 //index-=5;
                 if(index < 0) continue;
@@ -195,7 +195,7 @@ int main(){
         }
         Graph graph(filename, time_limit, swap_prob, avg_memory, min_fidelity, max_fidelity, fidelity_threshold, A, B, n, T, tao,Zmin,bucket_eps,time_eta);
         //default_requests[r] = generate_requests(graph, 100, length_lower, length_upper);
-        default_requests[r]=generate_requests_fid(graph,250,0.7,3);
+        default_requests[r]=generate_requests_fid(graph,250,0.85,3);
         //cerr<<"Generated requests for round " << r << ", cnt: " << default_requests[r].size() << endl;
         assert(!default_requests[r].empty());
         //cerr  << "Generated requests for round " << r << ", cnt: " << default_requests[r].size() << endl;
@@ -207,7 +207,7 @@ int main(){
 
     // vector<string> X_names = {"time_limit", "request_cnt", "num_nodes", "avg_memory", "tao"};
     //vector<string> X_names = {"request_cnt"};
-    vector<string> X_names = { /* "request_cnt", "time_limit", "tao",  "fidelity_threshold" , "avg_memory", */"hop_count" };
+    vector<string> X_names = { "request_cnt", "time_limit", "tao",  "fidelity_threshold" , "avg_memory","hop_count" };
     //vector<string> X_names = {"Zmin","bucket_eps","time_eta"};
     vector<string> Y_names = {"fidelity_gain", "succ_request_cnt"};
     vector<string> algo_names = {"ZFA","MyAlgo1", "MyAlgo2", "MyAlgo3", "Merge", "Linear", "ASAP"};
@@ -294,7 +294,7 @@ int main(){
                         }
                     }
                     else{
-                        requests=generate_requests_fid(graph,request_cnt,fidelity_threshold,hop_count);
+                        requests=generate_requests_fid(graph,request_cnt,0.85,hop_count);
                     }
                     Graph path_graph = graph;
                     path_graph.increase_resources(10);
