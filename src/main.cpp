@@ -35,7 +35,7 @@ vector<SDpair> generate_requests_fid(Graph graph,int request,double F_th,int hop
     int valid_cnt=0;
     for(int i=0;i<n;i++){
         for(int j=0;j<n;j++){
-            if(i==j||graph.adj_set[i].count(j)==0) continue;
+            if(i==j) continue;
             int dist=graph.distance(i,j);
             double F_init=0;
             if(graph.distance(i,j)>0){
