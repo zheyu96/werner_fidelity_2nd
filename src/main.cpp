@@ -38,7 +38,10 @@ vector<SDpair> generate_requests_fid(Graph graph,int request,double F_th,int hop
             if(i==j||graph.adj_set[i].count(j)==0) continue;
             int dist=graph.distance(i,j);
             double F_init=0;
-            if(graph.distance(i,j)>0)F_init=graph.get_F_init(i,j);
+            if(graph.distance(i,j)>0){
+                F_init=graph.get_ini_fid(i,j);
+                cout<<"[Info] sdpair ("<<i<<","<<j<<") dist : "<<dist<<" F_init : "<<F_init<<endl;
+            }
             if(dist>=hop_min&&F_init>=F_th){
                 for(int k=0;k<unif(generator)%6+5;k++)
                     cand.emplace_back(i,j);
