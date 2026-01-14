@@ -9,6 +9,7 @@
 #include "Algorithm/MyAlgo5/MyAlgo5.h"
 #include "Algorithm/MyAlgo6/MyAlgo6.h"
 #include "Algorithm/WernerAlgo/WernerAlgo.h"
+#include "Algorithm/WernerAlgo2/WernerAlgo2.h"
 #include "Network/PathMethod/PathMethodBase/PathMethod.h"
 #include "Network/PathMethod/Greedy/Greedy.h"
 #include "Network/PathMethod/QCAST/QCAST.h"
@@ -161,7 +162,7 @@ int main(){
     //change_parameter["Zmin"]={0.028,0.150,0.272,0.394,0.518};
     change_parameter["bucket_eps"]={0.00001,0.0001,0.001,0.01,0.1};
     change_parameter["time_eta"]={0.00001,0.0001,0.001,0.01,0.1};
-    int round = 50;
+    int round = 10;
     vector<vector<SDpair>> default_requests(round);
     #pragma omp parallel for
     for(int r = 0; r < round; r++) {
@@ -210,7 +211,7 @@ int main(){
     vector<string> X_names = { "request_cnt", "time_limit", "tao",  "fidelity_threshold" , "avg_memory","hop_count" };
     //vector<string> X_names = {"Zmin","bucket_eps","time_eta"};
     vector<string> Y_names = {"fidelity_gain", "succ_request_cnt"};
-    vector<string> algo_names = {"ZFA","MyAlgo1", "MyAlgo2", "MyAlgo3", "Merge", "Linear", "ASAP"};
+    vector<string> algo_names = {"ZFA2","ZFA","MyAlgo1", "MyAlgo2", "MyAlgo3", "Merge", "Linear", "ASAP"};
     // init result
 
 
@@ -350,6 +351,7 @@ int main(){
                     cerr << "Avg path length = " << path_len / (double)path_cnt << "\n";
                     cerr << "Max path length = " << mx_path_len << "\n";
                     vector<AlgorithmBase*> algorithms;
+                    algorithms.emplace_back(new WernerAlgo2(graph,requests,paths));
                     algorithms.emplace_back(new WernerAlgo(graph,requests,paths));
                     if(X_name!="Zmin"&&X_name!="bucket_eps"&&X_name!="time_eta"){
                         algorithms.emplace_back(new MyAlgo1(graph, requests, paths));

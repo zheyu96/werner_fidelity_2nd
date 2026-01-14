@@ -1,6 +1,6 @@
 
 dependency = Network/Node/Node.o Network/Shape/Shape.o Network/Graph/Graph.o Algorithm/AlgorithmBase/AlgorithmBase.o config.o
-algorithm = Algorithm/MyAlgo2/MyAlgo2.o Algorithm/MyAlgo1/MyAlgo1.o Algorithm/MyAlgo3/MyAlgo3.o Algorithm/MyAlgo4/MyAlgo4.o Algorithm/MyAlgo5/MyAlgo5.o Algorithm/MyAlgo6/MyAlgo6.o Algorithm/WernerAlgo/WernerAlgo.o
+algorithm = Algorithm/MyAlgo2/MyAlgo2.o Algorithm/MyAlgo1/MyAlgo1.o Algorithm/MyAlgo3/MyAlgo3.o Algorithm/MyAlgo4/MyAlgo4.o Algorithm/MyAlgo5/MyAlgo5.o Algorithm/MyAlgo6/MyAlgo6.o Algorithm/WernerAlgo/WernerAlgo.o Algorithm/WernerAlgo2/WernerAlgo2.o
 algorithm2 = Algorithm/MyAlgo3/MyAlgo3.o Algorithm/MyAlgo1_time/MyAlgo1_time.o
 routing = Network/PathMethod/PathMethodBase/PathMethod.o Network/PathMethod/Greedy/Greedy.o Network/PathMethod/QCAST/QCAST.o Network/PathMethod/REPS/REPS.o
 gcc_flag = -g -Wall -Wextra -Os -Ofast --std=c++17
@@ -65,6 +65,10 @@ Algorithm/MyAlgo6/MyAlgo6.o: Algorithm/MyAlgo6/MyAlgo6.h Algorithm/MyAlgo6/MyAlg
 Algorithm/WernerAlgo/WernerAlgo.o: Algorithm/WernerAlgo/WernerAlgo.h Algorithm/WernerAlgo/WernerAlgo.cpp config.h
 	g++ -c $(gcc_flag) Algorithm/WernerAlgo/WernerAlgo.h Algorithm/WernerAlgo/WernerAlgo.cpp config.h
 	mv WernerAlgo.o Algorithm/WernerAlgo/WernerAlgo.o
+
+Algorithm/WernerAlgo2/WernerAlgo2.o: Algorithm/WernerAlgo2/WernerAlgo2.h Algorithm/WernerAlgo2/WernerAlgo2.cpp config.h
+	g++ -c $(gcc_flag) Algorithm/WernerAlgo2/WernerAlgo2.h Algorithm/WernerAlgo2/WernerAlgo2.cpp config.h
+	mv WernerAlgo2.o Algorithm/WernerAlgo2/WernerAlgo2.o
 
 Network/PathMethod/Greedy/Greedy.o: Network/PathMethod/Greedy/Greedy.h Network/PathMethod/Greedy/Greedy.cpp config.h
 	g++ -c $(gcc_flag) Network/PathMethod/Greedy/Greedy.h Network/PathMethod/Greedy/Greedy.cpp config.h
