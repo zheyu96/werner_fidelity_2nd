@@ -22,7 +22,7 @@ void WernerAlgo2::variable_initialize() {
     dpp.Zhat =100.0;
     dpp.Zmin = graph.get_Zmin();
     dpp.T    = time_limit-1;
-    dpp.tau_max=time_limit-1;
+    dpp.tau_max=max(time_limit-1,5);
     dpp.eta  = graph.get_tao()/graph.get_time_limit();
     beta.assign(V, vector<double>(T, INF));
 
@@ -123,9 +123,11 @@ void WernerAlgo2::run_dp_in_t(const Path& path, const DPParam& dpp,int t) {
             //leaf
             if(a+1==b){
                 for(int tlen=1;tlen<=dpp.tau_max;tlen++){
-                    if(dpp.tau_max>=t) continue;
+                    if (t - tlen < 1) continue;
                     double Bleaf=0.0;
-                    for(int tt=t-tlen;tt<=t;tt++)
+                    int st=t-tlen;
+                    if(st<1)continue;
+                    for(int tt=st;tt<=t;tt++)
                         Bleaf+=beta[s][tt]+beta[e][tt];
                     double Zcur=1.0L-(1.0L-graph.get_edge_W(s,e))/tlen;
                     double Zleaf=sqrt(-log(Zcur));
@@ -134,12 +136,6 @@ void WernerAlgo2::run_dp_in_t(const Path& path, const DPParam& dpp,int t) {
                         L.ent_time={t-tlen,t};
                         cand.push_back(L);
                     }
-                }
-                double Zleaf=sqrt(graph.get_edge_W(s,e));
-                if(Zleaf<=dpp.Zhat){
-                    double Bleaf=beta[s][t-1]+beta[e][t-1]+beta[s][t]+beta[e][t];
-                    ZLabel L(Bleaf,Zleaf,Op::LEAF,a,b,t,-1);
-                    cand.push_back(L);
                 }
             }
             //continue
@@ -220,6 +216,9 @@ Shape_vector WernerAlgo2::backtrack_shape(ZLabel leaf,const vector<int>& path){
     int left_id=path[leaf.a],right_id=path[leaf.b];
     if(leaf.op==Op::LEAF){
         Shape_vector result;
+        if (leaf.ent_time.size() < 2) return Shape_vector{}; 
+        assert(leaf.ent_time.size() == 2);
+        cout<<left_id<<" "<<right_id<<" "<<leaf.ent_time[0]<<" "<<leaf.ent_time[1]<<"\n";
         result.push_back({left_id,{{leaf.ent_time[0],leaf.ent_time[1]}}});
         result.push_back({right_id,{{leaf.ent_time[0],leaf.ent_time[1]}}});
         return result;
@@ -228,6 +227,7 @@ Shape_vector WernerAlgo2::backtrack_shape(ZLabel leaf,const vector<int>& path){
         assert(leaf.parent_id>=0&&leaf.parent_id<DP_table[leaf.t-1][leaf.a][leaf.b].size());
         ZLabel pre_label=DP_table[leaf.t-1][leaf.a][leaf.b][leaf.parent_id];
         Shape_vector last_time=backtrack_shape(pre_label,path);
+        if (last_time.empty()) return Shape_vector{};
         auto & prel=last_time.front().second[0],&prer=last_time.back().second[0];
         assert(last_time.front().first==path[leaf.a]);
         assert(last_time.back().first==path[leaf.b]);
@@ -301,7 +301,9 @@ void WernerAlgo2::run() {
     while (round-- && !requests.empty()) {
         variable_initialize();
         //cerr << "\033[1;31m"<< "[WernerAlgo's parameter] : "<< dpp.Zmin<<" "<<dpp.eps_bucket<<" "<<dpp.eta<< "\033[0m"<< endl;
+        int it=0;
         while (obj < 1.0) {
+            if(++it>10) break;
             Shape_vector shape=separation_oracle();
             if (shape.empty()) break;
             // 先用MyAlgo1的框架刻出來

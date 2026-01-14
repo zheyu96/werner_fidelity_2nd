@@ -61,108 +61,46 @@ vector<SDpair> generate_requests(Graph graph, int requests_cnt, int length_lower
 
     return requests;
 }
-vector<SDpair> generate_requests_fid(Graph graph, int requests_cnt,double fid_th,double hop_th) {
-    int n = graph.get_num_nodes();
-    vector<pair<SDpair,double>> cand[22];
-    random_device rd;
-    default_random_engine generator = default_random_engine(rd());
-    uniform_int_distribution<int> unif(0, 1e9);
-    int sd_cnt=0;
-    for(int i = 0; i < n; i++) {
-        for(int j = 0; j < n; j++) {
-            if(i == j) continue;
-            double fid = graph.get_ini_fid(i,j);
-            //cerr<<"fid of "<<i<<" "<<j<<" : "<<fid<<endl;
-            assert(fid>=0.0&&fid<=1.0);
-            if(fid > fid_th&&graph.distance(i,j)>=hop_th) {
-                int index = fid/0.05;
-                //index-=5;
-                if(index < 0) continue;
-                if(index > 20) index = 20;
-                int d=graph.distance(i, j),f0=fid,prob=pow(0.1,d)*pow(0.9,max(d-1,0));
-                //double score = f0+prob*100-0.1*d;
-                cand[index].emplace_back(std::make_pair(std::make_pair(i, j), graph.distance(i, j)));
-                if(graph.distance(i,j)>=3)sd_cnt++;
-            }
-        }
-    }
-     cerr << "\033[1;32m"<< "[SD ini pairs] : "<<sd_cnt<< "\033[0m"<< endl;
-    /*for(int i=21;i>=0;i--){
-        if(!cand[i].empty()){
-            random_shuffle(cand[i].begin(), cand[i].end());
-        }
-    } */
-    for(int i=21;i>=0;i--){
-        sort(cand[i].begin(),cand[i].end(),[](const pair<SDpair,double>& L,const pair<SDpair,double>& R){
-            return L.second > R.second;
-        }) ;
-    } 
-    /* for(int i=0;i<22;i++){
-        random_shuffle(cand[i].begin(), cand[i].end());
-    } */
-    vector<SDpair> requests;
-    int pos[22];
-    for(int i=0;i<22;i++) pos[i]=0;
-    int idx=0;
-    while(requests.size()<requests_cnt){
-        int cnt=unif(generator) % 2 +3;
-        cnt=min(cnt,(int)(requests_cnt-requests.size()));
-        while(cand[21-idx].empty()){
-            idx++;
-            if(idx>=22) idx=0;
-        }
-        if(!cand[21-idx].empty()){
-            for(int i=0;i<cnt;i++){
-                requests.push_back(cand[21-idx][pos[21-idx]].first);
-            }
-            pos[21-idx]++;
-            pos[21-idx]%=cand[21-idx].size();
-        }
-        idx=(idx+1)%22;
-    }
-    assert((int)requests.size() == requests_cnt);
-    return requests;
-}
+
 int main(){
     string file_path = "../data/";
 
     map<string, double> default_setting;
     default_setting["num_nodes"] = 100;
-    default_setting["request_cnt"] = 150;
+    default_setting["request_cnt"] = 200;
     default_setting["entangle_lambda"] = 0.045;
     default_setting["time_limit"] = 13;
-    default_setting["avg_memory"] = 6; // 16
+    default_setting["avg_memory"] = 16; // 16
     default_setting["tao"] = 0.002;
-    default_setting["path_length"] = 5;
+    default_setting["path_length"] = 3;
     default_setting["min_fidelity"] = 0.7;
     default_setting["max_fidelity"] = 0.98;
     default_setting["swap_prob"] = 0.9;
-    default_setting["fidelity_threshold"] = 0.7;
+    default_setting["fidelity_threshold"] = 0.5;
     default_setting["entangle_time"] = 0.00025;
     default_setting["entangle_prob"] = 0.01;
     default_setting["Zmin"]=0.02702867239;
     default_setting["bucket_eps"]=0.01;
     default_setting["time_eta"]=0.001;
-    default_setting["hop_count"]=3;
     map<string, vector<double>> change_parameter;
-    change_parameter["request_cnt"] = {130,150,170,190,210};
+    change_parameter["request_cnt"] = {200,220,240,260,280};
     change_parameter["num_nodes"] = {40, 70, 100, 130, 160};
     change_parameter["min_fidelity"] = {0.6, 0.7, 0.8, 0.9, 0.95};
-    change_parameter["avg_memory"] = {2,4,6, 8, 10,12,14};
+    change_parameter["avg_memory"] = {6, 8, 10, 12, 14};
     // change_parameter["tao"] = {0.3, 0.4, 0.5, 0.6, 0.7};
     change_parameter["tao"] = {0.0015, 0.00175, 0.002,0.00225,0.0025};
     change_parameter["path_length"] = {3, 6, 9, 12, 15};
     change_parameter["swap_prob"] = {0.6, 0.7, 0.8, 0.9,0.95};
-    change_parameter["fidelity_threshold"] = {0.55,0.6,0.65,0.7, 0.75, 0.8,0.85,0.9};
-    change_parameter["time_limit"] = {3,5,7, 9, 11, 13, 15};
+    change_parameter["fidelity_threshold"] = {0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75,0.8,0.85};
+    change_parameter["time_limit"] = {7, 9, 11, 13, 15};
     change_parameter["entangle_lambda"] = {0.0125, 0.025, 0.035, 0.045, 0.055, 0.065};
     change_parameter["entangle_time"] = {0.0001, 0.00025, 0.0004, 0.00055, 0.0007,0.00085,0.001};
     change_parameter["entangle_prob"] = {0.0001, 0.001, 0.01, 0.1, 1};
-    change_parameter["hop_count"] = {1,2,3,4,5,6};
+    
     //change_parameter["Zmin"]={0.028,0.150,0.272,0.394,0.518};
     change_parameter["bucket_eps"]={0.00001,0.0001,0.001,0.01,0.1};
     change_parameter["time_eta"]={0.00001,0.0001,0.001,0.01,0.1};
-    int round = 10;
+    int round = 1;
     vector<vector<SDpair>> default_requests(round);
     #pragma omp parallel for
     for(int r = 0; r < round; r++) {
@@ -178,7 +116,7 @@ int main(){
         double swap_prob = default_setting["swap_prob"];
         double fidelity_threshold = default_setting["fidelity_threshold"];
         int length_upper = default_setting["path_length"] + 1;
-        int length_lower = default_setting["path_length"] - 1;
+        int length_lower = default_setting["path_length"] - 2;
         map<string, double> input_parameter = default_setting;
         vector<map<string, map<string, double>>> result(round);
         // double entangle_lambda = input_parameter["entangle_lambda"];
@@ -195,12 +133,7 @@ int main(){
             exit(1);
         }
         Graph graph(filename, time_limit, swap_prob, avg_memory, min_fidelity, max_fidelity, fidelity_threshold, A, B, n, T, tao,Zmin,bucket_eps,time_eta);
-        //default_requests[r] = generate_requests(graph, 100, length_lower, length_upper);
-        default_requests[r]=generate_requests_fid(graph,250,0.85,3);
-        //cerr<<"Generated requests for round " << r << ", cnt: " << default_requests[r].size() << endl;
-        assert(!default_requests[r].empty());
-        //cerr  << "Generated requests for round " << r << ", cnt: " << default_requests[r].size() << endl;
-        assert((int)default_requests[r].size()>=190);
+        default_requests[r] = generate_requests(graph, 200, length_lower, length_upper);
     }
 
 
@@ -208,17 +141,17 @@ int main(){
 
     // vector<string> X_names = {"time_limit", "request_cnt", "num_nodes", "avg_memory", "tao"};
     //vector<string> X_names = {"request_cnt"};
-    vector<string> X_names = { "request_cnt", "time_limit", "tao",  "fidelity_threshold" , "avg_memory","hop_count" };
+    vector<string> X_names = {"request_cnt", "time_limit", "tao", "fidelity_threshold", "avg_memory"};
     //vector<string> X_names = {"Zmin","bucket_eps","time_eta"};
     vector<string> Y_names = {"fidelity_gain", "succ_request_cnt"};
-    vector<string> algo_names = {"ZFA2","ZFA","MyAlgo1", "MyAlgo2", "MyAlgo3", "Merge", "Linear", "ASAP"};
+    vector<string> algo_names = {"ZFA2","ZFA","MyAlgo1", "MyAlgo2", "MyAlgo3"};
     // init result
 
 
     vector<PathMethod*> path_methods;
     path_methods.emplace_back(new Greedy());
-    /* path_methods.emplace_back(new QCAST());
-    path_methods.emplace_back(new REPS()); */
+    //path_methods.emplace_back(new QCAST());
+    //path_methods.emplace_back(new REPS());
     for(PathMethod *path_method : path_methods) {
 
         for(string X_name : X_names) {
@@ -254,7 +187,6 @@ int main(){
                 double entangle_prob = input_parameter["entangle_prob"];
                 double swap_prob = input_parameter["swap_prob"];
                 double fidelity_threshold = input_parameter["fidelity_threshold"];
-                int hop_count = input_parameter["hop_count"];
                 // int length_upper, length_lower;
                 // if(input_parameter["path_length"] == -1) {
                 //     length_upper = num_nodes;
@@ -284,19 +216,10 @@ int main(){
 
                     ofs << "--------------- in round " << r << " -------------" <<endl;
                     vector<pair<int, int>> requests;
-                    if(hop_count==3){
-                        int idx=0;
-                        for(int i = 0; i < request_cnt; i++) {
-                            /* while(graph.get_ini_fid(default_requests[r][idx].first,default_requests[r][idx].second)<fidelity_threshold){
-                                idx=(idx+1)%default_requests[r].size();
-                            } */
-                            requests.emplace_back(default_requests[r][idx]);
-                            idx=(idx+1)%default_requests[r].size();
-                        }
+                    for(int i = 0; i < request_cnt; i++) {
+                        requests.emplace_back(default_requests[r][i]);
                     }
-                    else{
-                        requests=generate_requests_fid(graph,request_cnt,0.85,hop_count);
-                    }
+
                     Graph path_graph = graph;
                     path_graph.increase_resources(10);
                     PathMethod *new_path_method;
@@ -357,9 +280,9 @@ int main(){
                         algorithms.emplace_back(new MyAlgo1(graph, requests, paths));
                         algorithms.emplace_back(new MyAlgo2(graph, requests, paths));
                         algorithms.emplace_back(new MyAlgo3(graph, requests, paths));
-                        /* algorithms.emplace_back(new MyAlgo4(graph, requests, paths));
-                        algorithms.emplace_back(new MyAlgo5(graph, requests, paths));
-                        algorithms.emplace_back(new MyAlgo6(graph, requests, paths)); */
+                        //algorithms.emplace_back(new MyAlgo4(graph, requests, paths));
+                        //algorithms.emplace_back(new MyAlgo5(graph, requests, paths));
+                        //algorithms.emplace_back(new MyAlgo6(graph, requests, paths));
                     }
 
 
