@@ -26,7 +26,25 @@ SDpair generate_new_request(int num_of_node){
 
     return make_pair(node1, node2);
 }
-
+vector<SDpair> generate_requests_fid(Graph graph,int request,double F_th,int hop_min){
+    int n=graph.get_num_nodes();
+    vector<SDpair> cand;
+    for(int i=0;i<n;i++){
+        for(int j=0;j<n;j++){
+            if(i==j) continue;
+            int dist=graph.distance(i,j);
+            double F_init=graph.get_F_init(i,j);
+            if(dist>=hop_min&&F_init>=F_th){
+                for(int k=0;k<unif(gen)%3+2;k++)
+                    cand.emplace_back(i,j);
+            }
+        }
+    }
+    assert(cand.size()>=request);
+    random_shuffle(cand.begin(),cand.end());
+    cand.resize(request);
+    return cand;
+}
 vector<SDpair> generate_requests(Graph graph, int requests_cnt, int length_lower, int length_upper) {
     int n = graph.get_num_nodes();
     vector<SDpair> cand;
@@ -67,23 +85,23 @@ int main(){
 
     map<string, double> default_setting;
     default_setting["num_nodes"] = 100;
-    default_setting["request_cnt"] = 200;
+    default_setting["request_cnt"] = 100;
     default_setting["entangle_lambda"] = 0.045;
     default_setting["time_limit"] = 13;
-    default_setting["avg_memory"] = 16; // 16
+    default_setting["avg_memory"] = 6; // 16
     default_setting["tao"] = 0.002;
-    default_setting["path_length"] = 3;
+    default_setting["path_length"] = 5;
     default_setting["min_fidelity"] = 0.7;
     default_setting["max_fidelity"] = 0.98;
     default_setting["swap_prob"] = 0.9;
-    default_setting["fidelity_threshold"] = 0.5;
+    default_setting["fidelity_threshold"] = 0.7;
     default_setting["entangle_time"] = 0.00025;
     default_setting["entangle_prob"] = 0.01;
     default_setting["Zmin"]=0.02702867239;
     default_setting["bucket_eps"]=0.01;
     default_setting["time_eta"]=0.001;
     map<string, vector<double>> change_parameter;
-    change_parameter["request_cnt"] = {200,220,240,260,280};
+    change_parameter["request_cnt"] = {50,70,90,110,130,150,170};
     change_parameter["num_nodes"] = {40, 70, 100, 130, 160};
     change_parameter["min_fidelity"] = {0.6, 0.7, 0.8, 0.9, 0.95};
     change_parameter["avg_memory"] = {6, 8, 10, 12, 14};
@@ -133,7 +151,8 @@ int main(){
             exit(1);
         }
         Graph graph(filename, time_limit, swap_prob, avg_memory, min_fidelity, max_fidelity, fidelity_threshold, A, B, n, T, tao,Zmin,bucket_eps,time_eta);
-        default_requests[r] = generate_requests(graph, 200, length_lower, length_upper);
+        //default_requests[r] = generate_requests(graph, 200, length_lower, length_upper);
+        default_requests[r] = generate_requests_fid(graph,200,0.83L,length_lower);
     }
 
 
