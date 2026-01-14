@@ -32,6 +32,7 @@ vector<SDpair> generate_requests_fid(Graph graph,int request,double F_th,int hop
     random_device rd;
     default_random_engine generator = default_random_engine(rd());
     uniform_int_distribution<int> unif(0, 1e9);
+    int valid_cnt=0;
     for(int i=0;i<n;i++){
         for(int j=0;j<n;j++){
             if(i==j||graph.adj_set[i].count(j)==0) continue;
@@ -39,11 +40,13 @@ vector<SDpair> generate_requests_fid(Graph graph,int request,double F_th,int hop
             double F_init=0;
             if(graph.distance(i,j)>0)F_init=graph.get_F_init(i,j);
             if(dist>=hop_min&&F_init>=F_th){
-                for(int k=0;k<unif(generator)%6+5;k++)
+                for(int k=0;k<unif(generator)%6+10;k++)
                     cand.emplace_back(i,j);
+                valid_cnt++;
             }
         }
     }
+    cout<<"[Info] valid sdpair cnt : "<<valid_cnt<<endl;
     assert(cand.size()>=request);
     random_shuffle(cand.begin(),cand.end());
     cand.resize(request);
