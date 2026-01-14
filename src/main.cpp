@@ -29,6 +29,9 @@ SDpair generate_new_request(int num_of_node){
 vector<SDpair> generate_requests_fid(Graph graph,int request,double F_th,int hop_min){
     int n=graph.get_num_nodes();
     vector<SDpair> cand;
+    random_device rd;
+    default_random_engine generator = default_random_engine(rd());
+    uniform_int_distribution<int> unif(0, 1e9);
     for(int i=0;i<n;i++){
         for(int j=0;j<n;j++){
             if(i==j) continue;
