@@ -302,8 +302,9 @@ void WernerAlgo2::run() {
         variable_initialize();
         //cerr << "\033[1;31m"<< "[WernerAlgo's parameter] : "<< dpp.Zmin<<" "<<dpp.eps_bucket<<" "<<dpp.eta<< "\033[0m"<< endl;
         int it=0;
-        while (obj < 1.0) {
-            if(++it>200) break;
+        double eps=1e-4;
+        while (obj+eps < 1.0) {
+            //if(++it>200) break;
             Shape_vector shape=separation_oracle();
             if (shape.empty()) break;
             // 先用MyAlgo1的框架刻出來
