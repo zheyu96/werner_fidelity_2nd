@@ -75,7 +75,7 @@ vector<SDpair> generate_requests(Graph graph, int requests_cnt, int length_lower
 
     vector<SDpair> requests;
     for(SDpair sdpair : cand) {
-        int cnt = unif(generator) % 4 + 3;
+        int cnt = unif(generator) % 4 + 5;
         while(cnt--) requests.push_back(sdpair);
     }
 
@@ -162,7 +162,7 @@ int main(){
         }
         Graph graph(filename, time_limit, swap_prob, avg_memory, min_fidelity, max_fidelity, fidelity_threshold, A, B, n, T, tao,Zmin,bucket_eps,time_eta);
         //default_requests[r] = generate_requests(graph, 200, length_lower, length_upper);
-        default_requests[r] = generate_requests_fid(graph,200,0.75L,3);
+        default_requests[r] = generate_requests_fid(graph,200,0.6L,4);
     }
 
 
