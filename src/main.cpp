@@ -34,7 +34,7 @@ vector<SDpair> generate_requests_fid(Graph graph,int request,double F_th,int hop
     uniform_int_distribution<int> unif(0, 1e9);
     for(int i=0;i<n;i++){
         for(int j=0;j<n;j++){
-            if(i==j||graph.adj_set(i).count(j)) continue;
+            if(i==j||graph.adj_set(i).count(j)==0) continue;
             int dist=graph.distance(i,j);
             double F_init=0;
             if(graph.distance(i,j)>0)F_init=graph.get_F_init(i,j);
