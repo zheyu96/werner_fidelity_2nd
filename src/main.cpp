@@ -40,7 +40,7 @@ vector<SDpair> generate_requests_fid(Graph graph,int request,double F_th,int hop
             double F_init=0;
             if(graph.distance(i,j)>0)F_init=graph.get_F_init(i,j);
             if(dist>=hop_min&&F_init>=F_th){
-                for(int k=0;k<unif(generator)%6+10;k++)
+                for(int k=0;k<unif(generator)%6+5;k++)
                     cand.emplace_back(i,j);
                 valid_cnt++;
             }
@@ -159,7 +159,7 @@ int main(){
         }
         Graph graph(filename, time_limit, swap_prob, avg_memory, min_fidelity, max_fidelity, fidelity_threshold, A, B, n, T, tao,Zmin,bucket_eps,time_eta);
         //default_requests[r] = generate_requests(graph, 200, length_lower, length_upper);
-        default_requests[r] = generate_requests_fid(graph,200,0.83L,3);
+        default_requests[r] = generate_requests_fid(graph,200,0.75L,2);
     }
 
 
