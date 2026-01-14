@@ -22,7 +22,7 @@ void WernerAlgo2::variable_initialize() {
     dpp.Zhat =100.0;
     dpp.Zmin = graph.get_Zmin();
     dpp.T    = time_limit-1;
-    dpp.tau_max=max(time_limit-1,5);
+    dpp.tau_max=min(time_limit-1,5);
     dpp.eta  = graph.get_tao()/graph.get_time_limit();
     beta.assign(V, vector<double>(T, INF));
 
@@ -303,7 +303,7 @@ void WernerAlgo2::run() {
         //cerr << "\033[1;31m"<< "[WernerAlgo's parameter] : "<< dpp.Zmin<<" "<<dpp.eps_bucket<<" "<<dpp.eta<< "\033[0m"<< endl;
         int it=0;
         while (obj < 1.0) {
-            if(++it>10) break;
+            if(++it>200) break;
             Shape_vector shape=separation_oracle();
             if (shape.empty()) break;
             // 先用MyAlgo1的框架刻出來
