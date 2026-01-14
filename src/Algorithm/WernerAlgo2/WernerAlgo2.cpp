@@ -22,7 +22,7 @@ void WernerAlgo2::variable_initialize() {
     dpp.Zhat =100.0;
     dpp.Zmin = graph.get_Zmin();
     dpp.T    = time_limit-1;
-    dpp.tau_max=time_limit-1
+    dpp.tau_max=time_limit-1;
     dpp.eta  = graph.get_tao()/graph.get_time_limit();
     beta.assign(V, vector<double>(T, INF));
 
