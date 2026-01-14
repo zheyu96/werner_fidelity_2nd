@@ -35,7 +35,7 @@ vector<SDpair> generate_requests_fid(Graph graph,int request,double F_th,int hop
             int dist=graph.distance(i,j);
             double F_init=graph.get_F_init(i,j);
             if(dist>=hop_min&&F_init>=F_th){
-                for(int k=0;k<unif(gen)%3+2;k++)
+                for(int k=0;k<unif(generator)%3+2;k++)
                     cand.emplace_back(i,j);
             }
         }
