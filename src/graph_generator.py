@@ -133,7 +133,7 @@ with open(path, 'w') as f:
             ratio = random.uniform(0.55, 0.75)
             if ratio > 0.95:
                 ratio = 0.95
-            else if ratio < 0.55:
+            if ratio < 0.55:
                 ratio = 0.55
             F = ratio
             print(e0 + " " + e1 + " " + str(F), file=f)
