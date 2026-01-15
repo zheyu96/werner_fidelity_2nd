@@ -32,7 +32,6 @@ double Shape::recursion_get_fidelity(int left, int right, map<pair<int, int> , d
     int now_swap_time = node_mem_range[latest].second[0].second;
     int next_swap_time = min(node_mem_range[left].second.back().second, node_mem_range[right].second.front().second);
     double pass_time = tao * (next_swap_time - now_swap_time);
-
     // cerr << "l r late = " << left << " " << right << " " << latest << endl;
     // cerr << "Fa Fb result = " << Fa << " " << Fb << " " << Fswap(t2F(F2t(Fa) + pass_time), t2F(F2t(Fb) + pass_time)) << endl;
     return t2F(F2t(Fswap(pass_tao(Fa), pass_tao(Fb))) + (pass_time - tao));

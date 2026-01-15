@@ -74,7 +74,7 @@ vector<SDpair> generate_requests_fid(Graph graph, int requests_cnt,double fid_th
             double fid = graph.get_ini_fid(i,j);
             //cerr<<"fid of "<<i<<" "<<j<<" : "<<fid<<endl;
             assert(fid>=0.0&&fid<=1.0);
-            if(fid > fid_th&&graph.distance(i,j)>=hop_th) {
+            if(graph.distance(i,j)>=hop_th) {
                 int index = fid/0.05;
                 //index-=5;
                 if(index < 0) continue;
@@ -137,7 +137,7 @@ int main(){
     default_setting["min_fidelity"] = 0.7;
     default_setting["max_fidelity"] = 0.98;
     default_setting["swap_prob"] = 0.9;
-    default_setting["fidelity_threshold"] = 0.75;
+    default_setting["fidelity_threshold"] = 0.7;
     default_setting["entangle_time"] = 0.00025;
     default_setting["entangle_prob"] = 0.01;
     default_setting["Zmin"]=0.02702867239;
@@ -196,7 +196,7 @@ int main(){
         }
         Graph graph(filename, time_limit, swap_prob, avg_memory, min_fidelity, max_fidelity, fidelity_threshold, A, B, n, T, tao,Zmin,bucket_eps,time_eta);
         //default_requests[r] = generate_requests(graph, 200, length_lower, length_upper);
-        default_requests[r]=generate_requests_fid(graph,250,0.5,4);
+        default_requests[r]=generate_requests_fid(graph,250,0,3);
         //cerr<<"Generated requests for round " << r << ", cnt: " << default_requests[r].size() << endl;
         assert(!default_requests[r].empty());
         //cerr  << "Generated requests for round " << r << ", cnt: " << default_requests[r].size() << endl;
