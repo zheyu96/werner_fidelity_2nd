@@ -126,10 +126,10 @@ with open(path, 'w') as f:
             ratio = numpy.random.normal(0.7, 0.1)
             dif = abs(1 - ratio)
             ratio = 1 - dif
-            if ratio > 0.9:
-                ratio = 0.9
-            if ratio < 0.6:
-                ratio = 0.6
+            if ratio > 0.95:
+                ratio = 0.95
+            if ratio < 0.55:
+                ratio = 0.55
             F = ratio
             print(e0 + " " + e1 + " " + str(F), file=f)
             avg_l += dis
