@@ -19,7 +19,9 @@ void WernerAlgo2::variable_initialize() {
     int V = graph.get_num_nodes();
     int T = graph.get_time_limit();
     dpp.eps_bucket = graph.get_bucket_eps();
-    dpp.Zhat =100.0;
+    double F_th=graph.get_fidelity_threshold();
+    double w_th=(4.0*F_th-1.0)/3.0;
+    dpp.Zhat = sqrt(-log(w_th))+1e-9;
     dpp.Zmin = graph.get_Zmin();
     dpp.T    = time_limit-1;
     dpp.tau_max=min(time_limit-1,500);
@@ -129,7 +131,7 @@ void WernerAlgo2::run_dp_in_t(const Path& path, const DPParam& dpp,int t) {
                     if(st<1)continue;
                     for(int tt=st;tt<=t;tt++)
                         Bleaf+=beta[s][tt]+beta[e][tt];
-                    double Zcur=1.0L-(1.0L-graph.get_edge_W(s,e))/tlen;
+                    double Zcur=1.0L-(1.0L-graph.get_link_werner(s,e))/tlen;
                     double Zleaf=sqrt(-log(Zcur));
                     if(Zleaf<=dpp.Zhat){
                         ZLabel L(Bleaf,Zleaf,Op::LEAF,a,b,t,-1);
@@ -218,7 +220,11 @@ Shape_vector WernerAlgo2::backtrack_shape(ZLabel leaf,const vector<int>& path){
         Shape_vector result;
         if (leaf.ent_time.size() < 2) return Shape_vector{}; 
         assert(leaf.ent_time.size() == 2);
-        cout<<left_id<<" "<<right_id<<" "<<leaf.ent_time[0]<<" "<<leaf.ent_time[1]<<"\n";
+        double fid=graph.get_F_init(left_id,right_id);
+        double w=graph.get_link_werner(left_id,right_id);
+        double new_w=1.0L-(1.0L-graph.get_link_werner(left_id,right_id))/(leaf.ent_time[1]-leaf.ent_time[0]);
+        double new_fid= (3.0*new_w +1.0)/4.0;
+        cout<<left_id<<" "<<right_id<<" "<<leaf.ent_time[0]<<" "<<leaf.ent_time[1]<<" "<<fid<<" "<<new_fid<<"\n";
         result.push_back({left_id,{{leaf.ent_time[0],leaf.ent_time[1]}}});
         result.push_back({right_id,{{leaf.ent_time[0],leaf.ent_time[1]}}});
         return result;

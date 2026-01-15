@@ -19,7 +19,9 @@ void WernerAlgo::variable_initialize() {
     int V = graph.get_num_nodes();
     int T = graph.get_time_limit();
     dpp.eps_bucket = graph.get_bucket_eps();
-    dpp.Zhat =100.0;
+    double F_th=graph.get_fidelity_threshold();
+    double w_th=(4.0*F_th-1.0)/3.0;
+    dpp.Zhat = sqrt(-log(w_th))+1e-9;
     dpp.Zmin = graph.get_Zmin();
     dpp.T    = time_limit-1;
     dpp.eta  = graph.get_tao()/graph.get_time_limit();
