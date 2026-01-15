@@ -224,7 +224,10 @@ Shape_vector WernerAlgo2::backtrack_shape(ZLabel leaf,const vector<int>& path){
         double w=graph.get_link_werner(left_id,right_id);
         double new_w=1.0L-(1.0L-graph.get_link_werner(left_id,right_id))/(leaf.ent_time[1]-leaf.ent_time[0]);
         double new_fid= (3.0*new_w +1.0)/4.0;
-        cout<<left_id<<" "<<right_id<<" "<<leaf.ent_time[0]<<" "<<leaf.ent_time[1]<<" "<<fid<<" "<<new_fid<<"\n";
+        if(leaf.ent_time[1]-leaf.ent_time[0]>=2)
+            cout<<left_id<<" "<<right_id<<" "<<leaf.ent_time[0]<<" "<<leaf.ent_time[1]<<" "<<fid<<" "<<new_fid<<"\n";
+        else
+            cout<<"\033[1;31m"<< left_id << " " << right_id << " " << leaf.ent_time[0] << " " << leaf.ent_time[1] << " " << fid << " " << new_fid << "\033[0m" << "\n";
         result.push_back({left_id,{{leaf.ent_time[0],leaf.ent_time[1]}}});
         result.push_back({right_id,{{leaf.ent_time[0],leaf.ent_time[1]}}});
         return result;
