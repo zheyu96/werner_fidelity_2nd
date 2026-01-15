@@ -9,7 +9,6 @@
 #include "Algorithm/MyAlgo5/MyAlgo5.h"
 #include "Algorithm/MyAlgo6/MyAlgo6.h"
 #include "Algorithm/WernerAlgo/WernerAlgo.h"
-#include "Algorithm/WernerAlgo2/WernerAlgo2.h"
 #include "Network/PathMethod/PathMethodBase/PathMethod.h"
 #include "Network/PathMethod/Greedy/Greedy.h"
 #include "Network/PathMethod/QCAST/QCAST.h"
@@ -63,89 +62,81 @@ vector<SDpair> generate_requests(Graph graph, int requests_cnt, int length_lower
 }
 vector<SDpair> generate_requests_fid(Graph graph, int requests_cnt,double fid_th,double hop_th) {
     int n = graph.get_num_nodes();
-    vector<SDpair> candidates;
-    
-    int potential_count = 0;
-    int too_hard_count = 0;
-    int too_easy_count = 0;
-
-    cerr << "Start scanning for smart requests..." << endl;
-
+    vector<pair<SDpair,double>> cand[22];
+    random_device rd;
+    default_random_engine generator = default_random_engine(rd());
+    uniform_int_distribution<int> unif(0, 1e9);
+    int sd_cnt=0;
     for(int i = 0; i < n; i++) {
-        for(int j = i + 1; j < n; j++) { // 只看 i < j 避免重複
-            
-            // 1. 距離檢查
-            int dist = graph.distance(i, j);
-            if (dist < hop_th || dist == -1) continue;
-
-            // 2. 取得「現狀保真度」 (如果不純化)
-            double base_fid = graph.get_ini_fid(i, j); // 記得用我上一篇給的 Dijkstra 版本
-
-            // 3. 取得「極限保真度」 (如果用力純化)
-            double max_fid = graph.get_max_potential_fid(i, j);
-
-            // --- 篩選邏輯 ---
-            
-            // 狀況 A: 題目太簡單 (原本就及格) -> MyAlgo1 (Greedy) 會贏，Werner 沒優勢
-            if (base_fid >= fid_th) {
-                too_easy_count++;
-                // 如果你想做對照組，可以留一點點，不然就 continue
-                // continue; 
-            }
-
-            // 狀況 B: 題目太難 (純化到頂也無法及格) -> 大家都是 0
-            if (max_fid < fid_th) {
-                too_hard_count++;
-                continue; 
-            }
-
-            // 狀況 C: 黃金區間 (原本不及格，但純化後及格)
-            // 這就是 WernerAlgo2 最強的用武之地！
-            if (base_fid < fid_th && max_fid >= fid_th) {
-                candidates.push_back({i, j});
-                potential_count++;
+        for(int j = 0; j < n; j++) {
+            if(i == j) continue;
+            double fid = graph.get_ini_fid(i,j);
+            //cerr<<"fid of "<<i<<" "<<j<<" : "<<fid<<endl;
+            assert(fid>=0.0&&fid<=1.0);
+            if(fid > fid_th&&graph.distance(i,j)>=hop_th) {
+                int index = fid/0.05;
+                //index-=5;
+                if(index < 0) continue;
+                if(index > 20) index = 20;
+                int d=graph.distance(i, j),f0=fid,prob=pow(0.1,d)*pow(0.9,max(d-1,0));
+                //double score = f0+prob*100-0.1*d;
+                cand[index].emplace_back(std::make_pair(std::make_pair(i, j), graph.distance(i, j)));
+                if(graph.distance(i,j)>=1)sd_cnt++;
             }
         }
     }
-
-    cerr << "Scan finished." << endl;
-    cerr << "Too easy: " << too_easy_count << endl;
-    cerr << "Too hard: " << too_hard_count << endl;
-    cerr << "\033[1;32m" << "Gold Candidates (Needs Optimization): " << potential_count << "\033[0m" << endl;
-
-    // 如果候選者不夠，放寬標準 (避免當掉)
-    if (candidates.empty()) {
-        cerr << "Warning: No ideal requests found! Generating random ones." << endl;
-        return generate_requests_fid(graph, requests_cnt, 0, hop_th, 1.0);
+     cerr << "\033[1;32m"<< "[SD ini pairs] : "<<sd_cnt<< "\033[0m"<< endl;
+    /*for(int i=21;i>=0;i--){
+        if(!cand[i].empty()){
+            random_shuffle(cand[i].begin(), cand[i].end());
+        }
+    } */
+    /* for(int i=21;i>=0;i--){
+        sort(cand[i].begin(),cand[i].end(),[](const pair<SDpair,double>& L,const pair<SDpair,double>& R){
+            return L.second > R.second;
+        }) ;
+    }  */
+    for(int i=0;i<22;i++){
+        random_shuffle(cand[i].begin(), cand[i].end());
     }
-
-    // 隨機打亂並選取
-    random_shuffle(candidates.begin(), candidates.end());
-    
     vector<SDpair> requests;
-    int idx = 0;
-    while(requests.size() < requests_cnt) {
-        requests.push_back(candidates[idx % candidates.size()]);
-        idx++;
+    int pos[22];
+    for(int i=0;i<22;i++) pos[i]=0;
+    int idx=0;
+    while(requests.size()<requests_cnt){
+        int cnt=unif(generator) % 5 +4;
+        cnt=min(cnt,(int)(requests_cnt-requests.size()));
+        while(cand[21-idx].empty()){
+            idx++;
+            if(idx>=22) idx=0;
+        }
+        if(!cand[21-idx].empty()){
+            for(int i=0;i<cnt;i++){
+                requests.push_back(cand[21-idx][pos[21-idx]].first);
+            }
+            pos[21-idx]++;
+            pos[21-idx]%=cand[21-idx].size();
+        }
+        idx=(idx+1)%22;
     }
-    
+    assert((int)requests.size() == requests_cnt);
     return requests;
 }
 int main(){
     string file_path = "../data/";
 
     map<string, double> default_setting;
-    default_setting["num_nodes"] = 50;
-    default_setting["request_cnt"] = 50;
+    default_setting["num_nodes"] = 100;
+    default_setting["request_cnt"] = 300;
     default_setting["entangle_lambda"] = 0.045;
-    default_setting["time_limit"] = 25;
+    default_setting["time_limit"] = 13;
     default_setting["avg_memory"] = 6; // 16
     default_setting["tao"] = 0.002;
     default_setting["path_length"] = 5;
     default_setting["min_fidelity"] = 0.7;
     default_setting["max_fidelity"] = 0.98;
     default_setting["swap_prob"] = 0.9;
-    default_setting["fidelity_threshold"] = 0.01;
+    default_setting["fidelity_threshold"] = 0.7;
     default_setting["entangle_time"] = 0.00025;
     default_setting["entangle_prob"] = 0.01;
     default_setting["Zmin"]=0.02702867239;
@@ -153,7 +144,7 @@ int main(){
     default_setting["time_eta"]=0.001;
     default_setting["hop_count"]=3;
     map<string, vector<double>> change_parameter;
-    change_parameter["request_cnt"] = {20,40,60,80,100/* ,120,140,160,180 */};
+    change_parameter["request_cnt"] = {260,280,300,320,340,360,380,400,420};
     change_parameter["num_nodes"] = {40, 70, 100, 130, 160};
     change_parameter["min_fidelity"] = {0.6, 0.7, 0.8, 0.9, 0.95};
     change_parameter["avg_memory"] = {2,4,6, 8, 10,12,14};
@@ -170,7 +161,7 @@ int main(){
     //change_parameter["Zmin"]={0.028,0.150,0.272,0.394,0.518};
     change_parameter["bucket_eps"]={0.00001,0.0001,0.001,0.01,0.1};
     change_parameter["time_eta"]={0.00001,0.0001,0.001,0.01,0.1};
-    int round = 1;
+    int round = 50;
     vector<vector<SDpair>> default_requests(round);
     #pragma omp parallel for
     for(int r = 0; r < round; r++) {
@@ -203,8 +194,8 @@ int main(){
             exit(1);
         }
         Graph graph(filename, time_limit, swap_prob, avg_memory, min_fidelity, max_fidelity, fidelity_threshold, A, B, n, T, tao,Zmin,bucket_eps,time_eta);
-        //default_requests[r] = generate_requests(graph, 200, length_lower, length_upper);
-        default_requests[r]=generate_requests_fid(graph,250,0,3);
+        //default_requests[r] = generate_requests(graph, 100, length_lower, length_upper);
+        default_requests[r]=generate_requests_fid(graph,250,0,2);
         //cerr<<"Generated requests for round " << r << ", cnt: " << default_requests[r].size() << endl;
         assert(!default_requests[r].empty());
         //cerr  << "Generated requests for round " << r << ", cnt: " << default_requests[r].size() << endl;
@@ -219,7 +210,7 @@ int main(){
     vector<string> X_names = { "request_cnt", "time_limit", "tao",  "fidelity_threshold" , "avg_memory","hop_count" };
     //vector<string> X_names = {"Zmin","bucket_eps","time_eta"};
     vector<string> Y_names = {"fidelity_gain", "succ_request_cnt"};
-    vector<string> algo_names = {"ZFA2","ZFA","MyAlgo1", "MyAlgo2", "MyAlgo3", "Merge", "Linear", "ASAP"};
+    vector<string> algo_names = {"ZFA","MyAlgo1", "MyAlgo2", "MyAlgo3", "Merge", "Linear", "ASAP"};
     // init result
 
 
@@ -359,7 +350,6 @@ int main(){
                     cerr << "Avg path length = " << path_len / (double)path_cnt << "\n";
                     cerr << "Max path length = " << mx_path_len << "\n";
                     vector<AlgorithmBase*> algorithms;
-                    algorithms.emplace_back(new WernerAlgo2(graph,requests,paths));
                     algorithms.emplace_back(new WernerAlgo(graph,requests,paths));
                     if(X_name!="Zmin"&&X_name!="bucket_eps"&&X_name!="time_eta"){
                         algorithms.emplace_back(new MyAlgo1(graph, requests, paths));

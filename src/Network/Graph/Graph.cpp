@@ -162,7 +162,6 @@ int Graph::distance(int src, int dst) {
         }
     }
     assert(false);
-    if(dis[dst] == 2000) return -1;
 }
 double Graph::get_ini_fid(int src,int dst){
     vector<bool> vis(num_nodes+1,false);
