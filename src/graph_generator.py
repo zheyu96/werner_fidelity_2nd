@@ -81,7 +81,7 @@ with open(path, 'w') as f:
         # - 70% 機率生成低品質鏈路 (需要純化，WernerAlgo2 獨食)
         
         val = random.random()
-        if val < 0.3:
+        if val < 0.8:
             # 簡單題：Base 算法也能過
             ratio = random.uniform(0.85, 0.95)
         else:
