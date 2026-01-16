@@ -15,15 +15,19 @@ Shape_vector Shape::get_node_mem_range() {
     return node_mem_range;
 }
 
-
-double Shape::get_fidelity(double _A, double _B, double _n, double _T, double _tao, map<pair<int, int> , double> F_init) {
+// [修改 1] 函式定義必須包含 bool enable_purification (注意：這裡不寫預設值 = false，預設值只寫在 .h)
+double Shape::get_fidelity(double _A, double _B, double _n, double _T, double _tao, 
+                           map<pair<int, int> , double> F_init, bool enable_purification) {
     A = _A, B = _B, n = _n, T = _T, tao = _tao;
+    
+    // [修改 2] 將傳入的參數存入成員變數，這樣 recursion_get_fidelity 才能讀到
+    this->purification_enabled = enable_purification;
+
     // cerr << A << " " << B << " " << n << " " << T << " " << tao << endl;
     check_valid();
     return recursion_get_fidelity(0, (int)node_mem_range.size() - 1, F_init);
 }
 
-// [關鍵修改] 這裡加入了純化 (Purification) 的計算邏輯
 double Shape::recursion_get_fidelity(int left, int right, map<pair<int, int> , double> &F_init) {
     // Base Case: 葉節點 (Link)
     if(left == right - 1) {
@@ -31,14 +35,12 @@ double Shape::recursion_get_fidelity(int left, int right, map<pair<int, int> , d
         double raw_f = F_init[{node_mem_range[left].first, node_mem_range[right].first}];
         
         // 2. 計算該 Link 的持續時間 (Duration)
-        // 這裡讀取該節點在路徑上的最後一段佔用時間
         int start_time = node_mem_range[left].second.back().first;
         int end_time = node_mem_range[left].second.back().second;
         int duration = end_time - start_time;
 
-        // 3. 判斷是否執行純化 (WernerAlgo2 邏輯)
-        // 如果時間長度 > 1，代表透過時間積分提升了品質
-        if (duration > 1) {
+        // [修改 3] 關鍵：只有當 "開關開啟 (purification_enabled)" 且 "時間長度 > 1" 時，才執行純化
+        if (this->purification_enabled && duration > 1) {
             // (1) Fidelity -> Werner Parameter (W)
             // 公式: F = (3W + 1) / 4  =>  W = (4F - 1) / 3
             double W_raw = (4.0 * raw_f - 1.0) / 3.0;
@@ -54,7 +56,7 @@ double Shape::recursion_get_fidelity(int left, int right, map<pair<int, int> , d
             return pass_tao(purified_f);
         }
 
-        // 如果 duration == 1，代表普通生成，直接回傳原始 Fidelity
+        // 如果 duration == 1 或者純化開關未開啟 (MyAlgo3)，直接回傳原始 Fidelity 並衰減
         return pass_tao(raw_f);
     }
 
