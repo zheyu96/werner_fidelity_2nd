@@ -130,7 +130,7 @@ with open(path, 'w') as f:
             #    ratio = 0.95
             #if ratio < 0.55:
             #    ratio = 0.55
-            ratio = random.uniform(0.9, 0.95)
+            ratio = random.uniform(0.7, 0.95)
             if ratio > 1:
                 ratio = 1
             if ratio < 0.87:

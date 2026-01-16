@@ -48,7 +48,10 @@ double Shape::recursion_get_fidelity(int left, int right, map<pair<int, int> , d
             // (2) 執行純化公式 (對應 WernerAlgo2 的 Zcur 計算)
             // 公式: W_new = 1 - (1 - W_raw) / duration
             double W_new = 1.0 - (1.0 - W_raw) / (double)duration;
-
+            cout<<"\033[1;32m"<< ">1 time slot (" << node_mem_range[left].first << ", " << node_mem_range[right].first << ")"
+                << " | Duration: " << duration 
+                << " | W_raw: " << W_raw 
+                << " | W_new: " << W_new << "\033[0m" << endl;
             // (3) Werner Parameter (W) -> Fidelity
             double purified_f = (3.0 * W_new + 1.0) / 4.0;
 
