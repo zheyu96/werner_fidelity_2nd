@@ -1,107 +1,148 @@
+"""
+    Waxman model - graph generator for TOC paper
+
+"""
 import sys
 import networkx as nx
 import random
+import numpy
 import math
+from math import ceil
 
-# 設定地圖範圍大小
 RANGE = 300
+G = nx.Graph()
+vis = {}
+
+def dfs(node):
+    global vis
+    global G
+    if vis[node] == True:
+        return
+    vis[node] = True
+    for v in G.neighbors(node):
+        if vis[v] == False:
+            dfs(v)
+    return
+
+def is_connect():
+    global vis
+    global G
+    # print(type(G.nodes()))
+    vis = {node : False for node in G.nodes()}
+    for node in G.nodes():
+        dfs(node)
+        break
+    for node in G.nodes():
+        if(vis[node] == False):
+            return False
+    return True
 
 def dist(p1, p2):
     (x1, y1) = p1
     (x2, y2) = p2
     return ((x1 - x2) ** 2 + (y1 - y2) ** 2) ** (1 / 2)
 
+def link_prob(entangle_lambda, dis, times):
+    one_prob = math.exp(-entangle_lambda * dis)
+    print("one_prob =", 1 - ((1 - one_prob) ** times), file=sys.stderr)
+    return 1 - ((1 - one_prob) ** times)
+
 if len(sys.argv) <= 2:
-    print("Usage: python3 graph_generator.py <filename> <num_of_node>")
+    print("missing argv")
     sys.exit()
 
 filename = sys.argv[1]
 num_of_node = int(sys.argv[2])
+# min_memory_cnt = int(sys.argv[3])
+# max_memory_cnt = int(sys.argv[4])
+# min_fidelity = float(sys.argv[5])
+# max_fidelity = float(sys.argv[6])
+# entangle_lambda = float(sys.argv[3])
+# tao = float(sys.argv[4])
+# entangle_time = float(sys.argv[5])
+# entangle_prob = float(sys.argv[3])
 
 print("======== generating graph ========", file=sys.stderr)
-print(f"filename = {filename}", file=sys.stderr)
-print(f"num_of_node = {num_of_node}", file=sys.stderr)
+print("filename =", filename, file=sys.stderr)
+print("num_of_node =", num_of_node, file=sys.stderr)
+# print("min_fidelity =", min_fidelity, ", max_fidelity =", max_fidelity, file=sys.stderr)
+# print("min_memory_cnt =", min_memory_cnt, ", max_memory_cnt =", max_memory_cnt, file=sys.stderr)
 
-G = None
-avg_hops = 0
-
-# ==== 核心生成迴圈 ====
 while True:
-    # [修改點 1] 調整 Waxman 參數
-    # alpha=0.4: 增加長距離連線機率 (降低 Hop 數，增加連通性)
-    # beta=0.5: 控制邊的密度
-    G = nx.waxman_graph(num_of_node, beta=0.5, alpha=0.4, domain=(0, 0, 0.5, 1))
-    
-    # [修改點 2] 使用 NetworkX 內建檢查，確保圖是連通的
-    if nx.is_connected(G):
-        avg_hops = nx.average_shortest_path_length(G)
-        print(f"Generated Graph - Avg Hops: {avg_hops:.2f}", file=sys.stderr)
-        
-        # [修改點 3] 嚴格篩選 Hop 數在 2.0 到 5.0 之間
-        if 2.0 <= avg_hops <= 5.0:
-            break
-        else:
-            print("  -> Hops out of range (2-5), regenerating...", file=sys.stderr)
-    else:
-        # 如果圖不連通，直接重做
-        # print("  -> Graph not connected, regenerating...", file=sys.stderr)
-        pass
+    G = nx.waxman_graph(num_of_node, beta=0.85, alpha=0.03, domain=(0, 0, 0.5, 1))
+    # G = nx.waxman_graph(num_of_node, beta=0.85, alpha=10, domain=(0, 0, 0.5, 1))
+    positions = nx.get_node_attributes(G, 'pos')
+    add_edge = []
+    # connect the u's nearest vertex with u
+    for u in range(G.order()-1):
+        mi_dist = dist(positions[u], positions[G.order()-1])
+        mi_idx = G.order()-1
+        for v in range(u+1, G.order()):
+            if(G.has_edge(u, v)):
+                continue
+            if(mi_dist > dist(positions[u], positions[v])):
+                mi_dist = dist(positions[u], positions[v])
+                mi_idx = v
+        if(G.has_edge(u, mi_idx)):
+            continue
+        add_edge.append((u, mi_idx))
 
-# ==== 寫入檔案 ====
+    for e in add_edge:
+        (u, v) = e
+        G.add_edge(u, v)
+
+    if is_connect():
+        break 
+    else:
+        print("topo is not connected", file=sys.stderr)
+
 path = filename
 with open(path, 'w') as f:
     positions = nx.get_node_attributes(G, 'pos')
-    
-    # 1. 寫入節點數量
+    # write node
     print(num_of_node, file=f)
-    
-    # 2. 寫入節點記憶體 (這裡維持隨機，實際運算通常由 C++ 的 avg_memory 覆蓋)
     for n in G.nodes():
         (x, y) = positions[n]
-        # Waxman 座標是 0~1，乘上 RANGE 變為實際座標
-        # 注意：雖然這裡印出了記憶體，但你的 C++ main.cpp 似乎會用 default_setting["avg_memory"] 覆寫邏輯
-        num_of_memory = random.randint(-1, 1) 
-        print(num_of_memory, file=f)
+        pos_x = str(x*RANGE)
+        pos_y = str(y*RANGE)
+        num_of_memory = random.randint(-1, 1)
+        print(num_of_memory, file = f)
     
-    # 3. 計算並寫入邊的數量
-    # networkx 的 edges 預設不重複，無向圖不需要過濾 e[0]!=e[1] (除非有自環)
-    edges = list(G.edges())
-    num_of_edge = len(edges)
+    # write edge
+    num_of_edge = 0
+    for e in G.edges():
+        if e[0] != e[1]:
+            num_of_edge += 1
     print(num_of_edge, file=f)
-    
     avg_l = 0
-    
-    # 4. 寫入邊的資訊 (Node1, Node2, Fidelity)
-    for (u, v) in edges:
-        dis = RANGE * dist(positions[u], positions[v])
-        
-        # [修改點 4] Fidelity 設計：混合難度 (Mixed Difficulty)
-        # 這是讓 WernerAlgo2 贏的關鍵：
-        # - 30% 機率生成高品質鏈路 (Base 算法可吃)
-        # - 70% 機率生成低品質鏈路 (需要純化，WernerAlgo2 獨食)
-        
-        val = random.random()
-        if val < 0.8:
-            # 簡單題：Base 算法也能過
-            ratio = random.uniform(0.85, 1)
-        else:
-            # 困難題：Base 算法會死，WernerAlgo2 可以救
-            ratio = 0.95
-        if val< 0.5:
-            ratio=0.5
-        if val>1:
-            ratio=1
-        # 邊界檢查
-        if ratio > 0.99: ratio = 0.99
-        if ratio < 0.55: ratio = 0.55
-        
-        F = ratio
-        print(f"{u} {v} {F:.5f}", file=f)
-        avg_l += dis
+    for e in G.edges():
+        if e[0] != e[1]:
+            e0 = str(e[0])
+            e1 = str(e[1])
+            dis = RANGE * dist(positions[e[0]], positions[e[1]])  # distance
+            # F = random.random()*(max_fidelity-min_fidelity) + min_fidelity  # fidelity
+            # ratio_list=[0.98,0.7]
+            # ratio=numpy.random.choice(ratio_list,p=[0.3,0.7])
+            # ratio = numpy.random.normal(0.7, 0.1)
+            #dif = abs(1 - ratio)
+            #ratio = 1 - dif
+            #if ratio > 0.95:
+            #    ratio = 0.95
+            #if ratio < 0.55:
+            #    ratio = 0.55
+            ratio = random.uniform(0.9, 0.95)
+            if ratio > 1:
+                ratio = 1
+            if ratio < 0.87:
+                ratio = 0.87
+            F = ratio
+            print(e0 + " " + e1 + " " + str(F), file=f)
+            avg_l += dis
+    avg_l /= num_of_edge
 
-    if num_of_edge > 0:
-        avg_l /= num_of_edge
-
-print(f"num_of_edge = {num_of_edge}", file=sys.stderr)
-print(f"avg_edge_len = {avg_l:.2f}", file=sys.stderr)
+print("num_of_edge =", num_of_edge, file=sys.stderr)
+print("avg_edge_len =", avg_l, file=sys.stderr)
 print("\n======== graph generate finished ! ========", file=sys.stderr)
+
+
+# print(prob(entangle_lambda, 150))
