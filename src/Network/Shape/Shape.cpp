@@ -1,4 +1,10 @@
 #include "Shape.h"
+#include <cmath>
+#include <algorithm>
+#include <iostream>
+#include <cassert>
+
+using namespace std;
 
 Shape::Shape(Shape_vector _node_mem_range):
     node_mem_range(_node_mem_range) {}
@@ -17,8 +23,42 @@ double Shape::get_fidelity(double _A, double _B, double _n, double _T, double _t
     return recursion_get_fidelity(0, (int)node_mem_range.size() - 1, F_init);
 }
 
+// [關鍵修改] 這裡加入了純化 (Purification) 的計算邏輯
 double Shape::recursion_get_fidelity(int left, int right, map<pair<int, int> , double> &F_init) {
-    if(left == right - 1) return pass_tao(F_init[{node_mem_range[left].first, node_mem_range[right].first}]);
+    // Base Case: 葉節點 (Link)
+    if(left == right - 1) {
+        // 1. 取得該 Link 的原始物理 Fidelity
+        double raw_f = F_init[{node_mem_range[left].first, node_mem_range[right].first}];
+        
+        // 2. 計算該 Link 的持續時間 (Duration)
+        // 這裡讀取該節點在路徑上的最後一段佔用時間
+        int start_time = node_mem_range[left].second.back().first;
+        int end_time = node_mem_range[left].second.back().second;
+        int duration = end_time - start_time;
+
+        // 3. 判斷是否執行純化 (WernerAlgo2 邏輯)
+        // 如果時間長度 > 1，代表透過時間積分提升了品質
+        if (duration > 1) {
+            // (1) Fidelity -> Werner Parameter (W)
+            // 公式: F = (3W + 1) / 4  =>  W = (4F - 1) / 3
+            double W_raw = (4.0 * raw_f - 1.0) / 3.0;
+
+            // (2) 執行純化公式 (對應 WernerAlgo2 的 Zcur 計算)
+            // 公式: W_new = 1 - (1 - W_raw) / duration
+            double W_new = 1.0 - (1.0 - W_raw) / (double)duration;
+
+            // (3) Werner Parameter (W) -> Fidelity
+            double purified_f = (3.0 * W_new + 1.0) / 4.0;
+
+            // 回傳經過純化並加上一次操作衰減 (pass_tao) 的值
+            return pass_tao(purified_f);
+        }
+
+        // 如果 duration == 1，代表普通生成，直接回傳原始 Fidelity
+        return pass_tao(raw_f);
+    }
+
+    // --- 以下為原本的 Merge 遞迴邏輯 (保持不變) ---
     int latest = left + 1;
     for(int i = left + 1; i < right; i++) {
         if(node_mem_range[i].second[0].second > node_mem_range[latest].second[0].second) {
@@ -32,6 +72,7 @@ double Shape::recursion_get_fidelity(int left, int right, map<pair<int, int> , d
     int now_swap_time = node_mem_range[latest].second[0].second;
     int next_swap_time = min(node_mem_range[left].second.back().second, node_mem_range[right].second.front().second);
     double pass_time = tao * (next_swap_time - now_swap_time);
+    
     // cerr << "l r late = " << left << " " << right << " " << latest << endl;
     // cerr << "Fa Fb result = " << Fa << " " << Fb << " " << Fswap(t2F(F2t(Fa) + pass_time), t2F(F2t(Fb) + pass_time)) << endl;
     return t2F(F2t(Fswap(pass_tao(Fa), pass_tao(Fb))) + (pass_time - tao));
@@ -56,6 +97,7 @@ double Shape::F2t(double F) {
 double Shape::pass_tao(double F) {
     return t2F(F2t(F) + tao);
 }
+
 void Shape::check_valid() {
     if(node_mem_range[0].second.size() != 1) {
         cerr << "the usage of memory at src should be 1, but " << node_mem_range[0].second.size() << endl;
