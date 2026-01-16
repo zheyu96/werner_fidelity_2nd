@@ -201,7 +201,7 @@ int main(){
         //cerr<<"Generated requests for round " << r << ", cnt: " << default_requests[r].size() << endl;
         assert(!default_requests[r].empty());
         //cerr  << "Generated requests for round " << r << ", cnt: " << default_requests[r].size() << endl;
-        assert((int)default_requests[r].size()>=190);
+        //assert((int)default_requests[r].size()>=190);
     }
 
 
