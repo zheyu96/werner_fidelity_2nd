@@ -7,7 +7,7 @@
 #include <cmath>
 #include <iostream>
 #include <cassert>
-
+#include "../../config.h"
 using namespace std;
 
 // 定義 Shape_vector
