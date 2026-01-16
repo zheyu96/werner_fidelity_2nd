@@ -128,10 +128,10 @@ int main(){
     string file_path = "../data/";
 
     map<string, double> default_setting;
-    default_setting["num_nodes"] = 30;
+    default_setting["num_nodes"] = 50;
     default_setting["request_cnt"] = 50;
     default_setting["entangle_lambda"] = 0.045;
-    default_setting["time_limit"] = 18;
+    default_setting["time_limit"] = 20;
     default_setting["avg_memory"] = 10; // 16
     default_setting["tao"] = 0.002;
     default_setting["path_length"] = 3;
@@ -178,7 +178,7 @@ int main(){
         double time_eta=default_setting["time_eta"];
         double swap_prob = default_setting["swap_prob"];
         double fidelity_threshold = default_setting["fidelity_threshold"];
-        int length_upper = default_setting["path_length"] + 2;
+        int length_upper = default_setting["path_length"] + 1;
         int length_lower = default_setting["path_length"] - 1;
         map<string, double> input_parameter = default_setting;
         vector<map<string, map<string, double>>> result(round);
@@ -196,7 +196,7 @@ int main(){
             exit(1);
         }
         Graph graph(filename, time_limit, swap_prob, avg_memory, min_fidelity, max_fidelity, fidelity_threshold, A, B, n, T, tao,Zmin,bucket_eps,time_eta);
-        default_requests[r] = generate_requests(graph, 200, length_lower, length_upper);
+        default_requests[r] = generate_requests(graph, 100, length_lower, length_upper);
         //default_requests[r]=generate_requests_fid(graph,250,0.6,2);
         //cerr<<"Generated requests for round " << r << ", cnt: " << default_requests[r].size() << endl;
         assert(!default_requests[r].empty());
