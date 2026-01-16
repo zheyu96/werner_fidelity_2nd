@@ -423,10 +423,10 @@ void WernerAlgo2::run() {
             }
 
             if(request_index == -1 || used[request_index]) continue;
-            if(graph.check_resource(shape,true,true)) {
+            if(graph.check_resource(shape,true,false)) {
                 used[request_index] = true;
                 // cerr << "[MyAlgo1] " << P.first << " " << P.second.size() << endl;
-                graph.reserve_shape(shape,true);
+                graph.reserve_shape(shape,false);
                 finished.push_back(request_index);
             }
         }
