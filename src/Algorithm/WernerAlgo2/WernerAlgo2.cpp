@@ -1,4 +1,9 @@
 #include "WernerAlgo2.h"
+#include <fstream> // [新增] 用於寫入檔案
+#include <iostream>
+#include <cmath>
+
+using namespace std;
 
 WernerAlgo2::WernerAlgo2(Graph graph,vector<pair<int,int>> requests,map<SDpair, vector<Path>> paths): AlgorithmBase(graph, requests, paths)
 {
@@ -67,51 +72,6 @@ Shape_vector WernerAlgo2::separation_oracle(){
     }
     return todo_shape;
 }
-
-/*pair<Shape_vector, double>
-WernerAlgo::find_min_shape(int src, int dst, double alp) {
-    const auto& paths = get_paths(src, dst);
-
-    Shape_vector best_shape;
-    double best_cost = INF;
-
-    for (const Path& path : paths) {
-        // 建立全時間 DP 表：T × n × n
-        int T = graph.get_time_limit();
-        int n = (int)path.size();
-        if (n <= 1) continue;
-
-        L_prev.assign(T, vector<vector<vector<shared_ptr<ZLabel>>>>(
-                          n, vector<vector<shared_ptr<ZLabel>>>(n)));
-
-        // 跑完整個時間軸 DP
-        run_dp_all_t(path, dpp);
-
-        // 從最後時間層挑 [0, n-1] 的最佳 ZLabel
-        shared_ptr<ZLabel> best_leaf = nullptr;
-        double best_Z = INF;
-
-        for (int t = 1; t < T; ++t) {
-            auto& cell = L_prev[t][0][n-1];
-            for (auto& sp : cell) {
-                if (!sp) continue;
-                if (sp->Z < best_Z) { best_Z = sp->Z; best_leaf = sp; }
-            }
-        }
-
-        if (best_leaf) {
-            auto shape = backtrack_shape(best_leaf, path);
-            double final_cost = evaluate_cost(best_Z, alp, shape);
-            if (final_cost < best_cost) {
-                best_cost = final_cost;
-                best_shape = std::move(shape);
-            }
-        }
-    }
-
-    if (best_cost >= INF/2) return {{}, INF};
-    return {best_shape, best_cost};
-}*/
 
 void WernerAlgo2::run_dp_in_t(const Path& path, const DPParam& dpp,int t) {
     const int T = graph.get_time_limit();
@@ -220,15 +180,12 @@ Shape_vector WernerAlgo2::backtrack_shape(ZLabel leaf,const vector<int>& path){
         Shape_vector result;
         if (leaf.ent_time.size() < 2) return Shape_vector{}; 
         assert(leaf.ent_time.size() == 2);
+        // 這邊的 fidelity 計算僅為 backtrack 過程中的檢查，與主要統計邏輯分開
         double fid=graph.get_F_init(left_id,right_id);
         double w=graph.get_link_werner(left_id,right_id);
         double new_w=1.0L-(1.0L-graph.get_link_werner(left_id,right_id))/(leaf.ent_time[1]-leaf.ent_time[0]);
         double new_fid= (3.0*new_w +1.0)/4.0;
-        /* if(leaf.ent_time[1]-leaf.ent_time[0]<=1)
-            cout<<left_id<<" "<<right_id<<" "<<leaf.ent_time[0]<<" "<<leaf.ent_time[1]<<" "<<fid<<" "<<new_fid<<"\n";
-        else */
-        /* if(leaf.ent_time[1]-leaf.ent_time[0]>=2)    
-            cout<<"\033[1;31m"<< left_id << " " << right_id << " " << leaf.ent_time[0] << " " << leaf.ent_time[1] << " " << fid << " " << new_fid << "\033[0m" << "\n"; */
+        
         result.push_back({left_id,{{leaf.ent_time[0],leaf.ent_time[1]}}});
         result.push_back({right_id,{{leaf.ent_time[0],leaf.ent_time[1]}}});
         return result;
@@ -368,51 +325,25 @@ void WernerAlgo2::run() {
                     obj += (beta[node_id][t] - original) * theta;
                 }
             }
-            /* cerr<<"[WernerAlgo] obj :"<<obj<<endl;
-            for(int i=0;i<shape.size();i++){
-                cerr<<shape[i].first<<" : ";
-                for(int j=0;j<shape[i].second.size();j++)
-                    cerr<<"{"<<shape[i].second[j].first<<","<<shape[i].second[j].second<<"}  ";
-                    cerr<<"\n";
-            }
-            cerr<<"=========\n"; */
         }
         vector<pair<double, Shape_vector>> shapes;
 
         for(int i = 0; i < (int)requests.size(); i++) {
             for(auto P : x[i]) {
                 shapes.push_back({P.second, P.first});
-                // shapes.push_back({Shape(P.first).get_fidelity(A, B, n, T, tao), P.first});
             }
         }
 
-        // sort(shapes.begin(), shapes.end(), [](pair<double, Shape_vector> left, pair<double, Shape_vector> right) {
-        //     if(fabs(left.first - right.first) >= EPS) return left.first > right.first;
-        //     if(left.second.size() != right.second.size()) return left.second.size() < right.second.size();
-        //     return left.second < right.second;
-        // });
-        /* sort(shapes.begin(), shapes.end(),
-        [this](const pair<double, Shape_vector>& L,const pair<double, Shape_vector>& R){
-        Shape sL(L.second), sR(R.second);
-        double fL = sL.get_fidelity(A, B, n, T, tao, this->graph.get_F_init());
-        double fR = sR.get_fidelity(A, B, n, T, tao, this->graph.get_F_init());
-        if (fL < 0.0) fL = 0.0;
-        if (fR < 0.0) fR = 0.0;
-         // path success probability
-        double pL = max(this->graph.path_Pr(sL), 1e-12);
-        double pR = max(this->graph.path_Pr(sR), 1e-12);
-         // score = x_weight * fidelity * path_Pr
-        double scoreL = L.first  * pL;
-        double scoreR = R.first  * pR;
-        if (fabs(scoreL - scoreR) > EPS) return scoreL > scoreR;
-        return scoreL>scoreR;
-     }); */
         sort(shapes.begin(), shapes.end(), [](pair<double, Shape_vector> left, pair<double, Shape_vector> right) {
             return left.first > right.first;
         });
-        // cerr << "[MyAlgo1] " << shapes.size() << endl;
+
         vector<bool> used(requests.size(), false);
         vector<int> finished;
+        
+        // [新增] 統計資料結構：Key=Duration, Value=List of {W_raw, W_new}
+        map<int, vector<pair<double, double>>> purification_stats;
+
         for(pair<double, Shape_vector> P : shapes) {
             Shape shape = Shape(P.second);
             int request_index = -1;
@@ -423,11 +354,32 @@ void WernerAlgo2::run() {
             }
 
             if(request_index == -1 || used[request_index]) continue;
-            if(graph.check_resource(shape,true,true)) {
+            
+            // 呼叫 check_resource 時開啟純化 (Enable Purification)
+            if(graph.check_resource(shape, true, true)) {
                 used[request_index] = true;
-                // cerr << "[MyAlgo1] " << P.first << " " << P.second.size() << endl;
-                graph.reserve_shape(shape,true);
+                graph.reserve_shape(shape, true);
                 finished.push_back(request_index);
+
+                // [新增] 收集純化資訊
+                Shape_vector sv = shape.get_node_mem_range();
+                // 遍歷每一段 Link (從 node i 到 node i+1)
+                for(size_t i = 0; i < sv.size() - 1; ++i) {
+                    int u = sv[i].first;
+                    int v = sv[i+1].first;
+
+                    // Leaf node 的 memory range 最後一個區間代表與下一個節點的 Entanglement
+                    int start = sv[i].second.back().first;
+                    int end = sv[i].second.back().second;
+                    int duration = end - start;
+
+                    // 只有當 duration > 1 代表有進行純化操作
+                    if (duration > 1) {
+                        double w_raw = graph.get_link_werner(u, v);
+                        double w_new = 1.0 - (1.0 - w_raw) / (double)duration;
+                        purification_stats[duration].push_back({w_raw, w_new});
+                    }
+                }
             }
         }
 
@@ -435,8 +387,48 @@ void WernerAlgo2::run() {
         for(auto fin : finished) {
             requests.erase(requests.begin() + fin);
         }
+
+        // [新增] 將統計結果寫入檔案
+        // 檔案路徑與 main.cpp 中的 log 路徑一致 (假設在 ../data/log/)
+        // 使用 append 模式，避免覆蓋之前的回合記錄
+        string log_file_path = "../data/log/ZFA2_Purification_Stats.txt";
+        ofstream log_file(log_file_path, ios::app);
+        
+        if (log_file.is_open()) {
+            if (!purification_stats.empty()) {
+                log_file << "--- Round Log ---" << endl;
+                for(auto const& [len, vec] : purification_stats) {
+                    log_file << "Duration " << len << " (Count: " << vec.size() << "):" << endl;
+                    for(auto const& pair : vec) {
+                        double w_raw = pair.first;
+                        double w_new = pair.second;
+                        // 轉換為 Fidelity 方便閱讀: F = (3W+1)/4
+                        double f_raw = (3.0 * w_raw + 1.0) / 4.0;
+                        double f_new = (3.0 * w_new + 1.0) / 4.0;
+                        
+                        log_file << "  W: " << w_raw << " -> " << w_new 
+                                 << " | F: " << f_raw << " -> " << f_new << endl;
+                    }
+                }
+                log_file << "-----------------" << endl;
+            }
+            log_file.close();
+        } else {
+            cerr << "[Warning] Unable to open log file: " << log_file_path << endl;
+        }
+
+        // 同時印到 cerr 方便即時觀察
+        cerr << "\n=== [WernerAlgo2 Purification Stats] ===" << endl;
+        if (purification_stats.empty()) {
+            cerr << "No links were purified (all duration = 1)." << endl;
+        } else {
+            for(auto const& [len, vec] : purification_stats) {
+                cerr << "Duration " << len << " (Count: " << vec.size() << "):" << endl;
+                // 為了避免洗版，終端機只印數量，詳細內容看檔案
+            }
+        }
+        cerr << "========================================\n" << endl;
     }
     update_res();
     cerr << "[" << algorithm_name << "] end" << endl;
 }
- 
