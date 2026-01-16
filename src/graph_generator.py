@@ -86,7 +86,7 @@ with open(path, 'w') as f:
             ratio = random.uniform(0.85, 1)
         else:
             # 困難題：Base 算法會死，WernerAlgo2 可以救
-            ratio = 0.85
+            ratio = 0.95
         if val< 0.5:
             ratio=0.5
         if val>1:
