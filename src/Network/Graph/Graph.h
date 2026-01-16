@@ -61,11 +61,11 @@ public:
     vector<double> get_boundary();
     vector<double> get_cnt();
 
-    // [修改] 增加 enable_purification 參數，預設 false 以相容舊代碼
+    // [關鍵修改] 這裡必須宣告帶有 enable_purification 的版本
     bool check_resource(Shape shape, bool threshold = true, bool enable_purification = false);
     bool check_resource_ASAP(Shape shape, bool threshold = true, bool enable_purification = false);
     
-    // [修改] 增加 enable_purification 參數
+    // [關鍵修改] 這裡也必須宣告
     void reserve_shape(Shape shape, bool enable_purification = false);
     void reserve_shape2(Shape shape, bool enable_purification = false);
     void reserve_shape_ASAP(Shape shape, bool enable_purification = false);
