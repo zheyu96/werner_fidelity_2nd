@@ -7,7 +7,7 @@
 #include <cmath>
 #include <iostream>
 #include <cassert>
-#include "../../config.h"
+
 using namespace std;
 
 // 定義 Shape_vector
@@ -22,7 +22,7 @@ private:
     bool purification_enabled = false;
 
     double recursion_get_fidelity(int left, int right, map<pair<int, int> , double> &F_init);
-    void check_valid();
+    // void check_valid(); // <--- 原本在這裡 (private)，導致錯誤
     void recursion_check(int left, int right);
     
     // 輔助計算函式
@@ -41,6 +41,9 @@ public:
     // [修改] 這裡的宣告必須包含新的參數 bool enable_purification
     double get_fidelity(double _A, double _B, double _n, double _T, double _tao, 
                         map<pair<int, int> , double> F_init, bool enable_purification = false);
+
+    // [修正] 將 check_valid 移動到 public 區域
+    void check_valid(); 
 
     void print();
     bool operator< (Shape &ls);
