@@ -130,11 +130,11 @@ with open(path, 'w') as f:
             #    ratio = 0.95
             #if ratio < 0.55:
             #    ratio = 0.55
-            ratio = random.uniform(0.83, 0.9)
+            ratio = random.uniform(0.89, 0.95)
             if ratio > 1:
-                ratio = 0.95
-            if ratio < 0.7:
-                ratio = 0.7
+                ratio = 1
+            if ratio < 0.8:
+                ratio = 0.8
             F = ratio
             print(e0 + " " + e1 + " " + str(F), file=f)
             avg_l += dis
