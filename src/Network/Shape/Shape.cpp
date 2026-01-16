@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <iostream>
 #include <cassert>
-
+#include "../../config.h"
 using namespace std;
 
 Shape::Shape(Shape_vector _node_mem_range):
