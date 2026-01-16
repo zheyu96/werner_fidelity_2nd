@@ -60,11 +60,15 @@ public:
     double get_edge_W(int u,int v);
     vector<double> get_boundary();
     vector<double> get_cnt();
-    bool check_resource(Shape shape, bool threshold = true);
-    bool check_resource_ASAP(Shape shape, bool threshold = true);
-    void reserve_shape(Shape shape);
-    void reserve_shape2(Shape shape);
-    void reserve_shape_ASAP(Shape shape);
+
+    // [修改] 增加 enable_purification 參數，預設 false 以相容舊代碼
+    bool check_resource(Shape shape, bool threshold = true, bool enable_purification = false);
+    bool check_resource_ASAP(Shape shape, bool threshold = true, bool enable_purification = false);
+    
+    // [修改] 增加 enable_purification 參數
+    void reserve_shape(Shape shape, bool enable_purification = false);
+    void reserve_shape2(Shape shape, bool enable_purification = false);
+    void reserve_shape_ASAP(Shape shape, bool enable_purification = false);
 
     double path_Pr(Path path);
     double path_Pr(Shape shape);

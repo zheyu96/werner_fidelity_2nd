@@ -186,9 +186,12 @@ double Graph::get_ini_fid(int src,int dst){
     }
     return f[dst];
 }
-bool Graph::check_resource(Shape shape, bool threshold /*= true*/) {
+
+// [修改] 增加 enable_purification 參數
+bool Graph::check_resource(Shape shape, bool threshold /*= true*/, bool enable_purification /*= false*/) {
     Shape_vector nm = shape.get_node_mem_range();
-    if(threshold && shape.get_fidelity(A, B, n, T, tao, F_init) < fidelity_threshold) return false;
+    // [修改] 將參數傳遞給 get_fidelity
+    if(threshold && shape.get_fidelity(A, B, n, T, tao, F_init, enable_purification) < fidelity_threshold) return false;
     for(int i = 0; i < (int)nm.size(); i++) {
         int node = nm[i].first;
         map<int, int> need_amount; // time to amount
@@ -217,9 +220,10 @@ bool Graph::check_resource(Shape shape, bool threshold /*= true*/) {
     return true;
 }
 
-bool Graph::check_resource_ASAP(Shape shape, bool threshold) {
+// [修改] 增加 enable_purification 參數 (雖然目前 ASAP 演算法可能用不到，但保持一致性)
+bool Graph::check_resource_ASAP(Shape shape, bool threshold, bool enable_purification) {
     Shape_vector nm = shape.get_node_mem_range();
-    if(threshold && shape.get_fidelity(A, B, n, T, tao, F_init) < fidelity_threshold) return false;
+    if(threshold && shape.get_fidelity(A, B, n, T, tao, F_init, enable_purification) < fidelity_threshold) return false;
     int mx_amount = 0, earliest = time_limit, lastest = 0; 
     for(int i = 0; i < (int)nm.size(); i++) {
         map<int, int> need_amount; // time to amount
@@ -256,7 +260,8 @@ bool Graph::check_resource_ASAP(Shape shape, bool threshold) {
     return true;
 }
 
-void Graph::reserve_shape_ASAP(Shape shape) {
+// [修改] 增加 enable_purification 參數
+void Graph::reserve_shape_ASAP(Shape shape, bool enable_purification) {
     shape.check_valid();
     // cerr << "checked" << endl;
     Shape_vector nm = shape.get_node_mem_range();
@@ -303,7 +308,7 @@ void Graph::reserve_shape_ASAP(Shape shape) {
         }
     }
 
-    double shape_fidelity = shape.get_fidelity(A, B, n, T, tao, F_init);
+    double shape_fidelity = shape.get_fidelity(A, B, n, T, tao, F_init, enable_purification);
     if(shape_fidelity > fidelity_threshold) {
         int src=nm.front().first,dst=nm.back().first;
         cerr<<"\033[1;34m"<<"initial fid = "<<get_ini_fid(src,dst)<<" real fidelity = "<<shape_fidelity<<" hop count = "<<(nm.size()-1)<<"\033[0m"<<endl;
@@ -320,7 +325,8 @@ void Graph::reserve_shape_ASAP(Shape shape) {
     }
 }
 
-void Graph::reserve_shape(Shape shape) {
+// [修改] 增加 enable_purification 參數
+void Graph::reserve_shape(Shape shape, bool enable_purification /*= false*/) {
     shape.check_valid();
     // cerr << "checked" << endl;
     Shape_vector nm = shape.get_node_mem_range();
@@ -359,9 +365,13 @@ void Graph::reserve_shape(Shape shape) {
         } 
     }
 
-    double shape_fidelity = shape.get_fidelity(A, B, n, T, tao, F_init);
+    // [修改] 計算 fidelity 時使用 enable_purification
+    double shape_fidelity = shape.get_fidelity(A, B, n, T, tao, F_init, enable_purification);
+    
     if(shape_fidelity + EPS < fidelity_threshold) {
         cerr << "the fidelity of shape is not greater than threshold" << endl;
+        // Debug 訊息
+        cerr << "Shape Fid: " << shape_fidelity << ", Thres: " << fidelity_threshold << endl;
         assert(false);
         exit(1);
     }
@@ -378,7 +388,9 @@ void Graph::reserve_shape(Shape shape) {
         }
     }
 }
-void Graph::reserve_shape2(Shape shape) {
+
+// [修改] 增加 enable_purification 參數
+void Graph::reserve_shape2(Shape shape, bool enable_purification) {
     shape.check_valid();
     // cerr << "checked" << endl;
     Shape_vector nm = shape.get_node_mem_range();
@@ -417,7 +429,7 @@ void Graph::reserve_shape2(Shape shape) {
         } 
     }
 
-    double shape_fidelity = shape.get_fidelity(A, B, n, T, tao, F_init);
+    double shape_fidelity = shape.get_fidelity(A, B, n, T, tao, F_init, enable_purification);
     if(shape_fidelity > fidelity_threshold) {
         int src=nm.front().first,dst=nm.back().first;
         cerr<<"\033[1;34m"<<"initial fid = "<<get_ini_fid(src,dst)<<" real fidelity = "<<shape_fidelity<<" hop count = "<<(nm.size()-1)<<"\033[0m"<<endl;
