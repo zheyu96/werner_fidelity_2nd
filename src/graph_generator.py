@@ -83,11 +83,14 @@ with open(path, 'w') as f:
         val = random.random()
         if val < 0.8:
             # 簡單題：Base 算法也能過
-            ratio = random.uniform(0.85, 0.95)
+            ratio = random.uniform(0.85, 1)
         else:
             # 困難題：Base 算法會死，WernerAlgo2 可以救
-            ratio = random.uniform(0.95, 0.99)
-            
+            ratio = 0.85
+        if val< 0.5:
+            ratio=0.5
+        if val>1:
+            ratio=1
         # 邊界檢查
         if ratio > 0.99: ratio = 0.99
         if ratio < 0.55: ratio = 0.55
