@@ -134,7 +134,7 @@ int main(){
     default_setting["time_limit"] = 22;
     default_setting["avg_memory"] = 10; // 16
     default_setting["tao"] = 0.002;
-    default_setting["path_length"] = 5;
+    default_setting["path_length"] = 4;
     default_setting["min_fidelity"] = 0.5;
     default_setting["max_fidelity"] = 0.98;
     default_setting["swap_prob"] = 0.9;
@@ -178,8 +178,8 @@ int main(){
         double time_eta=default_setting["time_eta"];
         double swap_prob = default_setting["swap_prob"];
         double fidelity_threshold = default_setting["fidelity_threshold"];
-        int length_upper = default_setting["path_length"] + 1;
-        int length_lower = default_setting["path_length"] - 2;
+        int length_upper = default_setting["path_length"] + 2;
+        int length_lower = default_setting["path_length"] - 1;
         map<string, double> input_parameter = default_setting;
         vector<map<string, map<string, double>>> result(round);
         // double entangle_lambda = input_parameter["entangle_lambda"];
