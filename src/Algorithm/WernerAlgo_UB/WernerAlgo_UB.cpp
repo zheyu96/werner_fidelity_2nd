@@ -7,7 +7,7 @@ using namespace std;
 
 WernerAlgo_UB::WernerAlgo_UB(Graph graph,vector<pair<int,int>> requests,map<SDpair, vector<Path>> paths): AlgorithmBase(graph, requests, paths)
 {
-    algorithm_name = "ZFA2";
+    algorithm_name = "ZFA_UB";
 }
 
 void WernerAlgo_UB::variable_initialize() {

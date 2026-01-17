@@ -129,7 +129,7 @@ int main(){
     string file_path = "../data/";
 
     map<string, double> default_setting;
-    default_setting["num_nodes"] = 50;
+    default_setting["num_nodes"] = 100;
     default_setting["request_cnt"] = 50;
     default_setting["entangle_lambda"] = 0.045;
     default_setting["time_limit"] = 20;
@@ -147,7 +147,7 @@ int main(){
     default_setting["time_eta"]=0.001;
     default_setting["hop_count"]=3;
     map<string, vector<double>> change_parameter;
-    change_parameter["request_cnt"] = {20,40,60,80,100};
+    change_parameter["request_cnt"] = {10,30,50,70,90};
     change_parameter["num_nodes"] = {40, 70, 100, 130, 160};
     change_parameter["min_fidelity"] = {0.6, 0.7, 0.8, 0.9, 0.95};
     change_parameter["avg_memory"] = {2,4,6, 8, 10,12,14};
@@ -164,7 +164,7 @@ int main(){
     //change_parameter["Zmin"]={0.028,0.150,0.272,0.394,0.518};
     change_parameter["bucket_eps"]={0.00001,0.0001,0.001,0.01,0.1};
     change_parameter["time_eta"]={0.00001,0.0001,0.001,0.01,0.1};
-    int round = 1;
+    int round = 50;
     vector<vector<SDpair>> default_requests(round);
     #pragma omp parallel for
     for(int r = 0; r < round; r++) {
