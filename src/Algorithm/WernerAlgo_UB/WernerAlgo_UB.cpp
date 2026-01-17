@@ -326,15 +326,14 @@ void WernerAlgo_UB::run() {
                 }
             }
         }
-        vector<pair<double, Shape_vector>> shapes;
-
-        for(int i = 0; i < (int)requests.size(); i++) {
-            for(auto P : x[i]) {
-                shapes.push_back({P.second, P.first});
-            }
+    }
+    vector<pair<double, Shape_vector>> shapes;
+    for(int i = 0; i < (int)requests.size(); i++) {
+        for(auto P : x[i]) {
+            shapes.push_back({P.second, P.first});
         }
-
-        sort(shapes.rbegin(), shapes.rend(), [](pair<double, Shape_vector> left, pair<double, Shape_vector> right) {
+    }
+    sort(shapes.rbegin(), shapes.rend(), [](pair<double, Shape_vector> left, pair<double, Shape_vector> right) {
         if(fabs(left.first - right.first) >= EPS) return left.first < right.first;
         if(left.second.size() != right.second.size()) return left.second.size() > right.second.size();
         return left.second < right.second;
