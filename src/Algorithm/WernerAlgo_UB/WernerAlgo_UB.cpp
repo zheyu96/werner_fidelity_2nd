@@ -1,16 +1,16 @@
-#include "WernerAlgo2.h"
-#include <fstream> 
+#include "WernerAlgo_UB.h"
+#include <fstream> // [新增] 用於寫入檔案
 #include <iostream>
 #include <cmath>
 
 using namespace std;
 
-WernerAlgo2::WernerAlgo2(Graph graph,vector<pair<int,int>> requests,map<SDpair, vector<Path>> paths): AlgorithmBase(graph, requests, paths)
+WernerAlgo_UB::WernerAlgo_UB(Graph graph,vector<pair<int,int>> requests,map<SDpair, vector<Path>> paths): AlgorithmBase(graph, requests, paths)
 {
-    algorithm_name = "ZFA_UB";
+    algorithm_name = "ZFA2";
 }
 
-void WernerAlgo2::variable_initialize() {
+void WernerAlgo_UB::variable_initialize() {
     // 與 MyAlgo1 類似：初始化 dual 與目標
     int m = (int)requests.size()
           + graph.get_num_nodes() * graph.get_time_limit();
@@ -41,7 +41,7 @@ void WernerAlgo2::variable_initialize() {
     }
 }
 
-Shape_vector WernerAlgo2::separation_oracle(){
+Shape_vector WernerAlgo_UB::separation_oracle(){
     // 針對每個 request 找最小成本 shape，選最好的回傳
     double most_violate=1e9;
     bool flag=0;
@@ -73,7 +73,7 @@ Shape_vector WernerAlgo2::separation_oracle(){
     return todo_shape;
 }
 
-void WernerAlgo2::run_dp_in_t(const Path& path, const DPParam& dpp,int t) {
+void WernerAlgo_UB::run_dp_in_t(const Path& path, const DPParam& dpp,int t) {
     const int T = graph.get_time_limit();
     const int n = (int)path.size();
 
@@ -132,7 +132,7 @@ void WernerAlgo2::run_dp_in_t(const Path& path, const DPParam& dpp,int t) {
         }
 }
 
-void WernerAlgo2::pareto_prune_byZ(vector<ZLabel>& cand) {
+void WernerAlgo_UB::pareto_prune_byZ(vector<ZLabel>& cand) {
     if (cand.empty()) return;
     sort(cand.begin(), cand.end(), [](const ZLabel& x, const ZLabel& y){
         if(x.Z!=y.Z) return x.Z < y.Z;
@@ -149,7 +149,7 @@ void WernerAlgo2::pareto_prune_byZ(vector<ZLabel>& cand) {
     cand.swap(kept);
 }
 
-void WernerAlgo2::bucket_by_Z(vector<ZLabel>& cand) {
+void WernerAlgo_UB::bucket_by_Z(vector<ZLabel>& cand) {
     if (cand.empty()) return;
     double q=1+dpp.eps_bucket;
     double invLogQ=1.0/log(q);
@@ -174,7 +174,7 @@ void WernerAlgo2::bucket_by_Z(vector<ZLabel>& cand) {
     cand.swap(bucketed);
 }
 
-Shape_vector WernerAlgo2::backtrack_shape(ZLabel leaf,const vector<int>& path){
+Shape_vector WernerAlgo_UB::backtrack_shape(ZLabel leaf,const vector<int>& path){
     int left_id=path[leaf.a],right_id=path[leaf.b];
     if(leaf.op==Op::LEAF){
         Shape_vector result;
@@ -239,12 +239,12 @@ Shape_vector WernerAlgo2::backtrack_shape(ZLabel leaf,const vector<int>& path){
     // Handle unexpected Op value
     cerr << "[WernerAlgo::backtrack_shape] Warning: Unknown Op value encountered." << std::endl;
 }
-int WernerAlgo2::split_dis(int s,int d,WernerAlgo2::ZLabel& L){
-    if(L.op!=WernerAlgo2::Op::MERGE||L.k<0) return 1e18/4;
+int WernerAlgo_UB::split_dis(int s,int d,WernerAlgo_UB::ZLabel& L){
+    if(L.op!=WernerAlgo_UB::Op::MERGE||L.k<0) return 1e18/4;
     int mid=(s+d)/2;
     return abs(mid-L.k);
 }
-pair<double,WernerAlgo2::ZLabel> WernerAlgo2::eval_best_J(int s, int d, int t, double alp){
+pair<double,WernerAlgo_UB::ZLabel> WernerAlgo_UB::eval_best_J(int s, int d, int t, double alp){
     double bestJ=1e18;
     int bestdis=1e18/4;
     int flag=0;
@@ -263,7 +263,7 @@ pair<double,WernerAlgo2::ZLabel> WernerAlgo2::eval_best_J(int s, int d, int t, d
     else return {INF,tmp};
 }
 
-void WernerAlgo2::run() {
+void WernerAlgo_UB::run() {
     int round = 1;
     while (round-- && !requests.empty()) {
         variable_initialize();
