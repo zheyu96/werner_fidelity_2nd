@@ -142,7 +142,7 @@ int main() {
 
         // 5. 寫入平均結果
         for(string Y_name : Y_names) {
-            string ans_filename = "ans/Greedy_" + X_name + "_" + Y_name + ".ans";
+            string ans_filename = "ans/Greedy_" + X_name + "_" + Y_name + "_ZFA2.ans";
             ofstream ofs(file_path + ans_filename, ios::app);
             ofs << change_value << " ";
             
