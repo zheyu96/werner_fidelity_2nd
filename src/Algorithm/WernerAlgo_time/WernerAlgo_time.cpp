@@ -161,7 +161,7 @@ void WernerAlgo_time::run_dp_in_t(const Path& path, const DPParam& dpp,int t) {
             total_before = cand.size();
             bucket_by_Z(cand);
             total_after = cand.size();
-            if(total_before>0)cout << "DP_table[" << t << "][" << a << "][" << b << "] - before: " << total_before << ", after: " << total_after << endl;
+            if(total_before>10)cout << "DP_table[" << t << "][" << a << "][" << b << "] - before: " << total_before << ", after: " << total_after << endl;
             DP_table[t][a][b]=cand;
         }
 }
