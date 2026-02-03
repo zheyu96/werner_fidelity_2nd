@@ -63,13 +63,13 @@ int main() {
     // 1. 設定預設參數
     map<string, double> default_setting;
     default_setting["num_nodes"] = 100;
-    default_setting["request_cnt"] = 50;
-    default_setting["time_limit"] = 20;
-    default_setting["avg_memory"] = 10;
+    default_setting["request_cnt"] = 300;
+    default_setting["time_limit"] = 13;
+    default_setting["avg_memory"] = 6;
     default_setting["tao"] = 0.002;
     default_setting["path_length"] = 4;
     default_setting["fidelity_threshold"] = 0.7;
-    default_setting["epsilon"] = 0.35; 
+    default_setting["epsilon"] = 0.7; 
     default_setting["Zmin"] = 0.02702867239;
     default_setting["bucket_eps"] = 0.01;
     default_setting["time_eta"] = 0.001;
