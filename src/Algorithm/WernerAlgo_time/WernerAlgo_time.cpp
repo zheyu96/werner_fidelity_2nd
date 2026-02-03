@@ -116,7 +116,8 @@ WernerAlgo::find_min_shape(int src, int dst, double alp) {
 void WernerAlgo_time::run_dp_in_t(const Path& path, const DPParam& dpp,int t) {
     const int T = graph.get_time_limit();
     const int n = (int)path.size();
-
+    long long total_before = 0;
+    long long total_after = 0;
     // -------- t = 1..T-1 外圈時間迴圈 --------
     for(int a=0;a<n-1;a++)
         for(int b=a+1;b<n;b++){
@@ -157,10 +158,10 @@ void WernerAlgo_time::run_dp_in_t(const Path& path, const DPParam& dpp,int t) {
                         }
                     }
             }
-            cerr<<"\033[93mDP_table[" << t << "][" << a << "][" << b << "]\033[0m - "
-     << "before: \033[92m" << cand.size() << "\033[0m";
+            total_before = cand.size();
             bucket_by_Z(cand);
-            cerr<<", after: \033[92m" << cand.size() << "\033[0m\n";
+            total_after = cand.size();
+            if(total_before>0)cout << "DP_table[" << t << "][" << a << "][" << b << "] - before: " << total_before << ", after: " << total_after << endl;
             DP_table[t][a][b]=cand;
         }
 }
