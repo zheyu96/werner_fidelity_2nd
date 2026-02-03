@@ -12,7 +12,7 @@
 #include "./config.h"
 #include "Network/Graph/Graph.h"
 #include "Algorithm/AlgorithmBase/AlgorithmBase.h"
-#include "Algorithm/WernerAlgo_time/WernerAlgo_time.h" 
+#include "Algorithm/WernerAlgo2_time/WernerAlgo2_time.h" 
 #include "Network/PathMethod/Greedy/Greedy.h"
 
 using namespace std;
@@ -94,7 +94,7 @@ int main() {
     // 4. 開始實驗
     string X_name = "epsilon"; 
     for(double change_value : change_parameter[X_name]) {
-        cerr << "Testing " << X_name << " (ZFA2)= " << change_value << endl;
+        cerr << "Testing " << X_name << " = " << change_value << endl;
         vector<map<string, map<string, double>>> result(round);
 
         #pragma omp parallel for
@@ -121,7 +121,7 @@ int main() {
 
             // 建立演算法並傳入測試的 epsilon
             double eps_to_use = change_value;
-            AlgorithmBase* algo = new WernerAlgo_time(graph, requests, paths, eps_to_use);
+            AlgorithmBase* algo = new WernerAlgo2_time(graph, requests, paths, eps_to_use);
 
             // 計時開始
             auto start_time = chrono::high_resolution_clock::now();
@@ -130,7 +130,7 @@ int main() {
             chrono::duration<double> elapsed = end_time - start_time;
 
             // 紀錄結果
-            string name = algo->get_name(); // 預期為 "ZFA_time"
+            string name = algo->get_name(); // 預期為 "ZFA2_time"
             #pragma omp critical
             {
                 result[r][name]["fidelity_gain"] = algo->get_res("fidelity_gain");
@@ -146,7 +146,7 @@ int main() {
             ofstream ofs(file_path + ans_filename, ios::app);
             ofs << change_value << " ";
             
-            string algo_name = "ZFA_time"; 
+            string algo_name = "ZFA2_time"; 
             double sum = 0;
             for(int r = 0; r < round; r++) sum += result[r][algo_name][Y_name];
             ofs << sum / round << endl; 
