@@ -131,10 +131,10 @@ void WernerAlgo2_time::run_dp_in_t(const Path& path, const DPParam& dpp,int t) {
             total_before = cand.size();
             bucket_by_Z(cand);
             total_after = cand.size();
-            cerr << "DP_table[" << t << "][" << a << "][" << b << "] - before: " << total_before << ", after: " << total_after << endl;
-            cerr << "Reduction ratio: " << (total_before == 0 ? 0.0 : (double)total_after / total_before) << endl;
+            cout << "DP_table[" << t << "][" << a << "][" << b << "] - before: " << total_before << ", after: " << total_after << endl;
+            cout << "Reduction ratio: " << (total_before == 0 ? 0.0 : (double)total_after / total_before) << endl;
             for(auto i:cand){
-                cerr << "Z: " << i.Z << ", B: " << i.B << endl;
+                cout << "Z: " << i.Z << ", B: " << i.B << endl;
             }
             // Convert cand (vector<ZLabel>) to vector<shared_ptr<ZLabel>>
             DP_table[t][a][b]=cand;
