@@ -2,6 +2,7 @@
 dependency = Network/Node/Node.o Network/Shape/Shape.o Network/Graph/Graph.o Algorithm/AlgorithmBase/AlgorithmBase.o config.o
 algorithm = Algorithm/MyAlgo2/MyAlgo2.o Algorithm/MyAlgo1/MyAlgo1.o Algorithm/MyAlgo3/MyAlgo3.o Algorithm/MyAlgo4/MyAlgo4.o Algorithm/MyAlgo5/MyAlgo5.o Algorithm/MyAlgo6/MyAlgo6.o Algorithm/WernerAlgo/WernerAlgo.o Algorithm/WernerAlgo2/WernerAlgo2.o Algorithm/WernerAlgo_UB/WernerAlgo_UB.o
 algorithm2 = Algorithm/MyAlgo3/MyAlgo3.o Algorithm/MyAlgo1_time/MyAlgo1_time.o
+algorithm_zfa = Algorithm/WernerAlgo_time/WernerAlgo_time.o Algorithm/MyAlgo1_time/MyAlgo1_time.o
 routing = Network/PathMethod/PathMethodBase/PathMethod.o Network/PathMethod/Greedy/Greedy.o Network/PathMethod/QCAST/QCAST.o Network/PathMethod/REPS/REPS.o
 gcc_flag = -g -Wall -Wextra -Os -Ofast --std=c++17
 # gcc_flag = -g -Wall -Wextra -O0 --std=c++17
@@ -11,6 +12,10 @@ gurobi_flag = -I/home/oba/danger/gurobi951/linux64/include/ -L/home/oba/danger/g
 
 all: a.out
 
+zfa_run: ZFA_runtime.cpp $(dependency) $(algorithm_zfa) $(routing)
+	g++ -fopenmp $(gcc_flag) ZFA_runtime.cpp $(dependency) $(algorithm_zfa) $(routing) -o zfa_run
+	./zfa_run
+	
 runtime: runtime.cpp $(dependency) $(algorithm2) $(routing)
 	g++ -fopenmp $(gcc_flag) runtime.cpp $(dependency) $(algorithm2) -o runtime
 
@@ -69,7 +74,9 @@ Algorithm/WernerAlgo/WernerAlgo.o: Algorithm/WernerAlgo/WernerAlgo.h Algorithm/W
 Algorithm/WernerAlgo2/WernerAlgo2.o: Algorithm/WernerAlgo2/WernerAlgo2.h Algorithm/WernerAlgo2/WernerAlgo2.cpp config.h
 	g++ -c $(gcc_flag) Algorithm/WernerAlgo2/WernerAlgo2.h Algorithm/WernerAlgo2/WernerAlgo2.cpp config.h
 	mv WernerAlgo2.o Algorithm/WernerAlgo2/WernerAlgo2.o
-
+Algorithm/WernerAlgo_time/WernerAlgo_time.o: Algorithm/WernerAlgo_time/WernerAlgo_time.h Algorithm/WernerAlgo_time/WernerAlgo_time.cpp config.h
+	g++ -c $(gcc_flag) Algorithm/WernerAlgo_time/WernerAlgo_time.h Algorithm/WernerAlgo_time/WernerAlgo_time.cpp config.h
+	mv WernerAlgo_time.o Algorithm/WernerAlgo_time/WernerAlgo_time.o
 Network/PathMethod/Greedy/Greedy.o: Network/PathMethod/Greedy/Greedy.h Network/PathMethod/Greedy/Greedy.cpp config.h
 	g++ -c $(gcc_flag) Network/PathMethod/Greedy/Greedy.h Network/PathMethod/Greedy/Greedy.cpp config.h
 	mv Greedy.o Network/PathMethod/Greedy/Greedy.o

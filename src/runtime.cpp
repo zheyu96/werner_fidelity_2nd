@@ -99,7 +99,7 @@ int main(){
                 algorithms.emplace_back(new MyAlgo1_time(graph, requests, 0.5));
                 algorithms.emplace_back(new MyAlgo1_time(graph, requests, 0.7));
                 algorithms.emplace_back(new MyAlgo3(graph, requests));
-
+                
 
                 #pragma omp parallel for
                 for(int i = 0; i < (int)algorithms.size(); i++) {
