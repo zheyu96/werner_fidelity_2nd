@@ -36,7 +36,7 @@ zfa_run: ZFA_runtime.cpp $(dependency) $(algorithm_zfa) $(routing)
 # 2. 執行 WernerAlgo2_time 測試 (ZFA2_runtime.cpp)
 zfa2_run: ZFA2_runtime.cpp $(dependency) $(algorithm_zfa2) $(routing)
 	g++ -fopenmp -O3 $(gcc_flag) ZFA2_runtime.cpp $(dependency) $(algorithm_zfa2) $(routing) $(gurobi_flag) -o zfa2_run
-	./zfa2_run
+	./zfa2_run > record_runtime.txt
 
 # 3. 舊有的時間量測目標
 runtime: runtime.cpp $(dependency) $(algorithm2) $(routing)
