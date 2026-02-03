@@ -76,7 +76,7 @@ int main() {
     
     // 2. 設定實驗變數：測試 epsilon 對 runtime 的影響
     map<string, vector<double>> change_parameter;
-    change_parameter["epsilon"] = {0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8}; 
+    change_parameter["epsilon"] = {0.35, 0.45, 0.55, 0.65, 0.75, 0.85,0.95}; 
 
     vector<string> Y_names = {"fidelity_gain", "succ_request_cnt", "runtime"};
     int round = 5; 
