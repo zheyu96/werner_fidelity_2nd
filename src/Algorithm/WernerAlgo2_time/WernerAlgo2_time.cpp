@@ -8,7 +8,7 @@ using namespace std;
 WernerAlgo2_time::WernerAlgo2_time(Graph graph,vector<pair<int,int>> requests,map<SDpair, vector<Path>> paths,double eps): AlgorithmBase(graph, requests, paths)
 {
     algorithm_name = "ZFA2_time";
-    this->epsilon=eps;
+    this.epsilon=eps;
 }
 
 void WernerAlgo2_time::variable_initialize() {
@@ -129,11 +129,14 @@ void WernerAlgo2_time::run_dp_in_t(const Path& path, const DPParam& dpp,int t) {
                     }
             }
             total_before += cand.size();
-            cerr<<"\033[93mDP_table[" << t << "][" << a << "][" << b << "]\033[0m - "
-     << "before: \033[92m" << cand.size() << "\033[0m";
             bucket_by_Z(cand);
             total_after += cand.size();
-            cerr<<", after: \033[92m" << cand.size() << "\033[0m\n";
+            cerr << "DP_table[" << t << "][" << a << "][" << b << "] - before: " << total_before << ", after: " << total_after << endl;
+            cerr << "Reduction ratio: " << (total_before == 0 ? 0.0 : (double)total_after / total_before) << endl;
+            for(auto i:cand){
+                cerr << "Z: " << i.Z << ", B: " << i.B << endl;
+            }
+            // Convert cand (vector<ZLabel>) to vector<shared_ptr<ZLabel>>
             DP_table[t][a][b]=cand;
         }
 }
