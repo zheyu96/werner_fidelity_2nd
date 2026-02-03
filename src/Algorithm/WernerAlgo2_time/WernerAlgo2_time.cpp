@@ -14,44 +14,44 @@ WernerAlgo2_time::WernerAlgo2_time(Graph graph, vector<pair<int,int>> requests, 
 
 void WernerAlgo2_time::variable_initialize() {
     int m = (int)requests.size() + graph.get_num_nodes() * graph.get_time_limit();
-    double delta = (1 + epsilon) * (1.0 / pow((1 + epsilon) * m, 1.0 / epsilon));
+    Float delta = (1 + (Float)epsilon) * (1.0L / powl((1 + (Float)epsilon) * m, 1.0L / (Float)epsilon));
     obj = m * delta;
     alpha.assign(requests.size(), delta);
     x.clear();
     x.resize(requests.size());
+    
     int V = graph.get_num_nodes();
     int T = graph.get_time_limit();
     dpp.eps_bucket = graph.get_bucket_eps();
-    double F_th = graph.get_fidelity_threshold();
-    double w_th = (4.0 * F_th - 1.0) / 3.0;
-    dpp.Zhat = sqrt(-log(w_th)) + 1e-9;
+    Float F_th = graph.get_fidelity_threshold();
+    Float w_th = (4.0L * F_th - 1.0L) / 3.0L;
+    dpp.Zhat = sqrtl(-logl(w_th)) + 1e-9L;
     dpp.Zmin = graph.get_Zmin();
     dpp.T = time_limit - 1;
     dpp.tau_max = min(time_limit - 1, 5);
-    dpp.eta = graph.get_tao() / graph.get_time_limit();
-    beta.assign(V, vector<double>(T, INF));
+    dpp.eta = (Float)graph.get_tao() / (Float)graph.get_time_limit();
+    
+    beta.assign(V, vector<Float>(T, (Float)INF));
     for (int v = 0; v < V; ++v) {
         for (int t = 0; t < T; ++t) {
             int cap = graph.get_node_memory_at(v, t);
-            beta[v][t] = (cap == 0) ? INF : (delta / cap);
+            beta[v][t] = (cap == 0) ? (Float)INF : (delta / (Float)cap);
         }
     }
 }
 
 Shape_vector WernerAlgo2_time::separation_oracle() {
-    double most_violate = 1e9;
+    Float most_violate = 1e18L;
     Shape_vector todo_shape;
-    
-    // 重置本次 Oracle 的全域統計
     total_labels_generated = 0;
     total_labels_after_bucket = 0;
 
-    for (int i = 0; i < requests.size(); i++) {
+    for (size_t i = 0; i < requests.size(); i++) { // 修復 Sign-compare
         int src = requests[i].first, dst = requests[i].second;
         vector<Path> paths = get_paths(src, dst);
-        for (int p = 0; p < paths.size(); p++) {
-            int T_size = dpp.T + 5;
-            int n_size = paths[p].size() + 5;
+        for (size_t p = 0; p < paths.size(); p++) {
+            int T_size = (int)dpp.T + 5;
+            int n_size = (int)paths[p].size() + 5;
             DP_table.assign(T_size, vector<vector<vector<ZLabel>>>(n_size, vector<vector<ZLabel>>(n_size)));
 
             for (int t = 1; t <= dpp.T; t++) {
@@ -59,22 +59,20 @@ Shape_vector WernerAlgo2_time::separation_oracle() {
                 total_labels_generated += s.first;
                 total_labels_after_bucket += s.second;
 
-                auto cur_val = eval_best_J(0, paths[p].size() - 1, t, alpha[i]);
-                if (cur_val.first / graph.path_Pr(paths[p]) < most_violate) {
-                    most_violate = cur_val.first / graph.path_Pr(paths[p]);
+                auto cur_val = eval_best_J(0, (int)paths[p].size() - 1, t, alpha[i]);
+                if (cur_val.first / (Float)graph.path_Pr(paths[p]) < most_violate) {
+                    most_violate = cur_val.first / (Float)graph.path_Pr(paths[p]);
                     todo_shape = backtrack_shape(cur_val.second, paths[p]);
                 }
             }
         }
     }
 
-    // 輸出統計資訊
     if (total_labels_generated > 0) {
         cerr << fixed << setprecision(2) << "[DP Label Stats] Total Gen: " << total_labels_generated 
              << " | After Bucket: " << total_labels_after_bucket 
              << " | Compression: " << (1.0 - (double)total_labels_after_bucket / total_labels_generated) * 100.0 << "%" << endl;
     }
-
     return todo_shape;
 }
 
@@ -88,16 +86,15 @@ pair<long long, long long> WernerAlgo2_time::run_dp_with_stats(const Path& path,
             int s = path[a], e = path[b];
             vector<ZLabel> cand;
 
-            // LEAF
             if (a + 1 == b) {
                 for (int tlen = 1; tlen <= dpp.tau_max; tlen++) {
                     int st = t - tlen;
                     if (st < 1) continue;
-                    double Bleaf = 0.0;
+                    Float Bleaf = 0.0;
                     for (int tt = st; tt <= t; tt++) Bleaf += beta[s][tt] + beta[e][tt];
-                    double Zcur = 1.0L - (1.0L - graph.get_link_werner(s, e)) / (double)tlen;
+                    Float Zcur = 1.0L - (1.0L - (Float)graph.get_link_werner(s, e)) / (Float)tlen;
                     if (Zcur <= 0) continue;
-                    double Zleaf = sqrt(-log(Zcur));
+                    Float Zleaf = sqrtl(-logl(Zcur));
                     if (Zleaf <= dpp.Zhat) {
                         ZLabel L(Bleaf, Zleaf, Op::LEAF, a, b, t, -1);
                         L.ent_time = {st, t};
@@ -106,37 +103,35 @@ pair<long long, long long> WernerAlgo2_time::run_dp_with_stats(const Path& path,
                 }
             }
 
-            // CONT
             if (t > 1) {
                 auto& pre = DP_table[t - 1][a][b];
-                for (int p_id = 0; p_id < pre.size(); p_id++) {
-                    double Zp = pre[p_id].Z + dpp.eta;
+                for (size_t p_id = 0; p_id < pre.size(); p_id++) {
+                    Float Zp = pre[p_id].Z + dpp.eta;
                     if (Zp <= dpp.Zhat) {
-                        double Bp = pre[p_id].B + beta[s][t] + beta[e][t];
-                        cand.push_back(ZLabel(Bp, Zp, Op::CONT, a, b, t, -1, p_id));
+                        Float Bp = pre[p_id].B + beta[s][t] + beta[e][t];
+                        cand.push_back(ZLabel(Bp, Zp, Op::CONT, a, b, t, -1, (int)p_id));
                     }
                 }
             }
 
-            // MERGE
             if (t > 1) {
                 for (int k = a + 1; k < b; k++) {
                     auto &L1 = DP_table[t - 1][a][k], &L2 = DP_table[t - 1][k][b];
-                    for (int lid = 0; lid < L1.size(); lid++) {
-                        for (int rid = 0; rid < L2.size(); rid++) {
-                            double Zp = sqrt(pow(L1[lid].Z + dpp.eta, 2) + pow(L2[rid].Z + dpp.eta, 2));
+                    for (size_t lid = 0; lid < L1.size(); lid++) {
+                        for (size_t rid = 0; rid < L2.size(); rid++) {
+                            Float Zp = sqrtl(powl(L1[lid].Z + dpp.eta, 2) + powl(L2[rid].Z + dpp.eta, 2));
                             if (Zp <= dpp.Zhat) {
-                                double Bp = L1[lid].B + L2[rid].B + beta[s][t] + beta[e][t];
-                                cand.push_back(ZLabel(Bp, Zp, Op::MERGE, a, b, t, k, -1, lid, rid));
+                                Float Bp = L1[lid].B + L2[rid].B + beta[s][t] + beta[e][t];
+                                cand.push_back(ZLabel(Bp, Zp, Op::MERGE, a, b, t, k, -1, (int)lid, (int)rid));
                             }
                         }
                     }
                 }
             }
 
-            gen_t += cand.size();
+            gen_t += (long long)cand.size();
             bucket_by_Z(cand);
-            kept_t += cand.size();
+            kept_t += (long long)cand.size();
             DP_table[t][a][b] = cand;
         }
     }
@@ -154,9 +149,9 @@ void WernerAlgo2_time::pareto_prune_byZ(vector<ZLabel>& cand) {
         return x.B < y.B;
     });
     vector<ZLabel> kept;
-    double bestB = INF;
+    Float bestB = (Float)INF;
     for (auto& L : cand) {
-        if (L.B + 1e-12 < bestB) {
+        if (L.B + 1e-15L < bestB) {
             kept.push_back(L);
             bestB = L.B;
         }
@@ -166,13 +161,13 @@ void WernerAlgo2_time::pareto_prune_byZ(vector<ZLabel>& cand) {
 
 void WernerAlgo2_time::bucket_by_Z(vector<ZLabel>& cand) {
     if (cand.empty()) return;
-    double q = 1 + dpp.eps_bucket;
-    double invLogQ = 1.0 / log(q);
-    map<double, ZLabel> buckets;
+    Float q = 1.0L + dpp.eps_bucket;
+    Float invLogQ = 1.0L / logl(q);
+    map<long long, ZLabel> buckets; // 使用 long long 為索引避開 double 問題
     for (auto& L : cand) {
-        double k = (L.Z <= dpp.Zmin) ? 0.0 : floor(log(L.Z / dpp.Zmin) * invLogQ + 1e-12);
-        if (k < 0) k = 0.0;
-        if (buckets.find(k) == buckets.end() || L.B + 1e-12 < buckets[k].B)
+        long long k = (L.Z <= dpp.Zmin) ? 0 : (long long)floorl(logl(L.Z / dpp.Zmin) * invLogQ + 1e-12L);
+        if (k < 0) k = 0;
+        if (buckets.find(k) == buckets.end() || L.B + 1e-15L < buckets[k].B)
             buckets[k] = L;
     }
     vector<ZLabel> bucketed;
@@ -204,7 +199,7 @@ Shape_vector WernerAlgo2_time::backtrack_shape(ZLabel leaf, const vector<int>& p
         Shape_vector right_res = backtrack_shape(right_leaf, path);
         Shape_vector result = left_res;
         result.back().second.push_back(right_res.front().second.front());
-        for (int i = 1; i < (int)right_res.size(); i++) result.push_back(right_res[i]);
+        for (size_t i = 1; i < right_res.size(); i++) result.push_back(right_res[i]);
         result.front().second[0].second++;
         result.back().second[0].second++;
         return result;
@@ -212,68 +207,67 @@ Shape_vector WernerAlgo2_time::backtrack_shape(ZLabel leaf, const vector<int>& p
     return {};
 }
 
-int WernerAlgo2_time::split_dis(int s, int d, WernerAlgo2_time::ZLabel& L) {
-    if (L.op != WernerAlgo2_time::Op::MERGE || L.k < 0) return 1e18 / 4;
-    return abs(((s + d) / 2) - L.k);
+long long WernerAlgo2_time::split_dis(int s, int d, WernerAlgo2_time::ZLabel& L) {
+    if (L.op != WernerAlgo2_time::Op::MERGE || L.k < 0) return 200000000000000000LL; // 修復溢位
+    return (long long)abs(((s + d) / 2) - L.k);
 }
 
-pair<double, WernerAlgo2_time::ZLabel> WernerAlgo2_time::eval_best_J(int s, int d, int t, double alp) {
-    double bestJ = 1e18;
-    int bestdis = 1e18 / 4;
+pair<WernerAlgo2_time::Float, WernerAlgo2_time::ZLabel> WernerAlgo2_time::eval_best_J(int s, int d, int t, Float alp) {
+    Float bestJ = 1e18L;
+    long long bestdis = 200000000000000000LL; // 修復溢位
     bool flag = false;
     ZLabel tmp;
     for (auto& L : DP_table[t][s][d]) {
-        double J = (alp + L.B) * exp(L.Z * L.Z);
-        int dis = split_dis(s, d, L);
-        if (J + EPS < bestJ || (fabs(J - bestJ) <= EPS && dis < bestdis)) {
+        Float J = (alp + L.B) * expl(L.Z * L.Z);
+        long long dis = split_dis(s, d, L);
+        if (J + 1e-15L < bestJ || (fabsl(J - bestJ) <= 1e-15L && dis < bestdis)) {
             bestJ = J; tmp = L; bestdis = dis; flag = true;
         }
     }
-    return flag ? make_pair((double)bestJ, tmp) : make_pair((double)INF, tmp);
+    return flag ? make_pair(bestJ, tmp) : make_pair((Float)INF, tmp);
 }
 
 void WernerAlgo2_time::run() {
     int round = 1;
     while (round-- && !requests.empty()) {
         variable_initialize();
-        double eps_v = 1e-4;
-        while (obj + eps_v < 1.0) {
+        Float eps_v = 1e-4L;
+        while (obj + eps_v < 1.0L) {
             Shape_vector shape = separation_oracle();
             if (shape.empty()) break;
-            double q = 1.0;
-            for (int i = 0; i < shape.size(); i++) {
+            Float q = 1.0L;
+            for (size_t i = 0; i < shape.size(); i++) {
                 map<int, int> need;
                 for (auto& range : shape[i].second)
                     for (int t = range.first; t <= range.second; t++) need[t]++;
-                for (auto& p : need) q = min(q, graph.get_node_memory_at(shape[i].first, p.first) / (double)p.second);
+                for (auto& p : need) q = min(q, (Float)graph.get_node_memory_at(shape[i].first, p.first) / (Float)p.second);
             }
-            if (q <= 1e-10) break;
+            if (q <= 1e-10L) break;
             int req_idx = -1;
-            for (int i = 0; i < requests.size(); i++) {
+            for (size_t i = 0; i < requests.size(); i++) {
                 if (requests[i] == make_pair(shape.front().first, shape.back().first))
-                    if (req_idx == -1 || alpha[req_idx] > alpha[i]) req_idx = i;
+                    if (req_idx == -1 || alpha[req_idx] > alpha[i]) req_idx = (int)i;
             }
             if (req_idx == -1) break;
-            x[req_idx][shape] += q;
-            double ori = alpha[req_idx];
-            alpha[req_idx] *= (1 + epsilon * q);
+            x[req_idx][shape] += (double)q;
+            Float ori = alpha[req_idx];
+            alpha[req_idx] *= (1.0L + (Float)epsilon * q);
             obj += (alpha[req_idx] - ori);
-            for (int i = 0; i < shape.size(); i++) {
+            for (size_t i = 0; i < shape.size(); i++) {
                 map<int, int> need;
                 for (auto& range : shape[i].second)
                     for (int t = range.first; t <= range.second; t++) need[t]++;
                 for (auto& p : need) {
                     int node_id = shape[i].first, t = p.first;
-                    double original = beta[node_id][t];
-                    beta[node_id][t] *= (1 + epsilon * (q / (graph.get_node_memory_at(node_id, t) / (double)p.second)));
-                    obj += (beta[node_id][t] - original) * p.second;
+                    Float original = beta[node_id][t];
+                    beta[node_id][t] *= (1.0L + (Float)epsilon * (q / ((Float)graph.get_node_memory_at(node_id, t) / (Float)p.second)));
+                    obj += (beta[node_id][t] - original) * (Float)p.second;
                 }
             }
         }
         
-        // 資源保留與純化統計邏輯（維持你提供的 run 結尾實作...）
         vector<pair<double, Shape_vector>> sorted_shapes;
-        for(int i = 0; i < requests.size(); i++)
+        for(size_t i = 0; i < requests.size(); i++)
             for(auto& P : x[i]) sorted_shapes.push_back({P.second, P.first});
         sort(sorted_shapes.begin(), sorted_shapes.end(), [](auto& a, auto& b){ return a.first > b.first; });
 
@@ -282,9 +276,9 @@ void WernerAlgo2_time::run() {
         for(auto& P : sorted_shapes) {
             Shape shape_obj = Shape(P.second);
             int idx = -1;
-            for(int i=0; i<requests.size(); i++) {
+            for(size_t i=0; i<requests.size(); i++) {
                 if(!used[i] && requests[i] == make_pair(shape_obj.get_node_mem_range().front().first, shape_obj.get_node_mem_range().back().first)) {
-                    idx = i; break;
+                    idx = (int)i; break;
                 }
             }
             if(idx != -1 && graph.check_resource(shape_obj, true, true)) {
