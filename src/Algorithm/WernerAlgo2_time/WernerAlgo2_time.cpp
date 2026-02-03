@@ -8,7 +8,7 @@ using namespace std;
 WernerAlgo2_time::WernerAlgo2_time(Graph graph,vector<pair<int,int>> requests,map<SDpair, vector<Path>> paths,double eps): AlgorithmBase(graph, requests, paths)
 {
     algorithm_name = "ZFA2_time";
-    this.epsilon=eps;
+    this->epsilon=eps;
 }
 
 void WernerAlgo2_time::variable_initialize() {
