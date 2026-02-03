@@ -129,13 +129,11 @@ void WernerAlgo2_time::run_dp_in_t(const Path& path, const DPParam& dpp,int t) {
                     }
             }
             total_before += cand.size();
+            cerr<<"\033[93mDP_table[" << t << "][" << a << "][" << b << "]\033[0m - "
+     << "before: \033[92m" << cand.size() << "\033[0m";
             bucket_by_Z(cand);
             total_after += cand.size();
-            cerr << "\033[93mDP_table[" << t << "][" << a << "][" << b << "]\033[0m - "
-     << "before: \033[92m" << total_before << "\033[0m, "
-     << "after: \033[92m" << total_after << "\033[0m | "
-     << "Ratio: \033[96m" << (total_before == 0 ? 0.0 : (double)total_after / total_before * 100.0) << "%\033[0m" << endl;
-            // Convert cand (vector<ZLabel>) to vector<shared_ptr<ZLabel>>
+            cerr<<", after: \033[92m" << cand.size() << "\033[0m\n";
             DP_table[t][a][b]=cand;
         }
 }

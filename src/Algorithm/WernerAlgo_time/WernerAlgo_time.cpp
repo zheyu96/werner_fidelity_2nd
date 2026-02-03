@@ -157,8 +157,11 @@ void WernerAlgo_time::run_dp_in_t(const Path& path, const DPParam& dpp,int t) {
                         }
                     }
             }
+            cerr<<"\033[93mDP_table[" << t << "][" << a << "][" << b << "]\033[0m - "
+     << "before: \033[92m" << cand.size() << "\033[0m";
             bucket_by_Z(cand);
-            // Convert cand (vector<ZLabel>) to vector<shared_ptr<ZLabel>>
+            total_after += cand.size();
+            cerr<<", after: \033[92m" << cand.size() << "\033[0m\n";
             DP_table[t][a][b]=cand;
         }
 }
