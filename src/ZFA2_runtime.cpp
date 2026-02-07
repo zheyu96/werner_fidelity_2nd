@@ -100,7 +100,7 @@ int main() {
 
     vector<string> X_names = {"epsilon", "bucket_eps"}; 
     vector<string> Y_names = {"fidelity_gain", "succ_request_cnt", "runtime"};
-    int round = 50; // 比照參考檔設定為 50 輪
+    int round = 5; // 比照參考檔設定為 50 輪
 
     // 3. 預先產生固定請求 (確保公平性)
     vector<vector<SDpair>> default_requests(round);
