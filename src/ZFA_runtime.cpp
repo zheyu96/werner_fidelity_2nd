@@ -102,7 +102,7 @@ int main() {
 
     vector<string> X_names = {"epsilon", "bucket_eps"}; // 定義要跑的變數種類
     vector<string> Y_names = {"fidelity_gain", "succ_request_cnt", "runtime"};
-    int round = 1; 
+    int round = 5; 
 
     // 3. 預先產生固定請求，確保實驗公平性
     vector<vector<SDpair>> default_requests(round);
