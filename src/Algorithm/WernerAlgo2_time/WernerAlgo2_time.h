@@ -30,7 +30,7 @@ public:
     #define double long double
     WernerAlgo2_time(Graph graph,
                vector<pair<int,int>> requests,
-               map<SDpair, vector<Path>> paths,double epsilon);
+               map<SDpair, vector<Path>> paths,double epsilon,double omega);
 
     void run();
 

@@ -5,10 +5,11 @@
 
 using namespace std;
 
-WernerAlgo2_time::WernerAlgo2_time(Graph graph,vector<pair<int,int>> requests,map<SDpair, vector<Path>> paths,double eps): AlgorithmBase(graph, requests, paths)
+WernerAlgo2_time::WernerAlgo2_time(Graph graph,vector<pair<int,int>> requests,map<SDpair, vector<Path>> paths,double eps,double omega): AlgorithmBase(graph, requests, paths)
 {
     algorithm_name = "ZFA2_time";
     this->epsilon=eps;
+    this->dpp.eps_bucket=omega;
 }
 
 void WernerAlgo2_time::variable_initialize() {
