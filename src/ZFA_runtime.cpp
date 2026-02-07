@@ -69,7 +69,7 @@ int main() {
     default_setting["tao"] = 0.002;
     default_setting["path_length"] = 4;
     default_setting["fidelity_threshold"] = 0.7;
-    default_setting["epsilon"] = 0.7; 
+    default_setting["epsilon"] = 0.35; 
     default_setting["Zmin"] = 0.02702867239;
     default_setting["bucket_eps"] = 0.01;
     default_setting["time_eta"] = 0.001;
