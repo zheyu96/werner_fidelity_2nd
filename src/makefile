@@ -34,7 +34,7 @@ zfa_run: ZFA_runtime.cpp $(dependency) $(algorithm_zfa) $(routing)
 	./zfa_run >record_runtime_ZFA.txt
 
 # 2. 執行 WernerAlgo2_time 測試 (ZFA2_runtime.cpp)
-zfa2_run: ZFA2_runtime.cpp $(dependency) $(algorithm_zfa2) $(routing)
+zfa2_run: ZFA2_runtime.cpp $(dependency) $(algorithm_zfa2) $(algorithm_zfa)  $(routing)
 	g++ -fopenmp -O3 $(gcc_flag) ZFA2_runtime.cpp $(dependency) $(algorithm_zfa2) $(algorithm_zfa) $(routing) $(gurobi_flag) -o zfa2_run
 	./zfa2_run > record_runtime.txt
 
